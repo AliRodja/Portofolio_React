@@ -8,13 +8,14 @@ const experienceRoutes = require('./routes/experienceRoutes');
 const educationRoutes = require('./routes/educationRoutes');
 const socialLinkRoutes = require('./routes/socialLinkRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const statsRoutes = require("./routes/statsRoutes");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use('/api/profile', profileRoutes);
-
+app.use('/api/stats', statsRoutes);
 app.get('/', (req, res) => {
     res.json({
         message: 'Portfolio API Running'
