@@ -6,9 +6,9 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 
-import {
-  HiArrowDownTray,
-} from "react-icons/hi2";
+// import {
+//   HiArrowDownTray,
+// } from "react-icons/hi2";
 
 import Container from "../ui/Container";
 import Button from "../ui/Button";
