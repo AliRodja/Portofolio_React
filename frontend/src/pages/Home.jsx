@@ -8,6 +8,7 @@ import About from "../components/sections/About/About";
 import Skills from "../components/sections/Skills/Skills";
 import Projects from "../components/sections/Projects/Projects";
 import Experience from "../components/sections/Experience/Experience";
+import Education from "../components/sections/Education/Education";
 
 
 function Home() {
@@ -47,6 +48,7 @@ function Home() {
       <Skills />
       <Projects />
       <Experience />
+      <Education />
     </>
   );
 
