@@ -1,6 +1,3 @@
-import Container from "../../ui/Container";
-import SkillBadge from "./SkillBadge";
-
 import {
   FaReact,
   FaNodeJs,
@@ -23,51 +20,68 @@ import {
 
 import { VscCode } from "react-icons/vsc";
 
-const skillCategories = [
-  {
-    title: "Frontend",
-    emoji: "🎨",
-    skills: [
-      { name: "React", icon: <FaReact />, color: "text-cyan-400" },
-      { name: "Next.js", icon: <SiNextdotjs />, color: "text-white" },
-      { name: "JavaScript", icon: <SiJavascript />, color: "text-yellow-400" },
-      { name: "Tailwind CSS", icon: <SiTailwindcss />, color: "text-cyan-400" },
-      { name: "Bootstrap", icon: <FaBootstrap />, color: "text-purple-400" },
-    ],
-  },
-  {
-    title: "Backend",
-    emoji: "⚙️",
-    skills: [
-      { name: "Node.js", icon: <FaNodeJs />, color: "text-green-400" },
-      { name: "Express.js", icon: <SiExpress />, color: "text-slate-300" },
-      { name: "Laravel", icon: <FaLaravel />, color: "text-red-400" },
-      { name: "PHP", icon: <FaPhp />, color: "text-indigo-400" },
-    ],
-  },
-  {
-    title: "Database",
-    emoji: "🗄️",
-    skills: [
-      { name: "PostgreSQL", icon: <SiPostgresql />, color: "text-blue-400" },
-      { name: "MySQL", icon: <SiMysql />, color: "text-orange-400" },
-    ],
-  },
-  {
-    title: "Tools",
-    emoji: "🛠️",
-    skills: [
-      { name: "Git", icon: <FaGitAlt />, color: "text-orange-400" },
-      { name: "GitHub", icon: <FaGithub />, color: "text-slate-300" },
-      { name: "VS Code", icon: <VscCode />, color: "text-blue-400" },
-      { name: "Figma", icon: <FaFigma />, color: "text-pink-400" },
-    ],
-  },
+const allSkills = [
+  { name: "React", icon: <FaReact />, color: "text-cyan-400" },
+  { name: "Next.js", icon: <SiNextdotjs />, color: "text-white" },
+  { name: "JavaScript", icon: <SiJavascript />, color: "text-yellow-400" },
+  { name: "Tailwind CSS", icon: <SiTailwindcss />, color: "text-cyan-400" },
+  { name: "Bootstrap", icon: <FaBootstrap />, color: "text-purple-400" },
+  { name: "Node.js", icon: <FaNodeJs />, color: "text-green-400" },
+  { name: "Express.js", icon: <SiExpress />, color: "text-slate-300" },
+  { name: "Laravel", icon: <FaLaravel />, color: "text-red-400" },
+  { name: "PHP", icon: <FaPhp />, color: "text-indigo-400" },
+  { name: "PostgreSQL", icon: <SiPostgresql />, color: "text-blue-400" },
+  { name: "MySQL", icon: <SiMysql />, color: "text-orange-400" },
+  { name: "Git", icon: <FaGitAlt />, color: "text-orange-400" },
+  { name: "GitHub", icon: <FaGithub />, color: "text-slate-300" },
+  { name: "VS Code", icon: <VscCode />, color: "text-blue-400" },
+  { name: "Figma", icon: <FaFigma />, color: "text-pink-400" },
 ];
+
+// Split into two rows for visual variety
+const row1 = allSkills.slice(0, 8);
+const row2 = allSkills.slice(8);
+
+function MarqueeRow({ skills, reverse = false }) {
+  // Duplicate for seamless loop
+  const items = [...skills, ...skills];
+
+  return (
+    <div className="relative overflow-hidden py-4 group/marquee">
+
+      {/* Fade edges */}
+      <div className="absolute left-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-r from-slate-900 to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-l from-slate-900 to-transparent z-10 pointer-events-none" />
+
+      <div
+        className={`
+          flex items-center gap-10 md:gap-14 w-max
+          ${reverse ? "animate-marquee-reverse" : "animate-marquee"}
+          group-hover/marquee:[animation-play-state:paused]
+        `}
+      >
+        {items.map((skill, i) => (
+          <div
+            key={`${skill.name}-${i}`}
+            className="flex items-center gap-3 shrink-0"
+          >
+            <span className={`text-2xl md:text-3xl ${skill.color} transition-transform duration-300`}>
+              {skill.icon}
+            </span>
+            <span className="text-slate-400 text-base md:text-lg font-medium whitespace-nowrap">
+              {skill.name}
+            </span>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  );
+}
 
 function Skills() {
   return (
-    <section id="skills" className="relative py-32 bg-slate-900 overflow-hidden">
+    <section id="skills" className="relative py-28 md:py-32 bg-slate-900 overflow-hidden">
 
       {/* Background decorations */}
       <div className="absolute inset-0 pointer-events-none">
@@ -85,10 +99,11 @@ function Skills() {
         }}
       />
 
-      <Container className="relative z-10">
+      <div className="relative z-10">
 
         {/* Section header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-16 px-6">
+
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             <span className="text-sm text-cyan-300 font-medium tracking-wider uppercase">
@@ -106,53 +121,16 @@ function Skills() {
           <p className="mt-4 text-lg text-slate-400 max-w-xl mx-auto">
             Tools and technologies I use to bring ideas to life.
           </p>
-        </div>
-
-        {/* Skill categories grid */}
-        <div className="grid md:grid-cols-2 gap-6">
-
-          {skillCategories.map((category) => (
-
-            <div
-              key={category.title}
-              className="
-                group
-                rounded-2xl p-8
-                bg-white/[0.03] border border-white/[0.06]
-                backdrop-blur-sm
-                hover:bg-white/[0.05] hover:border-white/10
-                transition-all duration-300
-              "
-            >
-
-              {/* Category header */}
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-2xl">{category.emoji}</span>
-                <h3 className="text-lg font-semibold text-white tracking-wide">
-                  {category.title}
-                </h3>
-                <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
-              </div>
-
-              {/* Skill badges */}
-              <div className="flex flex-wrap gap-3">
-                {category.skills.map((skill) => (
-                  <SkillBadge
-                    key={skill.name}
-                    icon={skill.icon}
-                    name={skill.name}
-                    color={skill.color}
-                  />
-                ))}
-              </div>
-
-            </div>
-
-          ))}
 
         </div>
 
-      </Container>
+        {/* Marquee rows */}
+        <div className="space-y-2">
+          <MarqueeRow skills={row1} />
+          <MarqueeRow skills={row2} reverse />
+        </div>
+
+      </div>
 
     </section>
   );

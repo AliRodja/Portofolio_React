@@ -11,6 +11,9 @@ const profileRoutes = require('./routes/profileRoutes');
 const statsRoutes = require("./routes/statsRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const certificateRoutes = require("./routes/certificateRoutes");
+const authRoutes = require("./routes/authRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+
 
 const app = express();
 
@@ -47,4 +50,7 @@ app.use('/api/education', educationRoutes);
 app.use('/api/social-links', socialLinkRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/profile", profileRoutes);
 module.exports = app;
