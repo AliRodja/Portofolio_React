@@ -7,6 +7,7 @@ import Stats from "../components/sections/Stats";
 import About from "../components/sections/About/About";
 import Skills from "../components/sections/Skills/Skills";
 import Projects from "../components/sections/Projects/Projects";
+import Experience from "../components/sections/Experience/Experience";
 
 
 function Home() {
@@ -45,6 +46,7 @@ function Home() {
       <About profile={profile} />
       <Skills />
       <Projects />
+      <Experience />
     </>
   );
 
