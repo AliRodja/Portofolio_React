@@ -1,14 +1,14 @@
 import Container from "../../ui/Container";
-import useExperience from "../../../hooks/useExperience";
-import ExperienceCard from "./ExperienceCard";
+import useCertificates from "../../../hooks/useCertificates";
+import CertificateCard from "./CertificateCard";
 
-function Experience() {
+function Certificates() {
 
     const {
-        experiences,
+        certificates,
         loading,
         error,
-    } = useExperience();
+    } = useCertificates();
 
     if (loading) {
         return (
@@ -17,24 +17,26 @@ function Experience() {
 
                     <div className="text-center mb-20">
                         <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
-                            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                            <span className="text-sm text-blue-300 font-medium tracking-wider uppercase">
-                                Loading Experience
+                            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                            <span className="text-sm text-amber-300 font-medium tracking-wider uppercase">
+                                Loading Certificates
                             </span>
                         </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {[...Array(4)].map((_, i) => (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[...Array(3)].map((_, i) => (
                             <div
                                 key={i}
-                                className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-8 animate-pulse"
+                                className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden animate-pulse"
                             >
-                                <div className="h-4 w-28 bg-white/[0.05] rounded-lg mb-4" />
-                                <div className="h-6 w-3/4 bg-white/[0.05] rounded-lg mb-3" />
-                                <div className="h-4 w-1/2 bg-white/[0.04] rounded-lg mb-6" />
-                                <div className="h-4 w-full bg-white/[0.04] rounded-lg mb-2" />
-                                <div className="h-4 w-4/5 bg-white/[0.04] rounded-lg" />
+                                <div className="h-48 bg-white/[0.05]" />
+                                <div className="p-6 space-y-4">
+                                    <div className="h-5 w-3/4 bg-white/[0.05] rounded-lg" />
+                                    <div className="h-4 w-1/2 bg-white/[0.04] rounded-lg" />
+                                    <div className="h-4 w-1/3 bg-white/[0.04] rounded-lg" />
+                                    <div className="h-10 w-full bg-white/[0.04] rounded-xl mt-4" />
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -61,14 +63,14 @@ function Experience() {
 
     return (
         <section
-            id="experience"
+            id="certificates"
             className="relative py-32 bg-slate-900 overflow-hidden"
         >
 
             {/* ── Background decorations ── */}
             <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-20 -left-32 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[140px]" />
-                <div className="absolute bottom-20 -right-32 w-[400px] h-[400px] rounded-full bg-cyan-500/5 blur-[120px]" />
+                <div className="absolute top-20 -right-32 w-[500px] h-[500px] rounded-full bg-amber-500/5 blur-[140px]" />
+                <div className="absolute bottom-20 -left-32 w-[400px] h-[400px] rounded-full bg-blue-500/5 blur-[120px]" />
             </div>
 
             {/* Grid pattern */}
@@ -87,45 +89,57 @@ function Experience() {
                 <div className="text-center mb-20">
 
                     <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
-                        <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                        <span className="text-sm text-blue-300 font-medium tracking-wider uppercase">
-                            Experience
+                        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                        <span className="text-sm text-amber-300 font-medium tracking-wider uppercase">
+                            Certificates
                         </span>
                     </div>
 
                     <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-                        Leadership &
+                        Continuous
                         <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                            {" "}Organization
+                            {" "}Learning
                         </span>
                     </h2>
 
                     <p className="mt-4 text-lg text-slate-400 max-w-xl mx-auto">
-                        My leadership roles and organizational experience.
+                        Professional certifications and courses I've completed.
                     </p>
 
                 </div>
 
-                {/* ── Experience count badge ── */}
+                {/* ── Certificates count badge ── */}
                 <div className="flex justify-center mb-10">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06] text-sm text-slate-400">
-                        <span className="font-bold text-white">{experiences.length}</span>
-                        <span>experiences</span>
+                        <span className="font-bold text-white">{certificates.length}</span>
+                        <span>certificates earned</span>
                     </div>
                 </div>
 
-                {/* ── Experience Grid ── */}
-                <div className="grid md:grid-cols-2 gap-6">
+                {/* ── Certificates Grid ── */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                    {experiences.map((experience, index) => (
-                        <ExperienceCard
-                            key={experience.id}
-                            experience={experience}
-                            index={index}
+                    {certificates.map((certificate) => (
+                        <CertificateCard
+                            key={certificate.id}
+                            certificate={certificate}
                         />
                     ))}
 
                 </div>
+
+                {/* ── Empty state ── */}
+                {certificates.length === 0 && (
+                    <div className="text-center py-20">
+                        <div className="text-6xl mb-6">🏆</div>
+                        <h3 className="text-2xl font-bold text-white mb-3">
+                            No Certificates Yet
+                        </h3>
+                        <p className="text-slate-400 max-w-md mx-auto">
+                            Certificates are coming soon. Stay tuned!
+                        </p>
+                    </div>
+                )}
 
             </Container>
 
@@ -133,4 +147,4 @@ function Experience() {
     );
 }
 
-export default Experience;
+export default Certificates;

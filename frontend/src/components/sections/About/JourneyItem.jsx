@@ -18,18 +18,24 @@ function JourneyItem({ year, title, description, icon, isLeft, isLast }) {
         <div
           className={`
             group
-            bg-white rounded-2xl border border-slate-200
-            p-6 shadow-sm
-            hover:shadow-xl hover:border-blue-200 hover:-translate-y-1
+            bg-white/[0.03] rounded-2xl border border-white/[0.06]
+            backdrop-blur-sm
+            p-6 
+            hover:bg-white/[0.06] hover:border-white/10 hover:-translate-y-1
             transition-all duration-300
+            relative overflow-hidden
           `}
         >
+
+          {/* Top accent line */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500/30 via-cyan-500/20 to-transparent" />
+
           {/* Year badge */}
-          <span className="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold tracking-wider mb-3">
+          <span className="inline-block px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold tracking-wider mb-3">
             {year}
           </span>
 
-          <h3 className="text-lg font-bold text-slate-900 leading-snug">
+          <h3 className="text-lg font-bold text-white leading-snug">
             {title}
           </h3>
 
@@ -48,9 +54,9 @@ function JourneyItem({ year, title, description, icon, isLeft, isLast }) {
             w-12 h-12 rounded-full
             flex items-center justify-center
             text-lg
-            bg-white border-[3px] border-blue-400
-            shadow-md shadow-blue-100
-            ${isLast ? "ring-4 ring-blue-100" : ""}
+            bg-slate-800 border-[3px] border-blue-400/50
+            shadow-lg shadow-blue-500/10
+            ${isLast ? "ring-4 ring-blue-500/10" : ""}
           `}
         >
           {icon}
@@ -64,9 +70,9 @@ function JourneyItem({ year, title, description, icon, isLeft, isLast }) {
             w-12 h-12 rounded-full
             flex items-center justify-center
             text-lg
-            bg-white border-[3px] border-blue-400
-            shadow-md shadow-blue-100
-            ${isLast ? "ring-4 ring-blue-100" : ""}
+            bg-slate-800 border-[3px] border-blue-400/50
+            shadow-lg shadow-blue-500/10
+            ${isLast ? "ring-4 ring-blue-500/10" : ""}
           `}
         >
           {icon}

@@ -9,6 +9,8 @@ const educationRoutes = require('./routes/educationRoutes');
 const socialLinkRoutes = require('./routes/socialLinkRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const statsRoutes = require("./routes/statsRoutes");
+const messageRoutes = require("./routes/messageRoutes");
+const certificateRoutes = require("./routes/certificateRoutes");
 
 const app = express();
 
@@ -43,4 +45,6 @@ app.use('/api/skills', skillRoutes);
 app.use('/api/experiences', experienceRoutes);
 app.use('/api/education', educationRoutes);
 app.use('/api/social-links', socialLinkRoutes);
+app.use("/api/certificates", certificateRoutes);
+app.use("/api/messages", messageRoutes);
 module.exports = app;

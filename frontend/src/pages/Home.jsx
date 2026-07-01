@@ -9,6 +9,8 @@ import Skills from "../components/sections/Skills/Skills";
 import Projects from "../components/sections/Projects/Projects";
 import Experience from "../components/sections/Experience/Experience";
 import Education from "../components/sections/Education/Education";
+import Certificates from "../components/sections/Certificates/Certificates";
+import Contact from "../components/sections/Contact/Contact";
 
 
 function Home() {
@@ -49,6 +51,8 @@ function Home() {
       <Projects />
       <Experience />
       <Education />
+      <Certificates />
+      <Contact />
     </>
   );
 
