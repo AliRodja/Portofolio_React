@@ -1,32 +1,32 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
-function useExperience() {
-    const [experiences, setExperiences] = useState([]);
+function useSkills() {
+    const [skills, setSkills] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
-        async function fetchExperiences() {
+        async function fetchSkills() {
             try {
-                const response = await api.get("/experiences");
-                setExperiences(response.data);
+                const response = await api.get("/skills");
+                setSkills(response.data);
             } catch (err) {
                 console.error(err);
-                setError("Failed to load experiences.");
+                setError("Failed to load skills.");
             } finally {
                 setLoading(false);
             }
         }
 
-        fetchExperiences();
+        fetchSkills();
     }, []);
 
     return {
-        experiences,
+        skills,
         loading,
         error,
     };
 }
 
-export default useExperience;
+export default useSkills;

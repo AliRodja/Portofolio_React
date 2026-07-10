@@ -1,46 +1,19 @@
-import {
-  FaReact,
-  FaNodeJs,
-  FaLaravel,
-  FaPhp,
-  FaGitAlt,
-  FaGithub,
-  FaFigma,
-  FaBootstrap,
-} from "react-icons/fa";
+import useSkills from "../../../hooks/useSkills";
+import { getSkillIcon } from "../../../constants/skillIcons";
+import { FaCode } from "react-icons/fa";
 
-import {
-  SiNextdotjs,
-  SiJavascript,
-  SiTailwindcss,
-  SiPostgresql,
-  SiMysql,
-  SiExpress,
-} from "react-icons/si";
-
-import { VscCode } from "react-icons/vsc";
-
-const allSkills = [
-  { name: "React", icon: <FaReact />, color: "text-cyan-400" },
-  { name: "Next.js", icon: <SiNextdotjs />, color: "text-white" },
-  { name: "JavaScript", icon: <SiJavascript />, color: "text-yellow-400" },
-  { name: "Tailwind CSS", icon: <SiTailwindcss />, color: "text-cyan-400" },
-  { name: "Bootstrap", icon: <FaBootstrap />, color: "text-purple-400" },
-  { name: "Node.js", icon: <FaNodeJs />, color: "text-green-400" },
-  { name: "Express.js", icon: <SiExpress />, color: "text-slate-300" },
-  { name: "Laravel", icon: <FaLaravel />, color: "text-red-400" },
-  { name: "PHP", icon: <FaPhp />, color: "text-indigo-400" },
-  { name: "PostgreSQL", icon: <SiPostgresql />, color: "text-blue-400" },
-  { name: "MySQL", icon: <SiMysql />, color: "text-orange-400" },
-  { name: "Git", icon: <FaGitAlt />, color: "text-orange-400" },
-  { name: "GitHub", icon: <FaGithub />, color: "text-slate-300" },
-  { name: "VS Code", icon: <VscCode />, color: "text-blue-400" },
-  { name: "Figma", icon: <FaFigma />, color: "text-pink-400" },
+const SKILL_COLORS = [
+  "text-cyan-400",
+  "text-blue-400",
+  "text-yellow-400",
+  "text-green-400",
+  "text-purple-400",
+  "text-red-400",
+  "text-indigo-400",
+  "text-pink-400",
+  "text-orange-400",
+  "text-slate-300",
 ];
-
-// Split into two rows for visual variety
-const row1 = allSkills.slice(0, 8);
-const row2 = allSkills.slice(8);
 
 function MarqueeRow({ skills, reverse = false }) {
   // Duplicate for seamless loop
@@ -60,19 +33,23 @@ function MarqueeRow({ skills, reverse = false }) {
           group-hover/marquee:[animation-play-state:paused]
         `}
       >
-        {items.map((skill, i) => (
-          <div
-            key={`${skill.name}-${i}`}
-            className="flex items-center gap-3 shrink-0"
-          >
-            <span className={`text-2xl md:text-3xl ${skill.color} transition-transform duration-300`}>
-              {skill.icon}
-            </span>
-            <span className="text-slate-400 text-base md:text-lg font-medium whitespace-nowrap">
-              {skill.name}
-            </span>
-          </div>
-        ))}
+        {items.map((skill, i) => {
+          const Icon = skill.icon || FaCode;
+
+          return (
+            <div
+              key={`${skill.name}-${i}`}
+              className="flex items-center gap-3 shrink-0"
+            >
+              <span className={`text-2xl md:text-3xl ${skill.color} transition-transform duration-300`}>
+                <Icon />
+              </span>
+              <span className="text-slate-400 text-base md:text-lg font-medium whitespace-nowrap">
+                {skill.name}
+              </span>
+            </div>
+          );
+        })}
       </div>
 
     </div>
@@ -80,6 +57,22 @@ function MarqueeRow({ skills, reverse = false }) {
 }
 
 function Skills() {
+  const { skills, loading, error } = useSkills();
+
+  if (loading || error || skills.length === 0) {
+    return null;
+  }
+
+  const skillsWithVisuals = skills.map((skill, i) => ({
+    ...skill,
+    icon: getSkillIcon(skill.icon_name),
+    color: SKILL_COLORS[i % SKILL_COLORS.length],
+  }));
+
+  const midpoint = Math.ceil(skillsWithVisuals.length / 2);
+  const row1 = skillsWithVisuals.slice(0, midpoint);
+  const row2 = skillsWithVisuals.slice(midpoint);
+
   return (
     <section id="skills" className="relative py-28 md:py-32 bg-slate-900 overflow-hidden">
 
@@ -127,7 +120,7 @@ function Skills() {
         {/* Marquee rows */}
         <div className="space-y-2">
           <MarqueeRow skills={row1} />
-          <MarqueeRow skills={row2} reverse />
+          {row2.length > 0 && <MarqueeRow skills={row2} reverse />}
         </div>
 
       </div>
