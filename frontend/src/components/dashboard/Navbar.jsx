@@ -1,14 +1,36 @@
 import { useEffect, useRef, useState } from "react";
-import { FaBars, FaExternalLinkAlt, FaUser, FaSignOutAlt } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import {
+    FaBars,
+    FaExternalLinkAlt,
+    FaUser,
+    FaSignOutAlt,
+    FaChevronDown,
+    FaChevronRight,
+} from "react-icons/fa";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+
+const pageLabels = {
+    "/dashboard": "Dashboard",
+    "/dashboard/projects": "Projects",
+    "/dashboard/skills": "Skills",
+    "/dashboard/experience": "Experience",
+    "/dashboard/education": "Education",
+    "/dashboard/certificates": "Certificates",
+    "/dashboard/messages": "Messages",
+    "/dashboard/profile": "Profile",
+};
 
 function Navbar({ onMenuClick }) {
 
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const menuRef = useRef(null);
+
+    const pageLabel = pageLabels[location.pathname] || "Dashboard";
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -22,6 +44,15 @@ function Navbar({ onMenuClick }) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 4);
+
+        window.addEventListener("scroll", handleScroll);
+        handleScroll();
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     const handleLogout = () => {
         setMenuOpen(false);
         logout();
@@ -30,9 +61,16 @@ function Navbar({ onMenuClick }) {
 
     return (
 
-        <header className="h-20 bg-white border-b border-slate-200 px-4 sm:px-8 flex items-center justify-between gap-4 sticky top-0 z-20">
+        <header
+            className={`
+                h-16 sm:h-20 bg-white/80 backdrop-blur-md px-4 sm:px-8
+                flex items-center justify-between gap-4
+                sticky top-0 z-20 transition-shadow duration-200
+                ${scrolled ? "shadow-sm border-b border-slate-200" : "border-b border-transparent"}
+            `}
+        >
 
-            <div className="flex items-center gap-4 min-w-0">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
 
                 <button
                     onClick={onMenuClick}
@@ -42,14 +80,26 @@ function Navbar({ onMenuClick }) {
                 </button>
 
                 <div className="min-w-0">
-                    <p className="text-sm text-slate-500 truncate">
-                        Welcome back, <span className="font-semibold text-slate-800">{user?.username}</span> 👋
+
+                    <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 font-medium mb-0.5">
+                        <span>Dashboard</span>
+                        {pageLabel !== "Dashboard" && (
+                            <>
+                                <FaChevronRight className="text-[8px]" />
+                                <span className="text-slate-500">{pageLabel}</span>
+                            </>
+                        )}
+                    </div>
+
+                    <p className="text-sm sm:text-base font-semibold text-slate-800 truncate">
+                        Welcome back, {user?.username} <span className="inline-block">👋</span>
                     </p>
+
                 </div>
 
             </div>
 
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
 
                 <a
                     href="/"
@@ -61,13 +111,23 @@ function Navbar({ onMenuClick }) {
                     <FaExternalLinkAlt className="text-xs" />
                 </a>
 
+                <div className="w-px h-8 bg-slate-200 hidden sm:block" />
+
                 <div className="relative" ref={menuRef}>
 
                     <button
                         onClick={() => setMenuOpen((open) => !open)}
-                        className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold hover:shadow-lg hover:shadow-blue-500/20 transition"
+                        className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-slate-100 transition"
                     >
-                        {user?.username?.charAt(0).toUpperCase() || "?"}
+                        <span className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                            {user?.username?.charAt(0).toUpperCase() || "?"}
+                        </span>
+
+                        <span className="hidden md:inline text-sm font-medium text-slate-700 max-w-[100px] truncate">
+                            {user?.username}
+                        </span>
+
+                        <FaChevronDown className={`hidden md:inline text-xs text-slate-400 transition-transform ${menuOpen ? "rotate-180" : ""}`} />
                     </button>
 
                     {menuOpen && (
