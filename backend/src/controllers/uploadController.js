@@ -1,0 +1,17 @@
+const uploadImage = (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({
+            message: "No image file provided.",
+        });
+    }
+
+    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+
+    res.status(201).json({
+        image_url: imageUrl,
+    });
+};
+
+module.exports = {
+    uploadImage,
+};

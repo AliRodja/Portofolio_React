@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
     FaSearch,
     FaEdit,
@@ -7,9 +7,13 @@ import {
     FaCheckCircle,
     FaExclamationCircle,
     FaImage,
+    FaUpload,
+    FaSpinner,
+    FaTimes,
 } from "react-icons/fa";
 
 import projectService from "../../services/projectService";
+import uploadService from "../../services/uploadService";
 
 import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
@@ -40,6 +44,8 @@ function Projects() {
     const [search, setSearch] = useState("");
     const [feedback, setFeedback] = useState(null);
     const [formError, setFormError] = useState("");
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
     const fetchProjects = async () => {
         try {
@@ -84,6 +90,43 @@ function Projects() {
         setEditingId(null);
         setForm(emptyForm);
         setFormError("");
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        try {
+            setUploading(true);
+            setFormError("");
+
+            const response = await uploadService.uploadImage(file);
+
+            setForm((prev) => ({ ...prev, image_url: response.data.image_url }));
+        } catch (error) {
+            console.error(error);
+
+            setFormError(error.response?.data?.message || "Gagal mengunggah gambar.");
+        } finally {
+            setUploading(false);
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
+        }
+    };
+
+    const handleRemoveImage = () => {
+        setForm((prev) => ({ ...prev, image_url: "" }));
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const validateForm = () => {
@@ -252,14 +295,69 @@ function Projects() {
                         className={inputClass}
                     />
 
-                    <input
-                        type="text"
-                        name="image_url"
-                        placeholder="Image URL"
-                        value={form.image_url}
-                        onChange={handleChange}
-                        className={inputClass}
-                    />
+                    <div>
+
+                        <label className="block text-sm font-medium text-slate-600 mb-2">
+                            Project Image
+                        </label>
+
+                        {form.image_url ? (
+
+                            <div className="relative w-full sm:w-56">
+                                <img
+                                    src={form.image_url}
+                                    alt="Preview"
+                                    className="w-full h-36 object-cover rounded-xl border border-slate-200 bg-slate-100"
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={handleRemoveImage}
+                                    title="Remove image"
+                                    className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center shadow hover:bg-red-600 transition"
+                                >
+                                    <FaTimes className="text-xs" />
+                                </button>
+                            </div>
+
+                        ) : (
+
+                            <label
+                                className={`
+                                    flex flex-col items-center justify-center gap-2
+                                    w-full sm:w-56 h-36 rounded-xl border-2 border-dashed
+                                    text-sm text-slate-400 transition
+                                    ${uploading
+                                        ? "border-blue-300 bg-blue-50 cursor-wait"
+                                        : "border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer"
+                                    }
+                                `}
+                            >
+                                {uploading ? (
+                                    <>
+                                        <FaSpinner className="animate-spin text-lg text-blue-500" />
+                                        Mengunggah...
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaUpload className="text-lg" />
+                                        Upload gambar
+                                    </>
+                                )}
+
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    disabled={uploading}
+                                    className="hidden"
+                                />
+                            </label>
+
+                        )}
+
+                    </div>
 
                     <input
                         type="text"
@@ -306,7 +404,7 @@ function Projects() {
 
                     <div className="flex gap-3 pt-2">
 
-                        <DashboardButton type="submit" disabled={saving}>
+                        <DashboardButton type="submit" disabled={saving || uploading}>
                             {saving
                                 ? "Saving..."
                                 : editingId
