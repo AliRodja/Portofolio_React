@@ -17,6 +17,10 @@ function DashboardButton({
 
     variant = "primary",
 
+    type = "button",
+
+    disabled = false,
+
 }) {
 
     const className = `
@@ -45,9 +49,13 @@ function DashboardButton({
 
         <button
 
+            type={type}
+
             onClick={onClick}
 
-            className={className}
+            disabled={disabled}
+
+            className={`${className} ${disabled ? "opacity-60 cursor-not-allowed hover:translate-y-0" : ""}`}
 
         >
 

@@ -1,5 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+    FaSearch,
+    FaEdit,
+    FaTrash,
+    FaFolderOpen,
+    FaCheckCircle,
+    FaExclamationCircle,
+    FaImage,
+} from "react-icons/fa";
+
 import projectService from "../../services/projectService";
+
+import PageHeader from "../../components/dashboard/PageHeader";
+import DashboardCard from "../../components/dashboard/DashboardCard";
+import DashboardButton from "../../components/dashboard/DashboardButton";
+
+const inputClass = "w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition";
 
 function Projects() {
     const emptyForm = {
@@ -18,30 +34,42 @@ function Projects() {
 
     const [editingId, setEditingId] = useState(null);
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
     const [search, setSearch] = useState("");
-
-    useEffect(() => {
-        fetchProjects();
-    }, []);
+    const [feedback, setFeedback] = useState(null);
+    const [formError, setFormError] = useState("");
 
     const fetchProjects = async () => {
         try {
-            setLoading(true);
-
             const response = await projectService.getAll();
 
             setProjects(response.data);
         } catch (error) {
             console.error(error);
 
-            alert("Gagal mengambil data project.");
+            setFeedback({ type: "error", message: "Gagal mengambil data project." });
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        async function loadProjects() {
+            await fetchProjects();
+        }
+
+        loadProjects();
+    }, []);
+
+    useEffect(() => {
+        if (!feedback) return;
+
+        const timer = setTimeout(() => setFeedback(null), 4000);
+
+        return () => clearTimeout(timer);
+    }, [feedback]);
 
     const handleChange = (e) => {
         const { name, value, checked, type } = e.target;
@@ -54,38 +82,30 @@ function Projects() {
 
     const resetForm = () => {
         setEditingId(null);
-
         setForm(emptyForm);
+        setFormError("");
     };
 
     const validateForm = () => {
-        if (!form.title.trim()) {
-            alert("Title wajib diisi.");
-            return false;
-        }
+        if (!form.title.trim()) return "Title wajib diisi.";
+        if (!form.description.trim()) return "Description wajib diisi.";
+        if (!form.category.trim()) return "Category wajib diisi.";
+        if (!form.tech_stack.trim()) return "Tech Stack wajib diisi.";
 
-        if (!form.description.trim()) {
-            alert("Description wajib diisi.");
-            return false;
-        }
-
-        if (!form.category.trim()) {
-            alert("Category wajib diisi.");
-            return false;
-        }
-
-        if (!form.tech_stack.trim()) {
-            alert("Tech Stack wajib diisi.");
-            return false;
-        }
-
-        return true;
+        return "";
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validateForm()) return;
+        const error = validateForm();
+
+        if (error) {
+            setFormError(error);
+            return;
+        }
+
+        setFormError("");
 
         const payload = {
             ...form,
@@ -101,11 +121,11 @@ function Projects() {
             if (editingId) {
                 await projectService.update(editingId, payload);
 
-                alert("Project berhasil diperbarui.");
+                setFeedback({ type: "success", message: "Project berhasil diperbarui." });
             } else {
                 await projectService.create(payload);
 
-                alert("Project berhasil ditambahkan.");
+                setFeedback({ type: "success", message: "Project berhasil ditambahkan." });
             }
 
             resetForm();
@@ -114,7 +134,7 @@ function Projects() {
         } catch (error) {
             console.error(error);
 
-            alert("Terjadi kesalahan.");
+            setFeedback({ type: "error", message: "Terjadi kesalahan saat menyimpan project." });
         } finally {
             setSaving(false);
         }
@@ -122,6 +142,7 @@ function Projects() {
 
     const handleEdit = (project) => {
         setEditingId(project.id);
+        setFormError("");
 
         setForm({
             ...project,
@@ -146,13 +167,13 @@ function Projects() {
         try {
             await projectService.delete(id);
 
-            alert("Project berhasil dihapus.");
+            setFeedback({ type: "success", message: "Project berhasil dihapus." });
 
             fetchProjects();
         } catch (error) {
             console.error(error);
 
-            alert("Gagal menghapus project.");
+            setFeedback({ type: "error", message: "Gagal menghapus project." });
         }
     };
 
@@ -163,35 +184,64 @@ function Projects() {
     }, [projects, search]);
 
     return (
-        <div className="p-6">
+        <div>
 
-            <h1 className="text-3xl font-bold mb-2">
-                Projects Management
-            </h1>
+            <PageHeader
+                title="Projects"
+                subtitle="Manage your portfolio projects."
+            />
 
-            <p className="text-gray-500 mb-6">
-                Manage your portfolio projects.
-            </p>
+            {feedback && (
+                <div
+                    className={`
+                        flex items-center gap-2 mb-6 px-4 py-3 rounded-xl text-sm font-medium
+                        ${feedback.type === "success"
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : "bg-red-50 text-red-700 border border-red-200"
+                        }
+                    `}
+                >
+                    {feedback.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
+                    {feedback.message}
+                </div>
+            )}
 
-            <div className="border rounded-lg p-5 mb-8">
+            <DashboardCard className="mb-6">
 
-                <h2 className="text-xl font-semibold mb-4">
+                <h2 className="text-lg font-bold mb-5">
                     {editingId ? "Edit Project" : "Tambah Project"}
                 </h2>
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="space-y-4"
-                >
+                <form onSubmit={handleSubmit} className="space-y-4">
 
-                    <input
-                        type="text"
-                        name="title"
-                        placeholder="Title"
-                        value={form.title}
-                        onChange={handleChange}
-                        className="w-full border rounded p-3"
-                    />
+                    {formError && (
+                        <div className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-red-50 text-red-700 border border-red-200">
+                            <FaExclamationCircle />
+                            {formError}
+                        </div>
+                    )}
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+
+                        <input
+                            type="text"
+                            name="title"
+                            placeholder="Title"
+                            value={form.title}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+
+                        <input
+                            type="text"
+                            name="category"
+                            placeholder="Category"
+                            value={form.category}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+
+                    </div>
 
                     <textarea
                         name="description"
@@ -199,7 +249,7 @@ function Projects() {
                         rows="4"
                         value={form.description}
                         onChange={handleChange}
-                        className="w-full border rounded p-3"
+                        className={inputClass}
                     />
 
                     <input
@@ -208,7 +258,7 @@ function Projects() {
                         placeholder="Image URL"
                         value={form.image_url}
                         onChange={handleChange}
-                        className="w-full border rounded p-3"
+                        className={inputClass}
                     />
 
                     <input
@@ -217,195 +267,212 @@ function Projects() {
                         placeholder="React, Node.js, PostgreSQL"
                         value={form.tech_stack}
                         onChange={handleChange}
-                        className="w-full border rounded p-3"
+                        className={inputClass}
                     />
 
-                    <input
-                        type="text"
-                        name="demo_link"
-                        placeholder="Demo Link"
-                        value={form.demo_link}
-                        onChange={handleChange}
-                        className="w-full border rounded p-3"
-                    />
+                    <div className="grid sm:grid-cols-2 gap-4">
 
-                    <input
-                        type="text"
-                        name="repo_link"
-                        placeholder="Repository Link"
-                        value={form.repo_link}
-                        onChange={handleChange}
-                        className="w-full border rounded p-3"
-                    />
+                        <input
+                            type="text"
+                            name="demo_link"
+                            placeholder="Demo Link"
+                            value={form.demo_link}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
 
-                    <input
-                        type="text"
-                        name="category"
-                        placeholder="Category"
-                        value={form.category}
-                        onChange={handleChange}
-                        className="w-full border rounded p-3"
-                    />
+                        <input
+                            type="text"
+                            name="repo_link"
+                            placeholder="Repository Link"
+                            value={form.repo_link}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
 
-                    <label className="flex items-center gap-2">
+                    </div>
+
+                    <label className="flex items-center gap-2 text-sm text-slate-600">
                         <input
                             type="checkbox"
                             name="featured"
                             checked={form.featured}
                             onChange={handleChange}
+                            className="w-4 h-4 accent-blue-600"
                         />
 
                         Featured
                     </label>
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 pt-2">
 
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            className="bg-blue-600 text-white px-5 py-2 rounded"
-                        >
+                        <DashboardButton type="submit" disabled={saving}>
                             {saving
                                 ? "Saving..."
                                 : editingId
                                     ? "Update Project"
-                                    : "Tambah Project"}
-                        </button>
+                                    : "+ Tambah Project"}
+                        </DashboardButton>
 
                         {editingId && (
-                            <button
-                                type="button"
-                                onClick={resetForm}
-                                className="bg-gray-500 text-white px-5 py-2 rounded"
-                            >
+                            <DashboardButton type="button" variant="secondary" onClick={resetForm}>
                                 Cancel
-                            </button>
+                            </DashboardButton>
                         )}
                     </div>
 
                 </form>
 
-            </div>
+            </DashboardCard>
 
-            <div className="border rounded-lg p-5">
+            <DashboardCard>
 
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
 
-                    <h2 className="text-xl font-semibold">
+                    <h2 className="text-lg font-bold">
                         Daftar Project
                     </h2>
 
-                    <input
-                        type="text"
-                        placeholder="Cari project..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="border rounded p-2 w-72"
-                    />
+                    <div className="relative sm:w-72">
+                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+
+                        <input
+                            type="text"
+                            placeholder="Cari project..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className={`${inputClass} pl-9`}
+                        />
+                    </div>
 
                 </div>
 
                 {loading ? (
 
-                    <p className="text-center py-6">
-                        Loading...
-                    </p>
+                    <div className="space-y-3">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                            <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />
+                        ))}
+                    </div>
 
                 ) : filteredProjects.length === 0 ? (
 
-                    <div className="text-center py-10 text-gray-500">
-                        Belum ada project yang ditemukan.
+                    <div className="flex flex-col items-center py-14 text-slate-400">
+                        <FaFolderOpen className="text-4xl mb-3" />
+                        <p>Belum ada project yang ditemukan.</p>
                     </div>
 
                 ) : (
 
-                    <table className="w-full border-collapse border">
+                    <div className="overflow-x-auto -mx-2">
 
-                        <thead>
+                        <table className="w-full text-sm border-collapse">
 
-                            <tr className="bg-gray-100">
+                            <thead>
 
-                                <th className="border p-3 text-left">
-                                    Title
-                                </th>
+                                <tr className="text-left text-xs uppercase tracking-wider text-slate-500 border-b border-slate-200">
 
-                                <th className="border p-3 text-left">
-                                    Category
-                                </th>
-
-                                <th className="border p-3 text-center">
-                                    Featured
-                                </th>
-
-                                <th className="border p-3">
-                                    Tech Stack
-                                </th>
-
-                                <th className="border p-3 text-center">
-                                    Action
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            {filteredProjects.map((project) => (
-
-                                <tr key={project.id}>
-
-                                    <td className="border p-3">
-                                        {project.title}
-                                    </td>
-
-                                    <td className="border p-3">
-                                        {project.category}
-                                    </td>
-
-                                    <td className="border p-3 text-center">
-                                        {project.featured ? "Yes" : "No"}
-                                    </td>
-
-                                    <td className="border p-3">
-                                        {Array.isArray(project.tech_stack)
-                                            ? project.tech_stack.join(", ")
-                                            : "-"}
-                                    </td>
-
-                                    <td className="border p-3">
-
-                                        <div className="flex justify-center gap-2">
-
-                                            <button
-                                                onClick={() => handleEdit(project)}
-                                                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
-                                            >
-                                                Edit
-                                            </button>
-
-                                            <button
-                                                onClick={() => handleDelete(project.id)}
-                                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-                                            >
-                                                Delete
-                                            </button>
-
-                                        </div>
-
-                                    </td>
+                                    <th className="px-2 py-3 font-semibold">Project</th>
+                                    <th className="px-2 py-3 font-semibold">Category</th>
+                                    <th className="px-2 py-3 font-semibold">Tech Stack</th>
+                                    <th className="px-2 py-3 font-semibold text-center">Featured</th>
+                                    <th className="px-2 py-3 font-semibold text-right">Action</th>
 
                                 </tr>
 
-                            ))}
+                            </thead>
 
-                        </tbody>
+                            <tbody>
 
-                    </table>
+                                {filteredProjects.map((project) => (
+
+                                    <tr key={project.id} className="border-b border-slate-100 last:border-none hover:bg-slate-50 transition">
+
+                                        <td className="px-2 py-3">
+                                            <div className="flex items-center gap-3 min-w-[180px]">
+
+                                                {project.image_url ? (
+                                                    <img
+                                                        src={project.image_url}
+                                                        alt={project.title}
+                                                        className="w-10 h-10 rounded-lg object-cover shrink-0 bg-slate-100"
+                                                        onError={(e) => { e.target.style.display = "none"; }}
+                                                    />
+                                                ) : (
+                                                    <div className="w-10 h-10 rounded-lg bg-slate-100 text-slate-400 flex items-center justify-center shrink-0">
+                                                        <FaImage />
+                                                    </div>
+                                                )}
+
+                                                <span className="font-semibold text-slate-800 truncate">
+                                                    {project.title}
+                                                </span>
+
+                                            </div>
+                                        </td>
+
+                                        <td className="px-2 py-3">
+                                            <span className="inline-block px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-medium">
+                                                {project.category || "-"}
+                                            </span>
+                                        </td>
+
+                                        <td className="px-2 py-3">
+                                            <div className="flex flex-wrap gap-1 max-w-[240px]">
+                                                {Array.isArray(project.tech_stack) && project.tech_stack.length > 0
+                                                    ? project.tech_stack.map((tech) => (
+                                                        <span key={tech} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs">
+                                                            {tech}
+                                                        </span>
+                                                    ))
+                                                    : <span className="text-slate-400">-</span>
+                                                }
+                                            </div>
+                                        </td>
+
+                                        <td className="px-2 py-3 text-center">
+                                            <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${project.featured ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-500"}`}>
+                                                {project.featured ? "Yes" : "No"}
+                                            </span>
+                                        </td>
+
+                                        <td className="px-2 py-3">
+
+                                            <div className="flex justify-end gap-2">
+
+                                                <button
+                                                    onClick={() => handleEdit(project)}
+                                                    title="Edit"
+                                                    className="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 flex items-center justify-center transition"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleDelete(project.id)}
+                                                    title="Delete"
+                                                    className="w-9 h-9 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center transition"
+                                                >
+                                                    <FaTrash />
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
 
                 )}
 
-            </div>
+            </DashboardCard>
 
         </div>
     );
