@@ -11,24 +11,22 @@ function QuickActions() {
 
             </h2>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
 
-                <DashboardButton>
-
+                <DashboardButton to="/dashboard/projects">
                     + New Project
-
                 </DashboardButton>
 
-                <DashboardButton>
-
+                <DashboardButton to="/dashboard/skills" variant="secondary">
                     + New Skill
-
                 </DashboardButton>
 
-                <DashboardButton>
-
+                <DashboardButton to="/dashboard/messages" variant="secondary">
                     View Messages
+                </DashboardButton>
 
+                <DashboardButton to="/dashboard/profile" variant="secondary">
+                    Edit Profile
                 </DashboardButton>
 
             </div>
