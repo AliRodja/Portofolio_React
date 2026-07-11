@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { HiOutlineBriefcase } from "react-icons/hi2";
 
 function ExperienceCard({ experience, index }) {
+    const [imageError, setImageError] = useState(false);
+    const isCurrent = !experience.end_date;
 
     const formatDate = (date) => {
         if (!date) return "Present";
@@ -23,6 +26,7 @@ function ExperienceCard({ experience, index }) {
                 transition-all duration-300
                 overflow-hidden
             "
+            style={{ animationDelay: `${index * 100}ms` }}
         >
 
             {/* Top accent line */}
@@ -31,29 +35,56 @@ function ExperienceCard({ experience, index }) {
             {/* Header row */}
             <div className="flex items-start gap-4">
 
-                {/* Icon */}
-                <div
-                    className="
-                        w-12 h-12 shrink-0
-                        rounded-2xl
-                        bg-gradient-to-br from-blue-500/10 to-cyan-500/10
-                        border border-blue-500/10
-                        flex items-center justify-center
-                        text-xl text-blue-400
-                        group-hover:from-blue-500/20 group-hover:to-cyan-500/20
-                        group-hover:border-blue-500/20
-                        transition-all duration-300
-                    "
-                >
-                    <HiOutlineBriefcase />
-                </div>
+                {/* Logo / icon */}
+                {experience.image_url && !imageError ? (
+                    <img
+                        src={experience.image_url}
+                        alt={experience.organization}
+                        onError={() => setImageError(true)}
+                        className="
+                            w-14 h-14 shrink-0
+                            rounded-2xl object-cover
+                            border border-white/10
+                            bg-white/5
+                            group-hover:border-white/20
+                            transition-all duration-300
+                        "
+                    />
+                ) : (
+                    <div
+                        className="
+                            w-14 h-14 shrink-0
+                            rounded-2xl
+                            bg-gradient-to-br from-blue-500/10 to-cyan-500/10
+                            border border-blue-500/10
+                            flex items-center justify-center
+                            text-2xl text-blue-400
+                            group-hover:from-blue-500/20 group-hover:to-cyan-500/20
+                            group-hover:border-blue-500/20
+                            transition-all duration-300
+                        "
+                    >
+                        <HiOutlineBriefcase />
+                    </div>
+                )}
 
                 <div className="flex-1 min-w-0">
 
-                    {/* Date badge */}
-                    <span className="inline-block px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold tracking-wider mb-3">
-                        {formatDate(experience.start_date)} — {formatDate(experience.end_date)}
-                    </span>
+                    {/* Badges */}
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+
+                        <span className="inline-block px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold tracking-wider">
+                            {formatDate(experience.start_date)} — {formatDate(experience.end_date)}
+                        </span>
+
+                        {isCurrent && (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wider">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                Current
+                            </span>
+                        )}
+
+                    </div>
 
                     {/* Position */}
                     <h3 className="text-xl font-bold text-white leading-snug">

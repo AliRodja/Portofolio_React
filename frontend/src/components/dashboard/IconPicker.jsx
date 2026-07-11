@@ -44,7 +44,7 @@ function IconPicker({ value, onChange }) {
                 className="w-full flex items-center gap-3 border border-slate-200 rounded-xl p-3 text-sm hover:border-blue-300 transition"
             >
                 {selected.length === 0 && (
-                    <span className="text-slate-400">Pilih icon...</span>
+                    <span className="text-slate-400">Select icon...</span>
                 )}
 
                 {selected.map((item) => {
@@ -69,7 +69,7 @@ function IconPicker({ value, onChange }) {
                         <input
                             autoFocus
                             type="text"
-                            placeholder="Cari icon..."
+                            placeholder="Search icons..."
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             className="w-full pl-7 pr-2 py-1.5 text-sm rounded-lg focus:outline-none"
@@ -80,7 +80,7 @@ function IconPicker({ value, onChange }) {
 
                         {filtered.length === 0 ? (
                             <p className="col-span-4 text-center text-sm text-slate-400 py-4">
-                                Icon tidak ditemukan.
+                                No icons found.
                             </p>
                         ) : (
                             filtered.map((item) => {

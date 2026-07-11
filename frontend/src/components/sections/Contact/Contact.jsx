@@ -7,6 +7,7 @@ import {
     HiOutlinePhone,
     HiOutlineMapPin,
     HiOutlinePaperAirplane,
+    HiOutlineCheckCircle,
 } from "react-icons/hi2";
 
 import {
@@ -247,7 +248,7 @@ function Contact() {
                             {/* Success message */}
                             {success && (
                                 <div className="mb-6 flex items-center gap-3 px-5 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
-                                    <span>✅</span>
+                                    <HiOutlineCheckCircle className="text-lg" />
                                     <span>Message sent successfully!</span>
                                 </div>
                             )}

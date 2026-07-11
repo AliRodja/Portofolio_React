@@ -1,3 +1,5 @@
+import { HiOutlineExclamationTriangle, HiOutlineTrophy } from "react-icons/hi2";
+
 import Container from "../../ui/Container";
 import useCertificates from "../../../hooks/useCertificates";
 import CertificateCard from "./CertificateCard";
@@ -52,7 +54,7 @@ function Certificates() {
                 <Container className="relative z-10">
                     <div className="text-center">
                         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-red-500/10 border border-red-500/20">
-                            <span className="text-red-400">⚠️</span>
+                            <span className="text-red-400"><HiOutlineExclamationTriangle /></span>
                             <span className="text-red-300 text-sm font-medium">{error}</span>
                         </div>
                     </div>
@@ -131,7 +133,7 @@ function Certificates() {
                 {/* ── Empty state ── */}
                 {certificates.length === 0 && (
                     <div className="text-center py-20">
-                        <div className="text-6xl mb-6">🏆</div>
+                        <div className="flex justify-center text-6xl text-slate-600 mb-6"><HiOutlineTrophy /></div>
                         <h3 className="text-2xl font-bold text-white mb-3">
                             No Certificates Yet
                         </h3>

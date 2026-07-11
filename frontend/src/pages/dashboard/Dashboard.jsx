@@ -8,6 +8,7 @@ import {
     FaCertificate,
     FaEnvelope,
 } from "react-icons/fa";
+import { HiOutlineHandRaised } from "react-icons/hi2";
 
 import dashboardService from "../../services/dashboardService";
 import { useAuth } from "../../context/AuthContext";
@@ -73,7 +74,12 @@ function Dashboard() {
 
             <PageHeader
                 title="Dashboard"
-                subtitle={`Welcome back, ${user?.username || "Admin"} 👋`}
+                subtitle={
+                    <span className="inline-flex items-center gap-1.5">
+                        {`Welcome back, ${user?.username || "Admin"}`}
+                        <HiOutlineHandRaised className="text-blue-500" />
+                    </span>
+                }
                 action={
                     <DashboardButton to="/dashboard/projects">
                         + Add Project

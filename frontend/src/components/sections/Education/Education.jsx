@@ -1,4 +1,4 @@
-import { HiOutlineAcademicCap } from "react-icons/hi2";
+import { HiOutlineExclamationTriangle } from "react-icons/hi2";
 
 import Container from "../../ui/Container";
 import useEducation from "../../../hooks/useEducation";
@@ -53,7 +53,7 @@ function Education() {
                 <Container className="relative z-10">
                     <div className="text-center">
                         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-red-500/10 border border-red-500/20">
-                            <span className="text-red-400">⚠️</span>
+                            <span className="text-red-400"><HiOutlineExclamationTriangle /></span>
                             <span className="text-red-300 text-sm font-medium">{error}</span>
                         </div>
                     </div>

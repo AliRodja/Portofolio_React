@@ -1,7 +1,11 @@
 import Container from "../../ui/Container";
 import profileImage from "../../../assets/images/profile.png";
+import { parseRichText } from "../../../utils/text";
+import { HiOutlineArrowRight } from "react-icons/hi2";
 
 function Story({ profile }) {
+  const aboutBlocks = parseRichText(profile.about);
+
   return (
     <div className="relative bg-slate-900 py-32 overflow-hidden">
 
@@ -48,10 +52,10 @@ function Story({ profile }) {
         </div>
 
         {/* Two-column layout */}
-        <div className="grid lg:grid-cols-5 gap-16 items-center">
+        <div className="grid lg:grid-cols-5 gap-16 items-start">
 
           {/* Left — Image with decorative frame */}
-          <div className="lg:col-span-2 flex justify-center">
+          <div className="lg:col-span-2 flex justify-center lg:sticky lg:top-32">
             <div className="relative">
 
               {/* Glow ring */}
@@ -63,7 +67,7 @@ function Story({ profile }) {
                 {/* Image container */}
                 <div className="rounded-3xl overflow-hidden bg-slate-800">
                   <img
-                    src={profileImage}
+                    src={profile.profile_image || profileImage}
                     alt={profile.full_name}
                     className="w-80 h-80 object-cover object-top"
                   />
@@ -83,15 +87,39 @@ function Story({ profile }) {
 
             <div className="space-y-6">
 
-              <p className="text-lg md:text-xl leading-9 text-slate-300">
-                {profile.about}
-              </p>
+              <div className="space-y-5">
+                {aboutBlocks.map((block, i) =>
+                  block.type === "list" ? (
+                    <div key={i}>
+                      {block.heading && (
+                        <p className="text-lg md:text-xl leading-9 text-slate-300 mb-3">
+                          {block.heading}
+                        </p>
+                      )}
+                      <ul className="space-y-3">
+                        {block.items.map((item, j) => (
+                          <li key={j} className="flex items-start gap-3 text-slate-300">
+                            <span className="mt-1 w-6 h-6 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0">
+                              <HiOutlineArrowRight className="text-xs" />
+                            </span>
+                            <span className="leading-7">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <p key={i} className="text-lg md:text-xl leading-9 text-slate-300">
+                      {block.text}
+                    </p>
+                  )
+                )}
+              </div>
 
               {/* Info cards row */}
               <div className="grid grid-cols-2 gap-4 mt-10">
 
                 <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-5 hover:bg-white/[0.08] transition-all duration-300">
-                  <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug break-words bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                     {profile.location || "Gorontalo"}
                   </p>
                   <p className="text-sm text-slate-500 mt-1.5 font-medium">
@@ -100,7 +128,7 @@ function Story({ profile }) {
                 </div>
 
                 <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-5 hover:bg-white/[0.08] transition-all duration-300">
-                  <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug break-words bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                     {profile.headline || "Full Stack Dev"}
                   </p>
                   <p className="text-sm text-slate-500 mt-1.5 font-medium">

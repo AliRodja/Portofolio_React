@@ -15,6 +15,7 @@ import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
 import DashboardButton from "../../components/dashboard/DashboardButton";
 import IconPicker from "../../components/dashboard/IconPicker";
+import FieldLabel from "../../components/dashboard/FieldLabel";
 
 const inputClass = "w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition";
 
@@ -46,7 +47,7 @@ function Skills() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Gagal mengambil data skill." });
+            setFeedback({ type: "error", message: "Failed to load skills." });
         } finally {
             setLoading(false);
         }
@@ -84,9 +85,9 @@ function Skills() {
     };
 
     const validateForm = () => {
-        if (!form.name.trim()) return "Name wajib diisi.";
-        if (!form.category.trim()) return "Category wajib diisi.";
-        if (!form.icon_name) return "Icon wajib dipilih.";
+        if (!form.name.trim()) return "Name is required.";
+        if (!form.category.trim()) return "Category is required.";
+        if (!form.icon_name) return "Icon is required.";
 
         return "";
     };
@@ -109,11 +110,11 @@ function Skills() {
             if (editingId) {
                 await skillService.update(editingId, form);
 
-                setFeedback({ type: "success", message: "Skill berhasil diperbarui." });
+                setFeedback({ type: "success", message: "Skill updated successfully." });
             } else {
                 await skillService.create(form);
 
-                setFeedback({ type: "success", message: "Skill berhasil ditambahkan." });
+                setFeedback({ type: "success", message: "Skill added successfully." });
             }
 
             resetForm();
@@ -122,7 +123,7 @@ function Skills() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Terjadi kesalahan saat menyimpan skill." });
+            setFeedback({ type: "error", message: "Something went wrong while saving." });
         } finally {
             setSaving(false);
         }
@@ -143,20 +144,20 @@ function Skills() {
     };
 
     const handleDelete = async (id) => {
-        const confirmDelete = window.confirm("Yakin ingin menghapus skill ini?");
+        const confirmDelete = window.confirm("Are you sure you want to delete this skill?");
 
         if (!confirmDelete) return;
 
         try {
             await skillService.delete(id);
 
-            setFeedback({ type: "success", message: "Skill berhasil dihapus." });
+            setFeedback({ type: "success", message: "Skill deleted successfully." });
 
             fetchSkills();
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Gagal menghapus skill." });
+            setFeedback({ type: "error", message: "Failed to delete skill." });
         }
     };
 
@@ -192,7 +193,7 @@ function Skills() {
             <DashboardCard className="mb-6">
 
                 <h2 className="text-lg font-bold mb-5">
-                    {editingId ? "Edit Skill" : "Tambah Skill"}
+                    {editingId ? "Edit Skill" : "Add Skill"}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -206,32 +207,38 @@ function Skills() {
 
                     <div className="grid sm:grid-cols-2 gap-4">
 
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Name (e.g. React)"
-                            value={form.name}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
+                        <div>
+                            <FieldLabel htmlFor="name" required>Name</FieldLabel>
+                            <input
+                                id="name"
+                                type="text"
+                                name="name"
+                                placeholder="e.g. React"
+                                value={form.name}
+                                onChange={handleChange}
+                                className={inputClass}
+                            />
+                        </div>
 
-                        <input
-                            type="text"
-                            name="category"
-                            placeholder="Category (e.g. Frontend)"
-                            value={form.category}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
+                        <div>
+                            <FieldLabel htmlFor="category" required>Category</FieldLabel>
+                            <input
+                                id="category"
+                                type="text"
+                                name="category"
+                                placeholder="e.g. Frontend"
+                                value={form.category}
+                                onChange={handleChange}
+                                className={inputClass}
+                            />
+                        </div>
 
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-600 mb-2">
-                                Icon
-                            </label>
+                            <FieldLabel required>Icon</FieldLabel>
 
                             <IconPicker
                                 value={form.icon_name}
@@ -240,11 +247,10 @@ function Skills() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-600 mb-2">
-                                Order
-                            </label>
+                            <FieldLabel htmlFor="order_index">Order</FieldLabel>
 
                             <input
+                                id="order_index"
                                 type="number"
                                 name="order_index"
                                 placeholder="0"
@@ -263,7 +269,7 @@ function Skills() {
                                 ? "Saving..."
                                 : editingId
                                     ? "Update Skill"
-                                    : "+ Tambah Skill"}
+                                    : "+ Add Skill"}
                         </DashboardButton>
 
                         {editingId && (
@@ -282,7 +288,7 @@ function Skills() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
 
                     <h2 className="text-lg font-bold">
-                        Daftar Skill
+                        Skill List
                     </h2>
 
                     <div className="relative sm:w-72">
@@ -290,7 +296,7 @@ function Skills() {
 
                         <input
                             type="text"
-                            placeholder="Cari skill..."
+                            placeholder="Search skills..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className={`${inputClass} pl-9`}
@@ -311,7 +317,7 @@ function Skills() {
 
                     <div className="flex flex-col items-center py-14 text-slate-400">
                         <FaCode className="text-4xl mb-3" />
-                        <p>Belum ada skill yang ditemukan.</p>
+                        <p>No skills found.</p>
                     </div>
 
                 ) : (

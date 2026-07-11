@@ -7,6 +7,7 @@ import {
     FaChevronDown,
     FaChevronRight,
 } from "react-icons/fa";
+import { HiOutlineHandRaised } from "react-icons/hi2";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -92,7 +93,7 @@ function Navbar({ onMenuClick }) {
                     </div>
 
                     <p className="text-sm sm:text-base font-semibold text-slate-800 truncate">
-                        Welcome back, {user?.username} <span className="inline-block">👋</span>
+                        Welcome back, {user?.username} <HiOutlineHandRaised className="inline-block text-blue-500" />
                     </p>
 
                 </div>

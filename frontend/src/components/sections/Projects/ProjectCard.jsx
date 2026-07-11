@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaGithub, FaExternalLinkAlt, FaCalendarAlt } from "react-icons/fa";
-import { HiOutlineArrowUpRight } from "react-icons/hi2";
+import { HiOutlineArrowUpRight, HiOutlineRocketLaunch } from "react-icons/hi2";
 
 function ProjectCard({ project, index = 0 }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -51,7 +51,7 @@ function ProjectCard({ project, index = 0 }) {
         ) : (
           /* Placeholder gradient when no image */
           <div className="w-full h-full bg-gradient-to-br from-blue-500/20 via-indigo-500/15 to-cyan-500/20 flex items-center justify-center">
-            <span className="text-5xl opacity-40">🚀</span>
+            <HiOutlineRocketLaunch className="text-5xl text-white opacity-40" />
           </div>
         )}
 

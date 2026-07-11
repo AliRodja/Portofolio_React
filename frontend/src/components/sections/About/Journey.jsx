@@ -1,3 +1,11 @@
+import {
+  HiOutlineRocketLaunch,
+  HiOutlineCodeBracket,
+  HiOutlineBriefcase,
+  HiOutlineBolt,
+  HiOutlineSparkles,
+} from "react-icons/hi2";
+
 import Container from "../../ui/Container";
 import JourneyItem from "./JourneyItem";
 
@@ -6,31 +14,31 @@ const milestones = [
     year: "2022",
     title: "Started Learning Web Development",
     description: "Took the first step into the world of programming and web technologies.",
-    icon: "🚀",
+    icon: <HiOutlineRocketLaunch />,
   },
   {
     year: "2023",
     title: "Built My First Web Project",
     description: "Turned knowledge into action — shipped a real project from scratch.",
-    icon: "💻",
+    icon: <HiOutlineCodeBracket />,
   },
   {
     year: "2024",
     title: "Chairman of HMTI",
     description: "Led the student organization, sharpening leadership and management skills.",
-    icon: "👑",
+    icon: <HiOutlineBriefcase />,
   },
   {
     year: "2025",
     title: "Building Full Stack Applications",
     description: "Mastering both frontend and backend to deliver end-to-end solutions.",
-    icon: "⚡",
+    icon: <HiOutlineBolt />,
   },
   {
     year: "2026",
     title: "Project Aurora",
     description: "Pursuing the next big milestone — pushing boundaries and building the future.",
-    icon: "✨",
+    icon: <HiOutlineSparkles />,
   },
 ];
 

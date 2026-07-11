@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { HiOutlineHandRaised } from "react-icons/hi2";
 
 import { useAuth } from "../context/AuthContext";
 import authService from "../services/authService";
@@ -90,9 +91,9 @@ function Login() {
 
                 <div className="bg-white rounded-3xl shadow-xl p-10 w-full max-w-md">
 
-                    <h2 className="text-3xl font-bold">
+                    <h2 className="text-3xl font-bold inline-flex items-center gap-2">
 
-                        Welcome Back 👋
+                        Welcome Back <HiOutlineHandRaised className="text-blue-500" />
 
                     </h2>
 

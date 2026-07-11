@@ -74,9 +74,9 @@ function Hero({ profile }) {
               {profile.headline}
             </h2>
 
-            {/* About */}
+            {/* Short intro */}
             <p className="mt-8 leading-8 text-slate-400 max-w-xl">
-              {profile.about}
+              {profile.short_bio}
             </p>
 
             {/* Buttons */}
@@ -187,7 +187,7 @@ function Hero({ profile }) {
             <div className="relative rounded-full p-[3px] bg-gradient-to-br from-blue-400 via-cyan-400 to-blue-500">
               <div className="rounded-full overflow-hidden bg-slate-800">
                 <img
-                  src={profileImage}
+                  src={profile.profile_image || profileImage}
                   alt={profile.full_name}
                   className="w-[260px] h-[260px] lg:w-[330px] lg:h-[330px] object-cover object-top"
                 />

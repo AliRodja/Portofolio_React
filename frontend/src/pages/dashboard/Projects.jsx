@@ -18,6 +18,7 @@ import uploadService from "../../services/uploadService";
 import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
 import DashboardButton from "../../components/dashboard/DashboardButton";
+import FieldLabel from "../../components/dashboard/FieldLabel";
 
 const inputClass = "w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition";
 
@@ -55,7 +56,7 @@ function Projects() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Gagal mengambil data project." });
+            setFeedback({ type: "error", message: "Failed to load projects." });
         } finally {
             setLoading(false);
         }
@@ -111,7 +112,7 @@ function Projects() {
         } catch (error) {
             console.error(error);
 
-            setFormError(error.response?.data?.message || "Gagal mengunggah gambar.");
+            setFormError(error.response?.data?.message || "Failed to upload image.");
         } finally {
             setUploading(false);
 
@@ -130,10 +131,10 @@ function Projects() {
     };
 
     const validateForm = () => {
-        if (!form.title.trim()) return "Title wajib diisi.";
-        if (!form.description.trim()) return "Description wajib diisi.";
-        if (!form.category.trim()) return "Category wajib diisi.";
-        if (!form.tech_stack.trim()) return "Tech Stack wajib diisi.";
+        if (!form.title.trim()) return "Title is required.";
+        if (!form.description.trim()) return "Description is required.";
+        if (!form.category.trim()) return "Category is required.";
+        if (!form.tech_stack.trim()) return "Tech stack is required.";
 
         return "";
     };
@@ -164,11 +165,11 @@ function Projects() {
             if (editingId) {
                 await projectService.update(editingId, payload);
 
-                setFeedback({ type: "success", message: "Project berhasil diperbarui." });
+                setFeedback({ type: "success", message: "Project updated successfully." });
             } else {
                 await projectService.create(payload);
 
-                setFeedback({ type: "success", message: "Project berhasil ditambahkan." });
+                setFeedback({ type: "success", message: "Project added successfully." });
             }
 
             resetForm();
@@ -177,7 +178,7 @@ function Projects() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Terjadi kesalahan saat menyimpan project." });
+            setFeedback({ type: "error", message: "Something went wrong while saving." });
         } finally {
             setSaving(false);
         }
@@ -202,7 +203,7 @@ function Projects() {
 
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm(
-            "Yakin ingin menghapus project ini?"
+            "Are you sure you want to delete this project?"
         );
 
         if (!confirmDelete) return;
@@ -210,13 +211,13 @@ function Projects() {
         try {
             await projectService.delete(id);
 
-            setFeedback({ type: "success", message: "Project berhasil dihapus." });
+            setFeedback({ type: "success", message: "Project deleted successfully." });
 
             fetchProjects();
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Gagal menghapus project." });
+            setFeedback({ type: "error", message: "Failed to delete project." });
         }
     };
 
@@ -252,7 +253,7 @@ function Projects() {
             <DashboardCard className="mb-6">
 
                 <h2 className="text-lg font-bold mb-5">
-                    {editingId ? "Edit Project" : "Tambah Project"}
+                    {editingId ? "Edit Project" : "Add Project"}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -266,40 +267,50 @@ function Projects() {
 
                     <div className="grid sm:grid-cols-2 gap-4">
 
-                        <input
-                            type="text"
-                            name="title"
-                            placeholder="Title"
-                            value={form.title}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
+                        <div>
+                            <FieldLabel htmlFor="title" required>Title</FieldLabel>
+                            <input
+                                id="title"
+                                type="text"
+                                name="title"
+                                placeholder="e.g. Portfolio Website"
+                                value={form.title}
+                                onChange={handleChange}
+                                className={inputClass}
+                            />
+                        </div>
 
-                        <input
-                            type="text"
-                            name="category"
-                            placeholder="Category"
-                            value={form.category}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
+                        <div>
+                            <FieldLabel htmlFor="category" required>Category</FieldLabel>
+                            <input
+                                id="category"
+                                type="text"
+                                name="category"
+                                placeholder="e.g. Web App"
+                                value={form.category}
+                                onChange={handleChange}
+                                className={inputClass}
+                            />
+                        </div>
 
                     </div>
 
-                    <textarea
-                        name="description"
-                        placeholder="Description"
-                        rows="4"
-                        value={form.description}
-                        onChange={handleChange}
-                        className={inputClass}
-                    />
+                    <div>
+                        <FieldLabel htmlFor="description" required>Description</FieldLabel>
+                        <textarea
+                            id="description"
+                            name="description"
+                            placeholder="What does this project do?"
+                            rows="4"
+                            value={form.description}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+                    </div>
 
                     <div>
 
-                        <label className="block text-sm font-medium text-slate-600 mb-2">
-                            Project Image
-                        </label>
+                        <FieldLabel>Project Image</FieldLabel>
 
                         {form.image_url ? (
 
@@ -336,12 +347,12 @@ function Projects() {
                                 {uploading ? (
                                     <>
                                         <FaSpinner className="animate-spin text-lg text-blue-500" />
-                                        Mengunggah...
+                                        Uploading...
                                     </>
                                 ) : (
                                     <>
                                         <FaUpload className="text-lg" />
-                                        Upload gambar
+                                        Upload image
                                     </>
                                 )}
 
@@ -359,34 +370,47 @@ function Projects() {
 
                     </div>
 
-                    <input
-                        type="text"
-                        name="tech_stack"
-                        placeholder="React, Node.js, PostgreSQL"
-                        value={form.tech_stack}
-                        onChange={handleChange}
-                        className={inputClass}
-                    />
+                    <div>
+                        <FieldLabel htmlFor="tech_stack" required>Tech Stack</FieldLabel>
+                        <input
+                            id="tech_stack"
+                            type="text"
+                            name="tech_stack"
+                            placeholder="React, Node.js, PostgreSQL"
+                            value={form.tech_stack}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+                        <p className="text-xs text-slate-400 mt-1">Separate each technology with a comma.</p>
+                    </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
 
-                        <input
-                            type="text"
-                            name="demo_link"
-                            placeholder="Demo Link"
-                            value={form.demo_link}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
+                        <div>
+                            <FieldLabel htmlFor="demo_link">Demo Link</FieldLabel>
+                            <input
+                                id="demo_link"
+                                type="text"
+                                name="demo_link"
+                                placeholder="https://your-demo.com"
+                                value={form.demo_link}
+                                onChange={handleChange}
+                                className={inputClass}
+                            />
+                        </div>
 
-                        <input
-                            type="text"
-                            name="repo_link"
-                            placeholder="Repository Link"
-                            value={form.repo_link}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
+                        <div>
+                            <FieldLabel htmlFor="repo_link">Repository Link</FieldLabel>
+                            <input
+                                id="repo_link"
+                                type="text"
+                                name="repo_link"
+                                placeholder="https://github.com/username/repo"
+                                value={form.repo_link}
+                                onChange={handleChange}
+                                className={inputClass}
+                            />
+                        </div>
 
                     </div>
 
@@ -409,7 +433,7 @@ function Projects() {
                                 ? "Saving..."
                                 : editingId
                                     ? "Update Project"
-                                    : "+ Tambah Project"}
+                                    : "+ Add Project"}
                         </DashboardButton>
 
                         {editingId && (
@@ -428,7 +452,7 @@ function Projects() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
 
                     <h2 className="text-lg font-bold">
-                        Daftar Project
+                        Project List
                     </h2>
 
                     <div className="relative sm:w-72">
@@ -436,7 +460,7 @@ function Projects() {
 
                         <input
                             type="text"
-                            placeholder="Cari project..."
+                            placeholder="Search projects..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className={`${inputClass} pl-9`}
@@ -457,7 +481,7 @@ function Projects() {
 
                     <div className="flex flex-col items-center py-14 text-slate-400">
                         <FaFolderOpen className="text-4xl mb-3" />
-                        <p>Belum ada project yang ditemukan.</p>
+                        <p>No projects found.</p>
                     </div>
 
                 ) : (

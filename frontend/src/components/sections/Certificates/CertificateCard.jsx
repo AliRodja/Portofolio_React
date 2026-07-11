@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
+import { FaCertificate, FaFilePdf } from "react-icons/fa";
+import { isPdfUrl } from "../../../utils/file";
 
 function CertificateCard({ certificate }) {
+    const [imageError, setImageError] = useState(false);
+    const isPdf = isPdfUrl(certificate.image_url);
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString("en-US", {
@@ -23,14 +28,31 @@ function CertificateCard({ certificate }) {
         >
 
             {/* Certificate image */}
-            <div className="relative overflow-hidden">
-                <img
-                    src={certificate.image_url}
-                    alt={certificate.title}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+            <div className="relative overflow-hidden h-48">
+                {isPdf ? (
+                    <a
+                        href={certificate.image_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full h-full bg-gradient-to-br from-red-500/15 via-slate-800 to-slate-900 flex flex-col items-center justify-center gap-2 group/pdf"
+                    >
+                        <FaFilePdf className="text-5xl text-red-400/70 group-hover/pdf:text-red-400 transition-colors" />
+                        <span className="text-xs font-medium text-slate-400 group-hover/pdf:text-slate-300 transition-colors">View PDF</span>
+                    </a>
+                ) : certificate.image_url && !imageError ? (
+                    <img
+                        src={certificate.image_url}
+                        alt={certificate.title}
+                        onError={() => setImageError(true)}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-500/20 via-indigo-500/15 to-cyan-500/20 flex items-center justify-center">
+                        <FaCertificate className="text-4xl text-blue-300/40" />
+                    </div>
+                )}
                 {/* Dark overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
+                {!isPdf && <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />}
             </div>
 
             {/* Content */}
