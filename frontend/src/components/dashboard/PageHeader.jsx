@@ -13,18 +13,24 @@ function PageHeader({
         <div
             className="
                 flex
-                justify-between
-                items-center
+                flex-col
+                sm:flex-row
+                sm:items-center
+                sm:justify-between
+                gap-4
                 mb-8
             "
         >
 
-            <div>
+            <div className="min-w-0">
 
                 <h1
                     className="
-                        text-4xl
+                        text-2xl
+                        sm:text-3xl
+                        lg:text-4xl
                         font-bold
+                        truncate
                     "
                 >
 
@@ -45,7 +51,11 @@ function PageHeader({
 
             </div>
 
-            {action}
+            {action && (
+                <div className="shrink-0">
+                    {action}
+                </div>
+            )}
 
         </div>
 

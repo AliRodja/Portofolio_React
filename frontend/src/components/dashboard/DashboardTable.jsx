@@ -18,53 +18,58 @@ function DashboardTable({
             "
         >
 
-            <table className="w-full">
+            <div className="overflow-x-auto">
 
-                <thead>
+                <table className="w-full">
 
-                    <tr
-                        className="
-                            bg-slate-100
-                        "
-                    >
+                    <thead>
 
-                        {
+                        <tr
+                            className="
+                                bg-slate-100
+                            "
+                        >
 
-                            headers.map(
+                            {
 
-                                (header) => (
+                                headers.map(
 
-                                    <th
+                                    (header) => (
 
-                                        key={header}
+                                        <th
 
-                                        className="
-                                            text-left
-                                            p-5
-                                        "
-                                    >
+                                            key={header}
 
-                                        {header}
+                                            className="
+                                                text-left
+                                                p-5
+                                                whitespace-nowrap
+                                            "
+                                        >
 
-                                    </th>
+                                            {header}
+
+                                        </th>
+
+                                    )
 
                                 )
 
-                            )
+                            }
 
-                        }
+                        </tr>
 
-                    </tr>
+                    </thead>
 
-                </thead>
+                    <tbody>
 
-                <tbody>
+                        {children}
 
-                    {children}
+                    </tbody>
 
-                </tbody>
+                </table>
 
-            </table>
+            </div>
 
         </div>
 
