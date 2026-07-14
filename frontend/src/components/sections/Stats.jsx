@@ -46,7 +46,7 @@ function Stats() {
       <Container className="relative z-10">
 
         {/* Section header */}
-        <div className="text-center mb-16">
+        <div data-aos="fade-up" className="text-center mb-16">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-6">
             <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
             <span className="text-sm text-blue-300 font-medium tracking-wider uppercase">
@@ -64,6 +64,8 @@ function Stats() {
           {data.map((item, i) => (
             <div
               key={item.title}
+              data-aos="fade-up"
+              data-aos-delay={(i % 4) * 100}
               className="
                 group relative
                 rounded-2xl p-6 md:p-8

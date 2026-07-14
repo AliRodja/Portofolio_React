@@ -23,6 +23,8 @@ function ProjectCard({ project, index = 0 }) {
 
   return (
     <div
+      data-aos="fade-up"
+      data-aos-delay={(index % 4) * 100}
       className="
         group relative
         rounded-2xl
@@ -35,9 +37,6 @@ function ProjectCard({ project, index = 0 }) {
       "
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{
-        animationDelay: `${index * 150}ms`,
-      }}
     >
       {/* ── Image Section ── */}
       <div className="relative overflow-hidden h-56 md:h-64">

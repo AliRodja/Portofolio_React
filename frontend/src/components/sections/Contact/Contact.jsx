@@ -169,7 +169,7 @@ function Contact({ profile = {} }) {
             <Container className="relative z-10">
 
                 {/* ── Section Header ── */}
-                <div className="text-center mb-20">
+                <div data-aos="fade-up" className="text-center mb-20">
 
                     <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
                         <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
@@ -194,10 +194,10 @@ function Contact({ profile = {} }) {
                 <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-start">
 
                     {/* ── LEFT — Info ── */}
-                    <div className="lg:col-span-2 space-y-6">
+                    <div data-aos="fade-right" className="lg:col-span-2 space-y-6">
 
                         {/* Contact info cards */}
-                        {contactInfo.map((info) => {
+                        {contactInfo.map((info, i) => {
                             const cardClassName = `
                                 group
                                 flex items-center gap-5
@@ -235,11 +235,22 @@ function Contact({ profile = {} }) {
                             );
 
                             return info.href ? (
-                                <a key={info.label} href={info.href} className={cardClassName}>
+                                <a
+                                    key={info.label}
+                                    href={info.href}
+                                    data-aos="fade-up"
+                                    data-aos-delay={i * 100}
+                                    className={cardClassName}
+                                >
                                     {cardContent}
                                 </a>
                             ) : (
-                                <div key={info.label} className={cardClassName}>
+                                <div
+                                    key={info.label}
+                                    data-aos="fade-up"
+                                    data-aos-delay={i * 100}
+                                    className={cardClassName}
+                                >
                                     {cardContent}
                                 </div>
                             );
@@ -247,7 +258,7 @@ function Contact({ profile = {} }) {
 
                         {/* Social links */}
                         {socials.length > 0 && (
-                            <div className="pt-4">
+                            <div data-aos="fade-up" className="pt-4">
                                 <p className="text-sm text-slate-500 font-medium mb-4 tracking-wider uppercase">
                                     Find me on
                                 </p>
@@ -279,7 +290,7 @@ function Contact({ profile = {} }) {
                     </div>
 
                     {/* ── RIGHT — Form ── */}
-                    <div className="lg:col-span-3">
+                    <div data-aos="fade-left" className="lg:col-span-3">
 
                         <div
                             className="

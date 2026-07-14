@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 
 const navLinks = [
@@ -14,10 +14,25 @@ const navLinks = [
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      setScrolled(currentScrollY > 40);
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 120) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -32,6 +47,7 @@ function Navbar() {
             ? "bg-slate-900/80 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/10"
             : "bg-transparent"
         }
+        ${hidden && !mobileOpen ? "-translate-y-full" : "translate-y-0"}
       `}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
@@ -39,12 +55,9 @@ function Navbar() {
         {/* Logo */}
         <a
           href="#hero"
-          className="text-2xl font-extrabold tracking-tight text-white"
+          className="flex items-center gap-2 text-2xl font-extrabold tracking-tight text-white"
         >
-          Ali
-          <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            .
-          </span>
+          <img src="/logoAli.png" alt="Ali Imran Rodja" className="h-10 w-10 object-contain" />
         </a>
 
         {/* Desktop Nav */}

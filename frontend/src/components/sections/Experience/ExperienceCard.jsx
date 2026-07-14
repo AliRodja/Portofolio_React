@@ -21,6 +21,8 @@ function ExperienceCard({ experience, index }) {
 
     return (
         <div
+            data-aos="fade-up"
+            data-aos-delay={(index % 4) * 100}
             className="
                 group relative
                 rounded-2xl p-6 md:p-8
@@ -31,7 +33,6 @@ function ExperienceCard({ experience, index }) {
                 transition-all duration-300
                 overflow-hidden
             "
-            style={{ animationDelay: `${index * 100}ms` }}
         >
 
             {/* Top accent line */}

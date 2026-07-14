@@ -4,12 +4,15 @@ import DescriptionModal from "../../ui/DescriptionModal";
 
 const DESCRIPTION_LIMIT = 180;
 
-function EducationCard({ education }) {
+function EducationCard({ education, index = 0 }) {
     const [showModal, setShowModal] = useState(false);
     const isLongDescription = education.description && education.description.length > DESCRIPTION_LIMIT;
 
     return (
-        <div className="relative flex items-start gap-6 pl-8 md:pl-12 group">
+        <div
+            data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
+            className="relative flex items-start gap-6 pl-8 md:pl-12 group"
+        >
 
             {/* Timeline dot */}
             <div className="absolute left-8 md:left-12 -translate-x-1/2 top-8 z-10">

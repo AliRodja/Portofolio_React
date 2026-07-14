@@ -29,7 +29,7 @@ function Story({ profile }) {
       <Container className="relative z-10">
 
         {/* Section label */}
-        <div className="text-center mb-20">
+        <div data-aos="fade-up" className="text-center mb-20">
 
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
             <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
@@ -55,7 +55,10 @@ function Story({ profile }) {
         <div className="grid lg:grid-cols-5 gap-16 items-start">
 
           {/* Left — Image with decorative frame */}
-          <div className="lg:col-span-2 flex justify-center lg:sticky lg:top-32">
+          <div
+            data-aos="fade-right"
+            className="lg:col-span-2 flex justify-center lg:sticky lg:top-32"
+          >
             <div className="relative">
 
               {/* Glow ring */}
@@ -83,7 +86,7 @@ function Story({ profile }) {
           </div>
 
           {/* Right — Story text */}
-          <div className="lg:col-span-3">
+          <div data-aos="fade-left" className="lg:col-span-3">
 
             <div className="space-y-6">
 
@@ -118,7 +121,10 @@ function Story({ profile }) {
               {/* Info cards row */}
               <div className="grid grid-cols-2 gap-4 mt-10">
 
-                <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-5 hover:bg-white/[0.08] transition-all duration-300">
+                <div
+                  data-aos="fade-up"
+                  className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-5 hover:bg-white/[0.08] transition-all duration-300"
+                >
                   <p className="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug break-words bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                     {profile.location || "Gorontalo"}
                   </p>
@@ -127,7 +133,11 @@ function Story({ profile }) {
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-5 hover:bg-white/[0.08] transition-all duration-300">
+                <div
+                  data-aos="fade-up"
+                  data-aos-delay="100"
+                  className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-5 hover:bg-white/[0.08] transition-all duration-300"
+                >
                   <p className="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug break-words bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                     {profile.headline || "Full Stack Dev"}
                   </p>

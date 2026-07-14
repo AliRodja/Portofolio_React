@@ -46,7 +46,10 @@ function Hero({ profile }) {
           <div>
 
             {/* Tag */}
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
+            <div
+              data-aos="fade-down"
+              className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8"
+            >
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-sm text-slate-300 font-medium">
                 Available for work
@@ -54,7 +57,11 @@ function Hero({ profile }) {
             </div>
 
             {/* Name */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-white">
+            <h1
+              data-aos="fade-up"
+              data-aos-delay="100"
+              className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-white"
+            >
               {profile.full_name?.split(" ").map((word, i, arr) =>
                 i === arr.length - 1 ? (
                   <span key={i}>
@@ -70,17 +77,29 @@ function Hero({ profile }) {
             </h1>
 
             {/* Headline */}
-            <h2 className="text-xl lg:text-2xl text-slate-400 mt-6 font-light">
+            <h2
+              data-aos="fade-up"
+              data-aos-delay="200"
+              className="text-xl lg:text-2xl text-slate-400 mt-6 font-light"
+            >
               {profile.headline}
             </h2>
 
             {/* Short intro */}
-            <p className="mt-8 leading-8 text-slate-400 max-w-xl">
+            <p
+              data-aos="fade-up"
+              data-aos-delay="300"
+              className="mt-8 leading-8 text-slate-400 max-w-xl"
+            >
               {profile.short_bio}
             </p>
 
             {/* Buttons */}
-            <div className="flex flex-wrap gap-4 mt-10">
+            <div
+              data-aos="fade-up"
+              data-aos-delay="400"
+              className="flex flex-wrap gap-4 mt-10"
+            >
 
               <Button href="#projects">
                 View Projects
@@ -100,7 +119,11 @@ function Hero({ profile }) {
             </div>
 
             {/* Social icons */}
-            <div className="flex gap-5 mt-10">
+            <div
+              data-aos="fade-up"
+              data-aos-delay="500"
+              className="flex gap-5 mt-10"
+            >
 
               {profile.github_url && (
                 <a
@@ -167,7 +190,11 @@ function Hero({ profile }) {
           </div>
 
           {/* ── RIGHT — Profile image ── */}
-          <div className="relative flex justify-center items-center">
+          <div
+            data-aos="zoom-in"
+            data-aos-delay="200"
+            className="relative flex justify-center items-center"
+          >
 
             {/* Outer glow ring */}
             <div className="absolute w-[340px] h-[340px] lg:w-[420px] lg:h-[420px] rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/15 blur-3xl animate-float" />

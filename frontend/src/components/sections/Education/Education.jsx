@@ -87,7 +87,7 @@ function Education() {
             <Container className="relative z-10">
 
                 {/* ── Section Header ── */}
-                <div className="text-center mb-20">
+                <div data-aos="fade-up" className="text-center mb-20">
 
                     <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
                         <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />

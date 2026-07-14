@@ -3,7 +3,7 @@ import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
 import { FaCertificate, FaFilePdf } from "react-icons/fa";
 import { isPdfUrl } from "../../../utils/file";
 
-function CertificateCard({ certificate }) {
+function CertificateCard({ certificate, index = 0 }) {
     const [imageError, setImageError] = useState(false);
     const isPdf = isPdfUrl(certificate.image_url);
 
@@ -16,6 +16,8 @@ function CertificateCard({ certificate }) {
 
     return (
         <div
+            data-aos="fade-up"
+            data-aos-delay={(index % 3) * 100}
             className="
                 group relative
                 rounded-2xl overflow-hidden

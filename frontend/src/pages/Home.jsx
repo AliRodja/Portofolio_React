@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import api from "../services/api";
 
 import Navbar from "../components/layout/Navbar";
@@ -11,6 +13,7 @@ import Experience from "../components/sections/Experience/Experience";
 import Education from "../components/sections/Education/Education";
 import Certificates from "../components/sections/Certificates/Certificates";
 import Contact from "../components/sections/Contact/Contact";
+import ScrollTopButton from "../components/ui/ScrollTopButton";
 
 
 function Home() {
@@ -27,6 +30,15 @@ function Home() {
       })
       .catch(console.error);
 
+  }, []);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 700,
+      easing: "ease-out-cubic",
+      once: true,
+      offset: 60,
+    });
   }, []);
 
   if (!profile) {
@@ -53,6 +65,8 @@ function Home() {
       <Education />
       <Certificates />
       <Contact profile={profile} />
+
+      <ScrollTopButton />
     </>
   );
 

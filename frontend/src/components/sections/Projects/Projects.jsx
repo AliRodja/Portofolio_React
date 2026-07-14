@@ -103,7 +103,7 @@ function Projects() {
 
       <Container className="relative z-10">
         {/* ── Section Header ── */}
-        <div className="text-center mb-20">
+        <div data-aos="fade-up" className="text-center mb-20">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
             <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
             <span className="text-sm text-indigo-300 font-medium tracking-wider uppercase">
@@ -125,7 +125,7 @@ function Projects() {
         </div>
 
         {/* ── Project count badge ── */}
-        <div className="flex justify-center mb-10">
+        <div data-aos="fade-up" className="flex justify-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06] text-sm text-slate-400">
             <span className="font-bold text-white">{projects.length}</span>
             <span>projects in total</span>

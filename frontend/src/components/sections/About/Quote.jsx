@@ -18,13 +18,16 @@ function Quote() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
 
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-light leading-tight text-white italic">
+        <h2
+          data-aos="zoom-in"
+          className="text-3xl md:text-5xl lg:text-6xl font-light leading-tight text-white italic"
+        >
           Building digital solutions
           <br />
           while growing as a leader.
         </h2>
 
-        <div className="flex items-center justify-center gap-4 mt-10">
+        <div data-aos="fade-up" data-aos-delay="150" className="flex items-center justify-center gap-4 mt-10">
           <span className="w-10 h-[2px] bg-white/40 rounded-full" />
           <p className="text-white/80 tracking-[0.25em] uppercase text-sm font-medium">
             Ali Imran Rodja
