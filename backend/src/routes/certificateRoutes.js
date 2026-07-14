@@ -2,6 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
+const { verifyToken } = require("../middleware/authMiddleware");
+
 const {
     getAllCertificates,
     createCertificate,
@@ -10,8 +12,8 @@ const {
 } = require("../controllers/certificateController");
 
 router.get("/", getAllCertificates);
-router.post("/", createCertificate);
-router.put("/:id", updateCertificate);
-router.delete("/:id", deleteCertificate);
+router.post("/", verifyToken, createCertificate);
+router.put("/:id", verifyToken, updateCertificate);
+router.delete("/:id", verifyToken, deleteCertificate);
 
 module.exports = router;

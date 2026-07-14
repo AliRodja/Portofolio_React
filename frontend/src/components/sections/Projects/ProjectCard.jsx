@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { FaGithub, FaExternalLinkAlt, FaCalendarAlt } from "react-icons/fa";
 import { HiOutlineArrowUpRight, HiOutlineRocketLaunch } from "react-icons/hi2";
+import DescriptionModal from "../../ui/DescriptionModal";
+
+const DESCRIPTION_LIMIT = 140;
 
 function ProjectCard({ project, index = 0 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const isLongDescription = project.description && project.description.length > DESCRIPTION_LIMIT;
 
   // Format date nicely
   const formatDate = (dateString) => {
@@ -177,6 +182,16 @@ function ProjectCard({ project, index = 0 }) {
           {project.description}
         </p>
 
+        {isLongDescription && (
+          <button
+            type="button"
+            onClick={() => setShowModal(true)}
+            className="mt-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+          >
+            Read more
+          </button>
+        )}
+
         {/* Tech Stack */}
         {project.tech_stack && project.tech_stack.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-5">
@@ -252,6 +267,15 @@ function ProjectCard({ project, index = 0 }) {
 
       {/* Bottom accent line on hover */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-24 h-[2px] bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full transition-all duration-500" />
+
+      {showModal && (
+        <DescriptionModal
+          title={project.title}
+          subtitle={project.category}
+          description={project.description}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }

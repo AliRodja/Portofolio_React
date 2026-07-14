@@ -1,6 +1,5 @@
 import Story from "./Story";
 import Quote from "./Quote";
-import Journey from "./Journey";
 
 function About({ profile }) {
   return (
@@ -11,9 +10,6 @@ function About({ profile }) {
 
       {/* Quote — gradient accent band */}
       <Quote />
-
-      {/* Journey — clean light section */}
-      <Journey />
 
     </section>
   );

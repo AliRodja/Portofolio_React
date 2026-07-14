@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { HiOutlineBriefcase } from "react-icons/hi2";
+import DescriptionModal from "../../ui/DescriptionModal";
+
+const DESCRIPTION_LIMIT = 180;
 
 function ExperienceCard({ experience, index }) {
     const [imageError, setImageError] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const isCurrent = !experience.end_date;
+    const isLongDescription = experience.description && experience.description.length > DESCRIPTION_LIMIT;
 
     const formatDate = (date) => {
         if (!date) return "Present";
@@ -102,13 +107,34 @@ function ExperienceCard({ experience, index }) {
 
             {/* Description */}
             {experience.description && (
-                <p className="mt-5 text-slate-500 leading-7">
-                    {experience.description}
-                </p>
+                <>
+                    <p className="mt-5 text-slate-500 leading-7 line-clamp-3">
+                        {experience.description}
+                    </p>
+
+                    {isLongDescription && (
+                        <button
+                            type="button"
+                            onClick={() => setShowModal(true)}
+                            className="mt-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                        >
+                            Read more
+                        </button>
+                    )}
+                </>
             )}
 
             {/* Bottom accent line on hover */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-16 h-[2px] bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full transition-all duration-300" />
+
+            {showModal && (
+                <DescriptionModal
+                    title={experience.position}
+                    subtitle={experience.organization}
+                    description={experience.description}
+                    onClose={() => setShowModal(false)}
+                />
+            )}
 
         </div>
     );

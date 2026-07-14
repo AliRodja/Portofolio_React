@@ -1,6 +1,13 @@
+import { useState } from "react";
 import { HiOutlineAcademicCap } from "react-icons/hi2";
+import DescriptionModal from "../../ui/DescriptionModal";
 
-function EducationCard({ education, index }) {
+const DESCRIPTION_LIMIT = 180;
+
+function EducationCard({ education }) {
+    const [showModal, setShowModal] = useState(false);
+    const isLongDescription = education.description && education.description.length > DESCRIPTION_LIMIT;
+
     return (
         <div className="relative flex items-start gap-6 pl-8 md:pl-12 group">
 
@@ -54,13 +61,34 @@ function EducationCard({ education, index }) {
 
                     {/* Description */}
                     {education.description && (
-                        <p className="mt-4 text-slate-500 leading-7">
-                            {education.description}
-                        </p>
+                        <>
+                            <p className="mt-4 text-slate-500 leading-7 line-clamp-3">
+                                {education.description}
+                            </p>
+
+                            {isLongDescription && (
+                                <button
+                                    type="button"
+                                    onClick={() => setShowModal(true)}
+                                    className="mt-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                                >
+                                    Read more
+                                </button>
+                            )}
+                        </>
                     )}
 
                 </div>
             </div>
+
+            {showModal && (
+                <DescriptionModal
+                    title={education.institution}
+                    subtitle={education.degree}
+                    description={education.description}
+                    onClose={() => setShowModal(false)}
+                />
+            )}
 
         </div>
     );

@@ -2,6 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
+const { verifyToken } = require("../middleware/authMiddleware");
+
 const {
 
     getProfile,
@@ -12,6 +14,6 @@ const {
 
 router.get("/", getProfile);
 
-router.put("/", updateProfile);
+router.put("/", verifyToken, updateProfile);
 
 module.exports = router;

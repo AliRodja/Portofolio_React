@@ -7,6 +7,8 @@ const navLinks = [
   { label: "Skills", href: "#skills" },
   { label: "Projects", href: "#projects" },
   { label: "Experience", href: "#experience" },
+  { label: "Education", href: "#education" },
+  { label: "Certificates", href: "#certificates" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -46,15 +48,15 @@ function Navbar() {
         </a>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:block">
-          <ul className="flex gap-1">
+        <nav className="hidden lg:block">
+          <ul className="flex gap-0.5 xl:gap-1">
             {navLinks.map((link) => (
               <li key={link.label}>
                 <a
                   href={link.href}
                   className="
-                    relative px-4 py-2 rounded-lg
-                    text-sm font-medium text-slate-400
+                    relative px-2.5 xl:px-4 py-2 rounded-lg
+                    text-sm font-medium text-slate-400 whitespace-nowrap
                     hover:text-white
                     transition-all duration-300
                     hover:bg-white/5
@@ -71,7 +73,7 @@ function Navbar() {
         <a
           href="#contact"
           className="
-            hidden md:inline-flex items-center gap-2
+            hidden lg:inline-flex items-center gap-2
             px-5 py-2.5 rounded-xl
             text-sm font-semibold text-white
             bg-gradient-to-r from-blue-500 to-cyan-500
@@ -80,15 +82,16 @@ function Navbar() {
             hover:shadow-blue-400/30
             transition-all duration-300
             hover:-translate-y-0.5
+            shrink-0
           "
         >
           Let's Talk
         </a>
 
-        {/* Mobile hamburger */}
+        {/* Mobile / tablet hamburger */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden text-white text-2xl p-2 rounded-lg hover:bg-white/10 transition"
+          className="lg:hidden text-white text-2xl p-2 rounded-lg hover:bg-white/10 transition"
           aria-label="Toggle menu"
         >
           {mobileOpen ? <HiX /> : <HiMenuAlt3 />}
@@ -96,15 +99,15 @@ function Navbar() {
 
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile / tablet drawer */}
       <div
         className={`
-          md:hidden overflow-hidden
+          lg:hidden overflow-hidden
           transition-all duration-300 ease-in-out
-          ${mobileOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}
+          ${mobileOpen ? "max-h-[calc(100vh-4.5rem)] opacity-100" : "max-h-0 opacity-0"}
         `}
       >
-        <nav className="px-6 pb-6 pt-2 bg-slate-900/95 backdrop-blur-xl border-t border-white/5">
+        <nav className="px-6 pb-6 pt-2 bg-slate-900/95 backdrop-blur-xl border-t border-white/5 max-h-[calc(100vh-4.5rem)] overflow-y-auto">
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <li key={link.label}>

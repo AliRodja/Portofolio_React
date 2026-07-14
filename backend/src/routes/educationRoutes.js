@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const { verifyToken } = require('../middleware/authMiddleware');
+
 const {
     getEducation,
     createEducation,
@@ -9,8 +11,8 @@ const {
 } = require('../controllers/educationController');
 
 router.get('/', getEducation);
-router.post('/', createEducation);
-router.put('/:id', updateEducation);
-router.delete('/:id', deleteEducation);
+router.post('/', verifyToken, createEducation);
+router.put('/:id', verifyToken, updateEducation);
+router.delete('/:id', verifyToken, deleteEducation);
 
 module.exports = router;

@@ -52,7 +52,7 @@ function Home() {
       <Experience />
       <Education />
       <Certificates />
-      <Contact />
+      <Contact profile={profile} />
     </>
   );
 
