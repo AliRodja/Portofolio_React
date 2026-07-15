@@ -2,12 +2,97 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logoAli.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Ali Imran Rodja | Portfolio</title>
+    <meta
+      name="description"
+      content="Full-Stack Developer and UI/UX Designer building end-to-end digital products — from database architecture to polished interfaces, backed by real leadership experience."
+    />
+    <link rel="canonical" href="https://portofolio-react-puce.vercel.app/" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://portofolio-react-puce.vercel.app/" />
+    <meta property="og:site_name" content="Ali Imran Rodja Portfolio" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Ali Imran Rodja | Portfolio" />
+    <meta
+      property="og:description"
+      content="Full-Stack Developer and UI/UX Designer building end-to-end digital products — from database architecture to polished interfaces, backed by real leadership experience."
+    />
+    <meta property="og:image" content="https://portofolio-react-puce.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ali Imran Rodja — Portfolio" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ali Imran Rodja | Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Full-Stack Developer and UI/UX Designer building end-to-end digital products — from database architecture to polished interfaces, backed by real leadership experience."
+    />
+    <meta name="twitter:image" content="https://portofolio-react-puce.vercel.app/og-image.png" />
+    <meta name="twitter:site" content="@AliImrnrdj" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ali Imran Rodja",
+        "url": "https://portofolio-react-puce.vercel.app/",
+        "image": "https://portofolio-react-puce.vercel.app/og-image.png",
+        "jobTitle": "Full-Stack Developer",
+        "description": "Full-Stack Developer and UI/UX Designer building end-to-end digital products — from database architecture to polished interfaces, backed by real leadership experience.",
+        "email": "mailto:rodjaali@gmail.com",
+        "sameAs": [
+          "https://github.com/AliRodja",
+          "https://www.linkedin.com/in/aliimrnrdj/",
+          "https://www.instagram.com/aliimrnrdj_/",
+          "https://x.com/AliImrnrdj"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+
+    <!--
+      Static fallback for crawlers/social bots that don't execute JS (this is a
+      client-rendered SPA, so the real <h1> only exists after React mounts).
+      Visually hidden, sits outside #root so React never touches it.
+    -->
+    <h1
+      id="fallback-h1"
+      style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"
+    >
+      Ali Imran Rodja — Full-Stack Developer Portfolio
+    </h1>
+    <script>
+      // Drop the fallback the moment React mounts real content, so a JS-rendering
+      // crawler (or a real visitor) only ever sees Hero's own <h1>, not both.
+      (function () {
+        var root = document.getElementById("root");
+        var fallback = document.getElementById("fallback-h1");
+        var observer = new MutationObserver(function () {
+          if (root.querySelector("h1")) {
+            fallback.remove();
+            observer.disconnect();
+          }
+        });
+        observer.observe(root, { childList: true, subtree: true });
+      })();
+    </script>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-import profileImage from "../../assets/images/profile.png";
+import profileImage from "../../assets/images/profile.webp";
 
 import {
   FaGithub,

@@ -1,5 +1,5 @@
 import Container from "../../ui/Container";
-import profileImage from "../../../assets/images/profile.png";
+import profileImage from "../../../assets/images/profile.webp";
 import { parseRichText } from "../../../utils/text";
 import { HiOutlineArrowRight } from "react-icons/hi2";
 

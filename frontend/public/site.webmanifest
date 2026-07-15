@@ -1,0 +1,27 @@
+{
+  "name": "Ali Imran Rodja | Portfolio",
+  "short_name": "Ali Rodja",
+  "description": "Full-Stack Developer and UI/UX Designer building end-to-end digital products.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/logoAli.png",
+      "sizes": "1534x1535",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
