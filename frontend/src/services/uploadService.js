@@ -2,9 +2,9 @@ import api from "./api";
 
 const uploadService = {
 
-    uploadImage(file) {
+    uploadFile(file) {
         const formData = new FormData();
-        formData.append("image", file);
+        formData.append("file", file);
 
         return api.post("/uploads", formData);
     },

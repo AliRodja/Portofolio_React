@@ -122,9 +122,9 @@ function Experience() {
             setUploading(true);
             setFormError("");
 
-            const response = await uploadService.uploadImage(file);
+            const response = await uploadService.uploadFile(file);
 
-            setForm((prev) => ({ ...prev, image_url: response.data.image_url }));
+            setForm((prev) => ({ ...prev, image_url: response.data.url }));
         } catch (error) {
             console.error(error);
 

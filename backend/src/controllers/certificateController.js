@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { deleteFile } = require("../utils/storage");
 
 const getAllCertificates = async (req, res) => {
     try {
@@ -49,6 +50,11 @@ const updateCertificate = async (req, res) => {
         const { id } = req.params;
         const { title, issuer, image_url, issue_date, credential_url } = req.body;
 
+        const existing = await pool.query(
+            "SELECT image_url FROM certificates WHERE id = $1",
+            [id]
+        );
+
         const result = await pool.query(
             `
             UPDATE certificates
@@ -63,6 +69,11 @@ const updateCertificate = async (req, res) => {
             return res.status(404).json({
                 message: "Certificate not found",
             });
+        }
+
+        const oldImage = existing.rows[0]?.image_url;
+        if (oldImage && oldImage !== image_url) {
+            await deleteFile(oldImage);
         }
 
         res.json(result.rows[0]);
@@ -93,6 +104,8 @@ const deleteCertificate = async (req, res) => {
                 message: "Certificate not found",
             });
         }
+
+        await deleteFile(result.rows[0].image_url);
 
         res.json({
             message: "Certificate deleted successfully",

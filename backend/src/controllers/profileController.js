@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { deleteFile } = require("../utils/storage");
 
 // GET PROFILE
 const getProfile = async (req, res) => {
@@ -44,6 +45,11 @@ const updateProfile = async (req, res) => {
 
         } = req.body;
 
+        // Ambil foto & CV lama sebelum ditimpa.
+        const existing = await pool.query(
+            "SELECT profile_image, resume_url FROM profile WHERE id=1"
+        );
+
         const result = await pool.query(
             `
       UPDATE profile
@@ -83,6 +89,14 @@ const updateProfile = async (req, res) => {
                 resume_url,
             ]
         );
+
+        const old = existing.rows[0] || {};
+        if (old.profile_image && old.profile_image !== profile_image) {
+            await deleteFile(old.profile_image);
+        }
+        if (old.resume_url && old.resume_url !== resume_url) {
+            await deleteFile(old.resume_url);
+        }
 
         res.json(result.rows[0]);
 

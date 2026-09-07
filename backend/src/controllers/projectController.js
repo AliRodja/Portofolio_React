@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { deleteFile } = require("../utils/storage");
 
 // ======================
 // GET ALL PROJECTS
@@ -94,6 +95,12 @@ const updateProject = async (req, res) => {
             featured,
         } = req.body;
 
+        // Simpan URL gambar lama sebelum ditimpa.
+        const existing = await pool.query(
+            "SELECT image_url FROM projects WHERE id=$1",
+            [id]
+        );
+
         const result = await pool.query(
             `
       UPDATE projects
@@ -129,6 +136,12 @@ const updateProject = async (req, res) => {
             });
         }
 
+        // Gambar diganti atau dikosongkan -> buang file lama.
+        const oldImage = existing.rows[0]?.image_url;
+        if (oldImage && oldImage !== image_url) {
+            await deleteFile(oldImage);
+        }
+
         res.json(result.rows[0]);
     } catch (error) {
         console.error(error);
@@ -160,6 +173,8 @@ const deleteProject = async (req, res) => {
                 message: "Project not found",
             });
         }
+
+        await deleteFile(result.rows[0].image_url);
 
         res.json({
             message: "Project deleted successfully",

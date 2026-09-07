@@ -98,9 +98,9 @@ function Profile() {
             setUploadingImage(true);
             setFormError("");
 
-            const response = await uploadService.uploadImage(file);
+            const response = await uploadService.uploadFile(file);
 
-            setForm((prev) => ({ ...prev, profile_image: response.data.image_url }));
+            setForm((prev) => ({ ...prev, profile_image: response.data.url }));
         } catch (error) {
             console.error(error);
 
@@ -121,9 +121,9 @@ function Profile() {
             setUploadingResume(true);
             setFormError("");
 
-            const response = await uploadService.uploadImage(file);
+            const response = await uploadService.uploadFile(file);
 
-            setForm((prev) => ({ ...prev, resume_url: response.data.image_url }));
+            setForm((prev) => ({ ...prev, resume_url: response.data.url }));
         } catch (error) {
             console.error(error);
 

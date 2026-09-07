@@ -20,14 +20,15 @@ const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
 
+// Running behind a proxy (Vercel / Render / etc.) — needed so express-rate-limit
+// reads the real client IP from X-Forwarded-For instead of the proxy's.
+app.set('trust proxy', 1);
+
 const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-// Default CORP (same-origin) blocks the frontend from loading /uploads
-// images when it's served from a different origin in production.
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+app.use(helmet());
 app.use(cors({ origin: allowedOrigin }));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // Brute-force / spam protection on the endpoints attackers would target first.
 const authLimiter = rateLimit({

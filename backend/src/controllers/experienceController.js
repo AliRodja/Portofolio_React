@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const { deleteFile } = require('../utils/storage');
 
 const getAllExperiences = async (req, res) => {
     try {
@@ -46,6 +47,11 @@ const updateExperience = async (req, res) => {
         const { id } = req.params;
         const { position, organization, start_date, end_date, description, image_url } = req.body;
 
+        const existing = await pool.query(
+            'SELECT image_url FROM experiences WHERE id = $1',
+            [id]
+        );
+
         const result = await pool.query(
             `
             UPDATE experiences
@@ -60,6 +66,11 @@ const updateExperience = async (req, res) => {
             return res.status(404).json({
                 message: 'Experience not found'
             });
+        }
+
+        const oldImage = existing.rows[0]?.image_url;
+        if (oldImage && oldImage !== image_url) {
+            await deleteFile(oldImage);
         }
 
         res.json(result.rows[0]);
@@ -90,6 +101,8 @@ const deleteExperience = async (req, res) => {
                 message: 'Experience not found'
             });
         }
+
+        await deleteFile(result.rows[0].image_url);
 
         res.json({
             message: 'Experience deleted successfully'
