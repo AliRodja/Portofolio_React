@@ -21,4 +21,14 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-module.exports = { verifyToken };
+// Pakai SETELAH verifyToken. Menolak token yang bukan admin.
+const requireAdmin = (req, res, next) => {
+    if (req.user?.role !== "admin") {
+        return res.status(403).json({
+            message: "Admin access required.",
+        });
+    }
+    next();
+};
+
+module.exports = { verifyToken, requireAdmin };

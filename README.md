@@ -157,7 +157,8 @@ Buka http://localhost:5173
 | `npm run dev` | jalankan server + auto-reload (nodemon) |
 | `npm start` | jalankan server (produksi) |
 | `npm run migrate` | jalankan migrasi SQL yang belum diterapkan |
-| `npm run seed:admin` | buat akun admin dari `ADMIN_*` |
+| `npm run seed:admin` | buat akun admin pertama dari `ADMIN_*` (skip kalau sudah ada) |
+| `npm run reset:admin` | ganti password admin yang sudah ada (pakai `ADMIN_EMAIL` + `ADMIN_PASSWORD` baru) |
 
 ### frontend
 

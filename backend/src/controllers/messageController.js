@@ -22,12 +22,23 @@ const getAllMessages = async (req, res) => {
 // POST pesan baru
 const createMessage = async (req, res) => {
     try {
-        const {
-            name,
-            email,
-            subject,
-            message,
-        } = req.body;
+        const name = (req.body.name || "").trim();
+        const email = (req.body.email || "").trim();
+        const subject = (req.body.subject || "").trim();
+        const message = (req.body.message || "").trim();
+
+        // Form kontak ini publik, jadi divalidasi manual di sini.
+        const errors = [];
+        if (!name || name.length > 100) errors.push("name");
+        if (!email || email.length > 255 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push("email");
+        if (subject.length > 150) errors.push("subject");
+        if (!message || message.length > 5000) errors.push("message");
+
+        if (errors.length > 0) {
+            return res.status(400).json({
+                message: `Invalid or missing field(s): ${errors.join(", ")}`,
+            });
+        }
 
         const result = await pool.query(
             `
@@ -44,7 +55,7 @@ const createMessage = async (req, res) => {
             [
                 name,
                 email,
-                subject,
+                subject || null,
                 message,
             ]
         );
