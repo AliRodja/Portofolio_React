@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const { verifyToken } = require("../middleware/authMiddleware");
+const { messageLimiter } = require("../middleware/rateLimit");
 
 const {
     getAllMessages,
@@ -12,7 +13,8 @@ const {
 
 router.get("/", verifyToken, getAllMessages);
 
-router.post("/", createMessage);
+// Only the public contact form is rate-limited; admin GET/DELETE are not.
+router.post("/", messageLimiter, createMessage);
 
 router.delete("/:id", verifyToken, deleteMessage);
 

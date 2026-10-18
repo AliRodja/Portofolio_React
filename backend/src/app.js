@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const path = require('path');
+
+const { authLimiter } = require('./middleware/rateLimit');
 
 const projectRoutes = require('./routes/projectRoutes');
 const skillRoutes = require('./routes/skillRoutes');
@@ -32,25 +32,9 @@ app.use(cors({ origin: allowedOrigin }));
 // so cap the body to reject junk/DoS-y requests early.
 app.use(express.json({ limit: '10kb' }));
 
-// Brute-force / spam protection on the endpoints attackers would target first.
-const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 20,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { message: 'Too many attempts. Please try again later.' },
-});
-
-const messageLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 10,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { message: 'Too many messages sent. Please try again later.' },
-});
-
+// Brute-force protection on login/register. (The contact-form limiter lives on
+// POST /api/messages only — see routes/messageRoutes.js.)
 app.use('/api/auth', authLimiter);
-app.use('/api/messages', messageLimiter);
 
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/profile', profileRoutes);

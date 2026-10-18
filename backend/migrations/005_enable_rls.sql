@@ -17,14 +17,21 @@ ALTER TABLE social_links      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE messages          ENABLE ROW LEVEL SECURITY;
 ALTER TABLE schema_migrations ENABLE ROW LEVEL SECURITY;
 
--- 2) Remove the table/sequence privileges Supabase granted by default,
---    so access is blocked even if RLS were ever switched off by mistake.
-REVOKE ALL ON ALL TABLES    IN SCHEMA public FROM anon, authenticated;
-REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM anon, authenticated;
+-- The anon/authenticated/postgres roles only exist on Supabase; on a plain
+-- local Postgres there is nothing to revoke, so skip this part there.
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN
+        -- 2) Remove the table/sequence privileges Supabase granted by default,
+        --    so access is blocked even if RLS were ever switched off by mistake.
+        REVOKE ALL ON ALL TABLES    IN SCHEMA public FROM anon, authenticated;
+        REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM anon, authenticated;
 
--- 3) Stop future tables created by `postgres` (i.e. later migrations) from
---    being granted to anon/authenticated automatically.
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
-    REVOKE ALL ON TABLES    FROM anon, authenticated;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
-    REVOKE ALL ON SEQUENCES FROM anon, authenticated;
+        -- 3) Stop future tables created by `postgres` (i.e. later migrations)
+        --    from being granted to anon/authenticated automatically.
+        ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
+            REVOKE ALL ON TABLES    FROM anon, authenticated;
+        ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
+            REVOKE ALL ON SEQUENCES FROM anon, authenticated;
+    END IF;
+END $$;
