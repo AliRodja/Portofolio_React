@@ -4,7 +4,6 @@ import {
     FaEdit,
     FaTrash,
     FaFolderOpen,
-    FaCheckCircle,
     FaExclamationCircle,
     FaImage,
     FaUpload,
@@ -14,6 +13,7 @@ import {
 
 import projectService from "../../services/projectService";
 import uploadService from "../../services/uploadService";
+import { useToast } from "../../context/ToastContext";
 
 import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
@@ -43,10 +43,11 @@ function Projects() {
     const [saving, setSaving] = useState(false);
 
     const [search, setSearch] = useState("");
-    const [feedback, setFeedback] = useState(null);
     const [formError, setFormError] = useState("");
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef(null);
+
+    const toast = useToast();
 
     const fetchProjects = async () => {
         try {
@@ -56,7 +57,7 @@ function Projects() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to load projects." });
+            toast.error("Failed to load projects.");
         } finally {
             setLoading(false);
         }
@@ -69,14 +70,6 @@ function Projects() {
 
         loadProjects();
     }, []);
-
-    useEffect(() => {
-        if (!feedback) return;
-
-        const timer = setTimeout(() => setFeedback(null), 4000);
-
-        return () => clearTimeout(timer);
-    }, [feedback]);
 
     const handleChange = (e) => {
         const { name, value, checked, type } = e.target;
@@ -165,11 +158,11 @@ function Projects() {
             if (editingId) {
                 await projectService.update(editingId, payload);
 
-                setFeedback({ type: "success", message: "Project updated successfully." });
+                toast.success("Project updated successfully.");
             } else {
                 await projectService.create(payload);
 
-                setFeedback({ type: "success", message: "Project added successfully." });
+                toast.success("Project added successfully.");
             }
 
             resetForm();
@@ -178,7 +171,7 @@ function Projects() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Something went wrong while saving." });
+            toast.error("Something went wrong while saving.");
         } finally {
             setSaving(false);
         }
@@ -211,13 +204,13 @@ function Projects() {
         try {
             await projectService.delete(id);
 
-            setFeedback({ type: "success", message: "Project deleted successfully." });
+            toast.success("Project deleted successfully.");
 
             fetchProjects();
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to delete project." });
+            toast.error("Failed to delete project.");
         }
     };
 
@@ -234,21 +227,6 @@ function Projects() {
                 title="Projects"
                 subtitle="Manage your portfolio projects."
             />
-
-            {feedback && (
-                <div
-                    className={`
-                        flex items-center gap-2 mb-6 px-4 py-3 rounded-xl text-sm font-medium
-                        ${feedback.type === "success"
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
-                        }
-                    `}
-                >
-                    {feedback.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
-                    {feedback.message}
-                </div>
-            )}
 
             <DashboardCard className="mb-6">
 

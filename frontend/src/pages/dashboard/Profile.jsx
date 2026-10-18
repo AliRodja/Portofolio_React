@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import {
-    FaCheckCircle,
     FaExclamationCircle,
     FaUpload,
     FaSpinner,
@@ -14,6 +13,7 @@ import {
 
 import profileService from "../../services/profileService";
 import uploadService from "../../services/uploadService";
+import { useToast } from "../../context/ToastContext";
 
 import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
@@ -45,8 +45,9 @@ function Profile() {
     const [uploadingImage, setUploadingImage] = useState(false);
     const [uploadingResume, setUploadingResume] = useState(false);
 
-    const [feedback, setFeedback] = useState(null);
     const [formError, setFormError] = useState("");
+
+    const toast = useToast();
 
     const imageInputRef = useRef(null);
     const resumeInputRef = useRef(null);
@@ -63,7 +64,7 @@ function Profile() {
         } catch (err) {
             console.error(err);
 
-            setFeedback({ type: "error", message: "Failed to load profile." });
+            toast.error("Failed to load profile.");
         } finally {
             setLoading(false);
         }
@@ -76,14 +77,6 @@ function Profile() {
 
         load();
     }, []);
-
-    useEffect(() => {
-        if (!feedback) return;
-
-        const timer = setTimeout(() => setFeedback(null), 4000);
-
-        return () => clearTimeout(timer);
-    }, [feedback]);
 
     const handleChange = (e) => {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -162,11 +155,11 @@ function Profile() {
 
             await profileService.updateProfile(form);
 
-            setFeedback({ type: "success", message: "Profile updated successfully." });
+            toast.success("Profile updated successfully.");
         } catch (err) {
             console.error(err);
 
-            setFeedback({ type: "error", message: "Failed to update profile." });
+            toast.error("Failed to update profile.");
         } finally {
             setSaving(false);
         }
@@ -188,21 +181,6 @@ function Profile() {
                 title="Profile"
                 subtitle="This information is shown publicly on your portfolio."
             />
-
-            {feedback && (
-                <div
-                    className={`
-                        flex items-center gap-2 mb-6 px-4 py-3 rounded-xl text-sm font-medium
-                        ${feedback.type === "success"
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
-                        }
-                    `}
-                >
-                    {feedback.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
-                    {feedback.message}
-                </div>
-            )}
 
             <DashboardCard>
 

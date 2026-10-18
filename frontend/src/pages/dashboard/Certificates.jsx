@@ -4,7 +4,6 @@ import {
     FaEdit,
     FaTrash,
     FaCertificate,
-    FaCheckCircle,
     FaExclamationCircle,
     FaUpload,
     FaSpinner,
@@ -16,6 +15,7 @@ import {
 import certificateService from "../../services/certificateService";
 import uploadService from "../../services/uploadService";
 import { isPdfUrl } from "../../utils/file";
+import { useToast } from "../../context/ToastContext";
 
 import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
@@ -51,8 +51,9 @@ function Certificates() {
     const fileInputRef = useRef(null);
 
     const [search, setSearch] = useState("");
-    const [feedback, setFeedback] = useState(null);
     const [formError, setFormError] = useState("");
+
+    const toast = useToast();
 
     const fetchCertificates = async () => {
         try {
@@ -62,7 +63,7 @@ function Certificates() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to load certificates." });
+            toast.error("Failed to load certificates.");
         } finally {
             setLoading(false);
         }
@@ -75,14 +76,6 @@ function Certificates() {
 
         loadCertificates();
     }, []);
-
-    useEffect(() => {
-        if (!feedback) return;
-
-        const timer = setTimeout(() => setFeedback(null), 4000);
-
-        return () => clearTimeout(timer);
-    }, [feedback]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -160,11 +153,11 @@ function Certificates() {
             if (editingId) {
                 await certificateService.update(editingId, form);
 
-                setFeedback({ type: "success", message: "Certificate updated successfully." });
+                toast.success("Certificate updated successfully.");
             } else {
                 await certificateService.create(form);
 
-                setFeedback({ type: "success", message: "Certificate added successfully." });
+                toast.success("Certificate added successfully.");
             }
 
             resetForm();
@@ -173,7 +166,7 @@ function Certificates() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Something went wrong while saving." });
+            toast.error("Something went wrong while saving.");
         } finally {
             setSaving(false);
         }
@@ -202,13 +195,13 @@ function Certificates() {
         try {
             await certificateService.delete(id);
 
-            setFeedback({ type: "success", message: "Certificate deleted successfully." });
+            toast.success("Certificate deleted successfully.");
 
             fetchCertificates();
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to delete certificate." });
+            toast.error("Failed to delete certificate.");
         }
     };
 
@@ -226,21 +219,6 @@ function Certificates() {
                 title="Certificates"
                 subtitle="Manage the certificates shown on your portfolio."
             />
-
-            {feedback && (
-                <div
-                    className={`
-                        flex items-center gap-2 mb-6 px-4 py-3 rounded-xl text-sm font-medium
-                        ${feedback.type === "success"
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
-                        }
-                    `}
-                >
-                    {feedback.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
-                    {feedback.message}
-                </div>
-            )}
 
             <DashboardCard className="mb-6">
 

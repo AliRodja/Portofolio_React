@@ -4,12 +4,12 @@ import {
     FaEdit,
     FaTrash,
     FaGraduationCap,
-    FaCheckCircle,
     FaExclamationCircle,
     FaUniversity,
 } from "react-icons/fa";
 
 import educationService from "../../services/educationService";
+import { useToast } from "../../context/ToastContext";
 
 import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
@@ -37,8 +37,9 @@ function Education() {
     const [saving, setSaving] = useState(false);
 
     const [search, setSearch] = useState("");
-    const [feedback, setFeedback] = useState(null);
     const [formError, setFormError] = useState("");
+
+    const toast = useToast();
 
     const fetchEducation = async () => {
         try {
@@ -48,7 +49,7 @@ function Education() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to load education." });
+            toast.error("Failed to load education.");
         } finally {
             setLoading(false);
         }
@@ -61,14 +62,6 @@ function Education() {
 
         loadEducation();
     }, []);
-
-    useEffect(() => {
-        if (!feedback) return;
-
-        const timer = setTimeout(() => setFeedback(null), 4000);
-
-        return () => clearTimeout(timer);
-    }, [feedback]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -135,11 +128,11 @@ function Education() {
             if (editingId) {
                 await educationService.update(editingId, payload);
 
-                setFeedback({ type: "success", message: "Education updated successfully." });
+                toast.success("Education updated successfully.");
             } else {
                 await educationService.create(payload);
 
-                setFeedback({ type: "success", message: "Education added successfully." });
+                toast.success("Education added successfully.");
             }
 
             resetForm();
@@ -148,7 +141,7 @@ function Education() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Something went wrong while saving." });
+            toast.error("Something went wrong while saving.");
         } finally {
             setSaving(false);
         }
@@ -178,13 +171,13 @@ function Education() {
         try {
             await educationService.delete(id);
 
-            setFeedback({ type: "success", message: "Education deleted successfully." });
+            toast.success("Education deleted successfully.");
 
             fetchEducation();
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to delete education." });
+            toast.error("Failed to delete education.");
         }
     };
 
@@ -202,21 +195,6 @@ function Education() {
                 title="Education"
                 subtitle="Manage your academic background."
             />
-
-            {feedback && (
-                <div
-                    className={`
-                        flex items-center gap-2 mb-6 px-4 py-3 rounded-xl text-sm font-medium
-                        ${feedback.type === "success"
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
-                        }
-                    `}
-                >
-                    {feedback.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
-                    {feedback.message}
-                </div>
-            )}
 
             <DashboardCard className="mb-6">
 

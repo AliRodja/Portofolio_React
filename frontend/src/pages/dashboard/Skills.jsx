@@ -4,17 +4,19 @@ import {
     FaEdit,
     FaTrash,
     FaCode,
-    FaCheckCircle,
     FaExclamationCircle,
 } from "react-icons/fa";
 
 import skillService from "../../services/skillService";
 import { getSkillIcon } from "../../constants/skillIcons";
+import { useToast } from "../../context/ToastContext";
 
 import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
 import DashboardButton from "../../components/dashboard/DashboardButton";
 import IconPicker from "../../components/dashboard/IconPicker";
+import SkillNameSelect from "../../components/dashboard/SkillNameSelect";
+import CategorySelect from "../../components/dashboard/CategorySelect";
 import FieldLabel from "../../components/dashboard/FieldLabel";
 
 const inputClass = "w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition";
@@ -36,8 +38,9 @@ function Skills() {
     const [saving, setSaving] = useState(false);
 
     const [search, setSearch] = useState("");
-    const [feedback, setFeedback] = useState(null);
     const [formError, setFormError] = useState("");
+
+    const toast = useToast();
 
     const fetchSkills = async () => {
         try {
@@ -47,7 +50,7 @@ function Skills() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to load skills." });
+            toast.error("Failed to load skills.");
         } finally {
             setLoading(false);
         }
@@ -60,14 +63,6 @@ function Skills() {
 
         loadSkills();
     }, []);
-
-    useEffect(() => {
-        if (!feedback) return;
-
-        const timer = setTimeout(() => setFeedback(null), 4000);
-
-        return () => clearTimeout(timer);
-    }, [feedback]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -110,11 +105,11 @@ function Skills() {
             if (editingId) {
                 await skillService.update(editingId, form);
 
-                setFeedback({ type: "success", message: "Skill updated successfully." });
+                toast.success("Skill updated successfully.");
             } else {
                 await skillService.create(form);
 
-                setFeedback({ type: "success", message: "Skill added successfully." });
+                toast.success("Skill added successfully.");
             }
 
             resetForm();
@@ -123,7 +118,7 @@ function Skills() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Something went wrong while saving." });
+            toast.error("Something went wrong while saving.");
         } finally {
             setSaving(false);
         }
@@ -151,13 +146,13 @@ function Skills() {
         try {
             await skillService.delete(id);
 
-            setFeedback({ type: "success", message: "Skill deleted successfully." });
+            toast.success("Skill deleted successfully.");
 
             fetchSkills();
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to delete skill." });
+            toast.error("Failed to delete skill.");
         }
     };
 
@@ -167,6 +162,10 @@ function Skills() {
         );
     }, [skills, search]);
 
+    const existingCategories = useMemo(() => {
+        return [...new Set(skills.map((skill) => skill.category).filter(Boolean))];
+    }, [skills]);
+
     return (
         <div>
 
@@ -174,21 +173,6 @@ function Skills() {
                 title="Skills"
                 subtitle="Manage the technologies shown on your portfolio."
             />
-
-            {feedback && (
-                <div
-                    className={`
-                        flex items-center gap-2 mb-6 px-4 py-3 rounded-xl text-sm font-medium
-                        ${feedback.type === "success"
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
-                        }
-                    `}
-                >
-                    {feedback.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
-                    {feedback.message}
-                </div>
-            )}
 
             <DashboardCard className="mb-6">
 
@@ -209,27 +193,24 @@ function Skills() {
 
                         <div>
                             <FieldLabel htmlFor="name" required>Name</FieldLabel>
-                            <input
-                                id="name"
-                                type="text"
-                                name="name"
-                                placeholder="e.g. React"
+                            <SkillNameSelect
                                 value={form.name}
-                                onChange={handleChange}
-                                className={inputClass}
+                                onChange={(name) => setForm((prev) => ({ ...prev, name }))}
+                                onSelectPreset={(name, icon_name) =>
+                                    setForm((prev) => ({ ...prev, name, icon_name }))
+                                }
                             />
+                            <p className="mt-1.5 text-xs text-slate-400">
+                                Pick from the list to auto-fill the matching icon, or type a custom name.
+                            </p>
                         </div>
 
                         <div>
                             <FieldLabel htmlFor="category" required>Category</FieldLabel>
-                            <input
-                                id="category"
-                                type="text"
-                                name="category"
-                                placeholder="e.g. Frontend"
+                            <CategorySelect
                                 value={form.category}
-                                onChange={handleChange}
-                                className={inputClass}
+                                onChange={(category) => setForm((prev) => ({ ...prev, category }))}
+                                extraCategories={existingCategories}
                             />
                         </div>
 

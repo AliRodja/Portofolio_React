@@ -4,7 +4,6 @@ import {
     FaEdit,
     FaTrash,
     FaBriefcase,
-    FaCheckCircle,
     FaExclamationCircle,
     FaBuilding,
     FaUpload,
@@ -14,6 +13,7 @@ import {
 
 import experienceService from "../../services/experienceService";
 import uploadService from "../../services/uploadService";
+import { useToast } from "../../context/ToastContext";
 
 import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
@@ -53,8 +53,9 @@ function Experience() {
     const fileInputRef = useRef(null);
 
     const [search, setSearch] = useState("");
-    const [feedback, setFeedback] = useState(null);
     const [formError, setFormError] = useState("");
+
+    const toast = useToast();
 
     const fetchExperiences = async () => {
         try {
@@ -64,7 +65,7 @@ function Experience() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to load experiences." });
+            toast.error("Failed to load experiences.");
         } finally {
             setLoading(false);
         }
@@ -77,14 +78,6 @@ function Experience() {
 
         loadExperiences();
     }, []);
-
-    useEffect(() => {
-        if (!feedback) return;
-
-        const timer = setTimeout(() => setFeedback(null), 4000);
-
-        return () => clearTimeout(timer);
-    }, [feedback]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -178,11 +171,11 @@ function Experience() {
             if (editingId) {
                 await experienceService.update(editingId, payload);
 
-                setFeedback({ type: "success", message: "Experience updated successfully." });
+                toast.success("Experience updated successfully.");
             } else {
                 await experienceService.create(payload);
 
-                setFeedback({ type: "success", message: "Experience added successfully." });
+                toast.success("Experience added successfully.");
             }
 
             resetForm();
@@ -191,7 +184,7 @@ function Experience() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Something went wrong while saving." });
+            toast.error("Something went wrong while saving.");
         } finally {
             setSaving(false);
         }
@@ -222,13 +215,13 @@ function Experience() {
         try {
             await experienceService.delete(id);
 
-            setFeedback({ type: "success", message: "Experience deleted successfully." });
+            toast.success("Experience deleted successfully.");
 
             fetchExperiences();
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to delete experience." });
+            toast.error("Failed to delete experience.");
         }
     };
 
@@ -246,21 +239,6 @@ function Experience() {
                 title="Experience"
                 subtitle="Manage your leadership and organizational experience."
             />
-
-            {feedback && (
-                <div
-                    className={`
-                        flex items-center gap-2 mb-6 px-4 py-3 rounded-xl text-sm font-medium
-                        ${feedback.type === "success"
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
-                        }
-                    `}
-                >
-                    {feedback.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
-                    {feedback.message}
-                </div>
-            )}
 
             <DashboardCard className="mb-6">
 

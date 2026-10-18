@@ -3,8 +3,6 @@ import {
     FaSearch,
     FaTrash,
     FaEnvelopeOpenText,
-    FaCheckCircle,
-    FaExclamationCircle,
     FaReply,
     FaChevronDown,
 } from "react-icons/fa";
@@ -13,6 +11,7 @@ import messageService from "../../services/messageService";
 
 import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
+import { useToast } from "../../context/ToastContext";
 
 const inputClass = "w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition";
 
@@ -30,8 +29,9 @@ function Messages() {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
-    const [feedback, setFeedback] = useState(null);
     const [expandedId, setExpandedId] = useState(null);
+
+    const toast = useToast();
 
     const fetchMessages = async () => {
         try {
@@ -41,7 +41,7 @@ function Messages() {
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to load messages." });
+            toast.error("Failed to load messages.");
         } finally {
             setLoading(false);
         }
@@ -55,14 +55,6 @@ function Messages() {
         loadMessages();
     }, []);
 
-    useEffect(() => {
-        if (!feedback) return;
-
-        const timer = setTimeout(() => setFeedback(null), 4000);
-
-        return () => clearTimeout(timer);
-    }, [feedback]);
-
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this message?");
 
@@ -71,13 +63,13 @@ function Messages() {
         try {
             await messageService.delete(id);
 
-            setFeedback({ type: "success", message: "Message deleted successfully." });
+            toast.success("Message deleted successfully.");
 
             fetchMessages();
         } catch (error) {
             console.error(error);
 
-            setFeedback({ type: "error", message: "Failed to delete message." });
+            toast.error("Failed to delete message.");
         }
     };
 
@@ -100,21 +92,6 @@ function Messages() {
                 title="Messages"
                 subtitle="Messages sent through your portfolio's contact form."
             />
-
-            {feedback && (
-                <div
-                    className={`
-                        flex items-center gap-2 mb-6 px-4 py-3 rounded-xl text-sm font-medium
-                        ${feedback.type === "success"
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
-                        }
-                    `}
-                >
-                    {feedback.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
-                    {feedback.message}
-                </div>
-            )}
 
             <DashboardCard>
 

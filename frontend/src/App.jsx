@@ -24,12 +24,15 @@
 
 import AppRoutes from "./routes/AppRoutes";
 import { AuthProvider } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
 
 function App() {
   return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </ToastProvider>
   );
 }
 
