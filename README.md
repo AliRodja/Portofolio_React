@@ -6,7 +6,7 @@ lewat dashboard admin, bukan hard-coded.
 
 **Live:**
 - Frontend — https://portofolio-react-puce.vercel.app
-- API — https://portofolio-api.vercel.app
+- API — https://portofolio-api-phi.vercel.app
 
 ---
 
