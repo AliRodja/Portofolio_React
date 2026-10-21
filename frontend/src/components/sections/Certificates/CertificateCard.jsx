@@ -11,6 +11,7 @@ function CertificateCard({ certificate, index = 0 }) {
         return new Date(date).toLocaleDateString("en-US", {
             month: "long",
             year: "numeric",
+            timeZone: "UTC",
         });
     };
 

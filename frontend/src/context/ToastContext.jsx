@@ -31,6 +31,8 @@ export function ToastProvider({ children }) {
     );
 }
 
+// Provider + hook in one file is the standard context pattern.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useToast() {
     const ctx = useContext(ToastContext);
 
