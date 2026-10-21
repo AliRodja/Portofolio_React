@@ -133,7 +133,7 @@ Buka http://localhost:5173
 | `DB_SSL` | `false` | `true` untuk Postgres cloud |
 | `DATABASE_URL` | `postgresql://user:pass@host:6543/postgres` | **alternatif** DB_* di atas. Kalau di-set, DB_* diabaikan. Dipakai di produksi |
 | `JWT_SECRET` | string acak 96 hex | kunci token. `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"` |
-| `JWT_EXPIRES_IN` | `7d` | masa berlaku token |
+| `JWT_EXPIRES_IN` | `1d` | masa berlaku token (makin pendek makin aman kalau token dicuri) |
 | `PORT` | `3001` | samakan dengan `VITE_API_URL`. **Di Vercel jangan di-set** |
 | `FRONTEND_URL` | `http://localhost:5173` | untuk CORS. Produksi = URL frontend |
 | `SUPABASE_URL` | `https://xxx.supabase.co` | Project URL Supabase |
@@ -224,6 +224,8 @@ serverless di [`backend/api/index.js`](backend/api/index.js).
 - **Auto-cleanup file** — saat row dihapus atau gambar diganti, file lama di Supabase Storage ikut dihapus ([`backend/src/utils/storage.js`](backend/src/utils/storage.js)).
 - **Validasi input** — semua endpoint tulis divalidasi di route ([`middleware/validate.js`](backend/src/middleware/validate.js), aturan di [`validators/schemas.js`](backend/src/validators/schemas.js)). Data tidak valid dibalas `400` dengan pesan per field; pesan itu tampil di toast dashboard.
 - **Tanggal** — kolom `DATE` dikirim API sebagai teks `YYYY-MM-DD` (tidak bergantung zona waktu server), lihat [`config/db.js`](backend/src/config/db.js).
+- **Header keamanan frontend** — CSP, anti-clickjacking, dll. di [`frontend/vercel.json`](frontend/vercel.json). CSP hanya mengizinkan API di `connect-src` dan gambar dari Supabase di `img-src`. **Kalau URL backend atau project Supabase berubah, perbarui kedua nilai itu**, kalau tidak data/gambar tidak akan termuat. Kalau script inline di `index.html` diubah, hash `sha256-…` di `script-src` juga harus dihitung ulang.
+- **Upload** — hanya JPEG/PNG/WebP/GIF/PDF dengan ekstensi yang cocok, maks 4 MB. Dicek di backend dan juga dipaksa di bucket Supabase (migrasi `007`).
 - **Tidak ada pendaftaran publik** — `POST /api/auth/register` butuh token admin; akun pertama dibuat via `npm run seed:admin`.
 
 ## API endpoints
