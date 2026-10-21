@@ -9,7 +9,7 @@ const getAllProjects = async (req, res) => {
         const result = await pool.query(`
       SELECT *
       FROM projects
-      ORDER BY created_at DESC
+      ORDER BY updated_at DESC, id ASC
     `);
 
         res.json(result.rows);
