@@ -5,7 +5,7 @@ import DescriptionModal from "../../ui/DescriptionModal";
 
 const DESCRIPTION_LIMIT = 140;
 
-function ProjectCard({ project, index = 0 }) {
+function ProjectCard({ project }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -23,10 +23,9 @@ function ProjectCard({ project, index = 0 }) {
 
   return (
     <div
-      data-aos="fade-up"
-      data-aos-delay={(index % 4) * 100}
       className="
         group relative
+        h-full flex flex-col
         rounded-2xl
         bg-white/[0.03] border border-white/[0.06]
         backdrop-blur-sm
@@ -39,12 +38,13 @@ function ProjectCard({ project, index = 0 }) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* ── Image Section ── */}
-      <div className="relative overflow-hidden h-56 md:h-64">
+      <div className="relative overflow-hidden h-52 md:h-56 shrink-0">
         {/* Image */}
         {project.image_url && !imageError ? (
           <img
             src={project.image_url}
             alt={project.title}
+            draggable={false}
             className="
               w-full h-full object-cover
               group-hover:scale-110
@@ -170,7 +170,7 @@ function ProjectCard({ project, index = 0 }) {
       </div>
 
       {/* ── Content Section ── */}
-      <div className="p-6 md:p-7">
+      <div className="flex flex-col flex-1 p-6 md:p-7">
         {/* Title */}
         <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
           {project.title}
@@ -193,7 +193,7 @@ function ProjectCard({ project, index = 0 }) {
 
         {/* Tech Stack */}
         {project.tech_stack && project.tech_stack.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-5">
+          <div className="flex flex-wrap gap-2 mt-5 mb-6">
             {project.tech_stack.map((tech) => (
               <span
                 key={tech}
@@ -212,7 +212,7 @@ function ProjectCard({ project, index = 0 }) {
         )}
 
         {/* Footer — Date + Links */}
-        <div className="flex items-center justify-between mt-6 pt-5 border-t border-white/[0.06]">
+        <div className="flex items-center justify-between mt-auto pt-5 border-t border-white/[0.06]">
           {/* Date */}
           <div className="flex items-center gap-2 text-slate-500 text-xs">
             <FaCalendarAlt className="text-[10px]" />
