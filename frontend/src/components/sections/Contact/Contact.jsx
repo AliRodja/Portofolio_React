@@ -441,9 +441,7 @@ function Contact({ profile = {} }) {
                 {/* ── Footer credits ── */}
                 <div className="mt-16 pt-6 border-t border-white/5 text-center">
                     <p className="text-slate-600 text-sm">
-                        © {new Date().getFullYear()} {profile.full_name || "Ali Imran Rodja"}. Built with
-                        <span className="text-blue-400"> React</span> &
-                        <span className="text-cyan-400"> Node.js</span>
+                        © {new Date().getFullYear()} {profile.full_name || "Ali Imran Rodja"}. 
                     </p>
                 </div>
 
