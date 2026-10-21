@@ -159,7 +159,7 @@ function Profile() {
         } catch (err) {
             console.error(err);
 
-            toast.error("Failed to update profile.");
+            toast.error(err.response?.data?.message || "Failed to update profile.");
         } finally {
             setSaving(false);
         }

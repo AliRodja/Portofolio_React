@@ -141,7 +141,7 @@ function Education() {
         } catch (error) {
             console.error(error);
 
-            toast.error("Something went wrong while saving.");
+            toast.error(error.response?.data?.message || "Something went wrong while saving.");
         } finally {
             setSaving(false);
         }

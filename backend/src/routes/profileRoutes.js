@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 const { verifyToken } = require("../middleware/authMiddleware");
+const { validateBody } = require("../middleware/validate");
+const schemas = require("../validators/schemas");
 
 const {
 
@@ -14,6 +16,6 @@ const {
 
 router.get("/", getProfile);
 
-router.put("/", verifyToken, updateProfile);
+router.put("/", verifyToken, validateBody(schemas.profile), updateProfile);
 
 module.exports = router;

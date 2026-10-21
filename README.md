@@ -29,10 +29,11 @@ Portofolio_React/
 │   ├── src/
 │   │   ├── config/       koneksi DB
 │   │   ├── controllers/  logika tiap resource
-│   │   ├── middleware/    auth (JWT) & upload (multer)
+│   │   ├── middleware/    auth (JWT), upload (multer), validasi, rate limit
 │   │   ├── routes/        definisi endpoint
 │   │   ├── scripts/       migrate & seed admin
-│   │   └── utils/         helper Supabase Storage
+│   │   ├── utils/         helper Supabase Storage
+│   │   └── validators/    aturan validasi per resource
 │   └── server.js     entry point lokal (npm run dev)
 └── frontend/         React + Vite
     └── src/
@@ -221,6 +222,8 @@ serverless di [`backend/api/index.js`](backend/api/index.js).
 - **Cold start** — serverless Vercel "tidur" saat idle; request pertama agak lambat (~2–3 dtk).
 - **Batas upload 4 MB** — batas body serverless Vercel ~4.5 MB (diset di [`backend/src/middleware/upload.js`](backend/src/middleware/upload.js)).
 - **Auto-cleanup file** — saat row dihapus atau gambar diganti, file lama di Supabase Storage ikut dihapus ([`backend/src/utils/storage.js`](backend/src/utils/storage.js)).
+- **Validasi input** — semua endpoint tulis divalidasi di route ([`middleware/validate.js`](backend/src/middleware/validate.js), aturan di [`validators/schemas.js`](backend/src/validators/schemas.js)). Data tidak valid dibalas `400` dengan pesan per field; pesan itu tampil di toast dashboard.
+- **Tanggal** — kolom `DATE` dikirim API sebagai teks `YYYY-MM-DD` (tidak bergantung zona waktu server), lihat [`config/db.js`](backend/src/config/db.js).
 - **Tidak ada pendaftaran publik** — `POST /api/auth/register` butuh token admin; akun pertama dibuat via `npm run seed:admin`.
 
 ## API endpoints

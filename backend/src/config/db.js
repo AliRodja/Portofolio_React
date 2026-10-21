@@ -1,4 +1,11 @@
-const { Pool } = require('pg');
+const { Pool, types } = require('pg');
+
+// Return DATE columns as plain "YYYY-MM-DD" strings. By default pg turns them
+// into JS Dates at the *server's* local midnight, so the JSON depended on the
+// server timezone (1 June became "2025-05-31T17:00:00Z" on a UTC+7 machine)
+// and the dashboard's `.slice(0, 10)` saved dates back one day earlier.
+const DATE_OID = 1082;
+types.setTypeParser(DATE_OID, (value) => value);
 
 // Managed Postgres (Supabase, Neon, Render...) memberi sertifikat self-signed,
 // jadi rejectUnauthorized dimatikan.
