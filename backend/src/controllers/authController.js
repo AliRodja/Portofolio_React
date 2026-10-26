@@ -10,20 +10,16 @@ const register = async (req, res) => {
             password,
         } = req.body;
 
-        if (!username || !email || !password) {
-            return res.status(400).json({
-                message: "All fields are required",
-            });
-        }
-
+        // username is UNIQUE too, so check it here instead of letting the
+        // INSERT fail with a 500.
         const userExists = await pool.query(
-            "SELECT id FROM users WHERE email = $1",
-            [email]
+            "SELECT id FROM users WHERE email = $1 OR username = $2",
+            [email, username]
         );
 
         if (userExists.rows.length > 0) {
             return res.status(400).json({
-                message: "Email already exists",
+                message: "Email or username already exists",
             });
         }
 

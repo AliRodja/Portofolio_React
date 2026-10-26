@@ -36,8 +36,10 @@ const checkers = {
     string(value, rule) {
         if (typeof value !== "string" && typeof value !== "number") return [undefined, "must be text"];
 
-        const clean = String(value).trim();
+        // Passwords set trim: false — leading/trailing spaces are part of them.
+        const clean = rule.trim === false ? String(value) : String(value).trim();
 
+        if (rule.min && clean.length < rule.min) return [undefined, `must be at least ${rule.min} characters`];
         if (rule.max && clean.length > rule.max) return [undefined, `must be at most ${rule.max} characters`];
 
         return [clean];

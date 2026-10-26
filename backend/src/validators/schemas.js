@@ -72,7 +72,24 @@ const profile = {
     resume_url: { type: "url", max: 500 },
 };
 
+// Login only checks shape, not strength: an existing password may predate
+// the register rules below.
+const login = {
+    email: { type: "email", required: true, max: 255 },
+    password: { type: "string", required: true, max: 200, trim: false },
+};
+
+// bcrypt ignores everything past 72 bytes, so cap there instead of letting a
+// longer password silently match on its first 72 bytes only.
+const register = {
+    username: { type: "string", required: true, max: 100 },
+    email: { type: "email", required: true, max: 255 },
+    password: { type: "string", required: true, min: 8, max: 72, trim: false },
+};
+
 module.exports = {
+    login,
+    register,
     project,
     skill,
     experience,
