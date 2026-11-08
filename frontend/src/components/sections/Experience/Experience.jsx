@@ -75,7 +75,7 @@ function SectionShell({ children }) {
                     </h2>
 
                     <p className="mt-4 text-lg text-slate-400 max-w-xl mx-auto">
-                        Where I&apos;ve worked and the roles I&apos;ve led — most recent first.
+                        Where I&apos;ve worked and the roles I&apos;ve led, most recent first.
                     </p>
                 </div>
 
@@ -140,8 +140,13 @@ function Experience() {
         );
     }
 
+    // Keep the section (and the navbar's #experience target) even when empty.
     if (groups.length === 0) {
-        return null;
+        return (
+            <SectionShell>
+                <p className="text-center text-slate-400">No experience listed yet.</p>
+            </SectionShell>
+        );
     }
 
     return (

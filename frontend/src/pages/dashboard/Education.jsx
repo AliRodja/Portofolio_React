@@ -376,7 +376,7 @@ function Education() {
                                         </h3>
 
                                         <span className="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 text-xs font-medium">
-                                            {item.start_year} — {item.end_year || "Present"}
+                                            {item.start_year} – {item.end_year || "Present"}
                                         </span>
                                     </div>
 

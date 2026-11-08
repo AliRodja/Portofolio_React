@@ -224,7 +224,7 @@ function SectionShell({ children }) {
           </h2>
 
           <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">
-            A collection of projects I've worked on — from full-stack web apps to
+            A collection of projects I've worked on, from full-stack web apps to
             creative experiments.
           </p>
         </div>
@@ -329,7 +329,7 @@ function Projects() {
           tabIndex={0}
           role="region"
           aria-roledescription="carousel"
-          aria-label="Projects — use the arrow keys or swipe to browse"
+          aria-label="Projects. Use the arrow keys or swipe to browse"
           className={`
             ${TRACK_CLASS}
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 rounded-2xl
@@ -360,9 +360,11 @@ function Projects() {
         />
       </div>
 
-      {/* ── Dots ── */}
+      {/* ── Dots ── Each button is a 44px tap target around a small visible dot.
+          Hidden on phones: up to 9 dots x 44px would overflow a 375px screen,
+          and the 44px arrow buttons, the counter and swiping already cover it. */}
       {scrollable && (
-        <div className="flex justify-center gap-2 mt-4">
+        <div className="hidden md:flex justify-center mt-2">
           {[...Array(maxIndex + 1)].map((_, i) => (
             <button
               key={i}
@@ -370,11 +372,15 @@ function Projects() {
               onClick={() => goTo(i)}
               aria-label={`Go to project ${i + 1}`}
               aria-current={i === index ? "true" : undefined}
-              className={`
-                h-2 rounded-full transition-all duration-300
-                ${i === index ? "w-6 bg-gradient-to-r from-blue-400 to-cyan-400" : "w-2 bg-white/15 hover:bg-white/30"}
-              `}
-            />
+              className="group/dot h-11 min-w-11 px-1 flex items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-blue-400"
+            >
+              <span
+                className={`
+                  block h-2 rounded-full transition-all duration-300
+                  ${i === index ? "w-6 bg-gradient-to-r from-blue-400 to-cyan-400" : "w-2 bg-white/15 group-hover/dot:bg-white/30"}
+                `}
+              />
+            </button>
           ))}
         </div>
       )}

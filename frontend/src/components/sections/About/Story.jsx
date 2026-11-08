@@ -3,8 +3,15 @@ import profileImage from "../../../assets/images/profile.webp";
 import { parseRichText } from "../../../utils/text";
 import { HiOutlineArrowRight } from "react-icons/hi2";
 
-function Story({ profile }) {
-  const aboutBlocks = parseRichText(profile.about);
+function Story({ profile, error }) {
+  // profile is null until /api/profile answers; the section header below is
+  // static and renders right away.
+  const aboutBlocks = profile ? parseRichText(profile.about) : [];
+
+  const infoCards = [
+    { label: "Based In", value: profile?.location },
+    { label: "Focus Area", value: profile?.headline },
+  ].filter((card) => card.value);
 
   return (
     <div className="relative bg-slate-900 py-32 overflow-hidden">
@@ -46,7 +53,7 @@ function Story({ profile }) {
           </h2>
 
           <p className="mt-6 text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            More than writing code — I'm building solutions and growing as a leader.
+            More than writing code: I'm building solutions and growing as a leader.
           </p>
 
         </div>
@@ -69,11 +76,17 @@ function Story({ profile }) {
 
                 {/* Image container */}
                 <div className="rounded-3xl overflow-hidden bg-slate-800">
-                  <img
-                    src={profile.profile_image || profileImage}
-                    alt={profile.full_name}
-                    className="w-80 h-80 object-cover object-top"
-                  />
+                  {profile ? (
+                    <img
+                      src={profile.profile_image || profileImage}
+                      alt={profile.full_name}
+                      width={320}
+                      height={320}
+                      className="w-80 h-80 object-cover object-top"
+                    />
+                  ) : (
+                    <div aria-hidden="true" className={`w-80 h-80 ${error ? "" : "animate-pulse"}`} />
+                  )}
                 </div>
 
               </div>
@@ -89,6 +102,21 @@ function Story({ profile }) {
           <div data-aos="fade-left" className="lg:col-span-3">
 
             <div className="space-y-6">
+
+              {!profile && !error && (
+                <div aria-busy="true" className="space-y-4 animate-pulse">
+                  <span className="sr-only">Loading</span>
+                  <div className="h-5 w-full rounded-lg bg-white/[0.05]" />
+                  <div className="h-5 w-full rounded-lg bg-white/[0.05]" />
+                  <div className="h-5 w-3/4 rounded-lg bg-white/[0.05]" />
+                </div>
+              )}
+
+              {!profile && error && (
+                <p className="text-lg text-slate-400">
+                  This section couldn&apos;t be loaded. Use &ldquo;Try again&rdquo; at the top of the page.
+                </p>
+              )}
 
               <div className="space-y-5">
                 {aboutBlocks.map((block, i) =>
@@ -118,35 +146,26 @@ function Story({ profile }) {
                 )}
               </div>
 
-              {/* Info cards row */}
-              <div className="grid grid-cols-2 gap-4 mt-10">
-
-                <div
-                  data-aos="fade-up"
-                  className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-5 hover:bg-white/[0.08] transition-all duration-300"
-                >
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug break-words bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                    {profile.location || "Gorontalo"}
-                  </p>
-                  <p className="text-sm text-slate-500 mt-1.5 font-medium">
-                    Based In
-                  </p>
+              {/* Info cards row: only real profile values, never a made-up fallback */}
+              {infoCards.length > 0 && (
+                <div className={`grid gap-4 mt-10 ${infoCards.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+                  {infoCards.map((card, i) => (
+                    <div
+                      key={card.label}
+                      data-aos="fade-up"
+                      data-aos-delay={i * 100}
+                      className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-5 hover:bg-white/[0.08] transition-all duration-300"
+                    >
+                      <p className="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug break-words bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                        {card.value}
+                      </p>
+                      <p className="text-sm text-slate-400 mt-1.5 font-medium">
+                        {card.label}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-
-                <div
-                  data-aos="fade-up"
-                  data-aos-delay="100"
-                  className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-5 hover:bg-white/[0.08] transition-all duration-300"
-                >
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug break-words bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                    {profile.headline || "Full Stack Dev"}
-                  </p>
-                  <p className="text-sm text-slate-500 mt-1.5 font-medium">
-                    Focus Area
-                  </p>
-                </div>
-
-              </div>
+              )}
 
             </div>
 

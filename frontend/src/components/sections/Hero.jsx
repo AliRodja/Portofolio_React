@@ -10,7 +10,55 @@ import {
 import Container from "../ui/Container";
 import Button from "../ui/Button";
 
-function Hero({ profile }) {
+// Shown while /api/profile is loading. Same rough shape as the real text so
+// the layout doesn't jump when it arrives.
+function HeroTextSkeleton() {
+  return (
+    <div aria-busy="true" className="animate-pulse">
+      <span className="sr-only">Loading profile</span>
+      <div className="h-14 md:h-16 lg:h-20 w-3/4 rounded-2xl bg-white/[0.06]" />
+      <div className="h-14 md:h-16 lg:h-20 w-1/2 rounded-2xl bg-white/[0.06] mt-3" />
+      <div className="h-6 w-2/3 rounded-lg bg-white/[0.05] mt-8" />
+      <div className="space-y-3 mt-8 max-w-xl">
+        <div className="h-4 w-full rounded-lg bg-white/[0.04]" />
+        <div className="h-4 w-full rounded-lg bg-white/[0.04]" />
+        <div className="h-4 w-4/5 rounded-lg bg-white/[0.04]" />
+      </div>
+      <div className="flex gap-4 mt-10">
+        <div className="h-12 w-36 rounded-xl bg-white/[0.06]" />
+        <div className="h-12 w-36 rounded-xl bg-white/[0.04]" />
+      </div>
+    </div>
+  );
+}
+
+function HeroError({ onRetry }) {
+  return (
+    <div>
+      <h1 className="text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight text-white">
+        Ali Imran Rodja
+      </h1>
+      <p className="mt-6 text-slate-400 max-w-xl">
+        The profile couldn&apos;t be loaded right now. Check your connection and try again.
+      </p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="
+          mt-8 min-h-11 px-6 rounded-xl
+          text-sm font-semibold text-white
+          bg-blue-600 hover:bg-blue-500 active:bg-blue-700
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400
+          transition-colors duration-200
+        "
+      >
+        Try again
+      </button>
+    </div>
+  );
+}
+
+function Hero({ profile, error, onRetry }) {
   return (
     <section
       id="hero"
@@ -56,136 +104,144 @@ function Hero({ profile }) {
               </span>
             </div>
 
-            {/* Name */}
-            <h1
-              data-aos="fade-up"
-              data-aos-delay="100"
-              className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-white"
-            >
-              {profile.full_name?.split(" ").map((word, i, arr) =>
-                i === arr.length - 1 ? (
-                  <span key={i}>
-                    <br className="hidden sm:block" />
-                    <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                      {word}
-                    </span>
-                  </span>
-                ) : (
-                  <span key={i}>{word} </span>
-                )
-              )}
-            </h1>
-
-            {/* Headline */}
-            <h2
-              data-aos="fade-up"
-              data-aos-delay="200"
-              className="text-xl lg:text-2xl text-slate-400 mt-6 font-light"
-            >
-              {profile.headline}
-            </h2>
-
-            {/* Short intro */}
-            <p
-              data-aos="fade-up"
-              data-aos-delay="300"
-              className="mt-8 leading-8 text-slate-400 max-w-xl"
-            >
-              {profile.short_bio}
-            </p>
-
-            {/* Buttons */}
-            <div
-              data-aos="fade-up"
-              data-aos-delay="400"
-              className="flex flex-wrap gap-4 mt-10"
-            >
-
-              <Button href="#projects">
-                View Projects
-              </Button>
-
-              {profile.resume_url && (
-                <Button
-                  href={profile.resume_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="secondary"
+            {profile ? (
+              <>
+                {/* Name */}
+                <h1
+                  data-aos="fade-up"
+                  data-aos-delay="100"
+                  className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-white"
                 >
-                  Download CV
-                </Button>
-              )}
+                  {profile.full_name?.split(" ").map((word, i, arr) =>
+                    i === arr.length - 1 ? (
+                      <span key={i}>
+                        <br className="hidden sm:block" />
+                        <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                          {word}
+                        </span>
+                      </span>
+                    ) : (
+                      <span key={i}>{word} </span>
+                    )
+                  )}
+                </h1>
 
-            </div>
-
-            {/* Social icons */}
-            <div
-              data-aos="fade-up"
-              data-aos-delay="500"
-              className="flex gap-5 mt-10"
-            >
-
-              {profile.github_url && (
-                <a
-                  href={profile.github_url}
-                  target="_blank"
-                  aria-label="GitHub"
-                  rel="noopener noreferrer"
-                  className="
-                    w-12 h-12 rounded-xl
-                    bg-white/5 border border-white/10
-                    flex items-center justify-center
-                    text-xl text-slate-400
-                    hover:text-white hover:bg-white/10 hover:border-white/20
-                    hover:-translate-y-1
-                    transition-all duration-300
-                  "
+                {/* Headline */}
+                <h2
+                  data-aos="fade-up"
+                  data-aos-delay="200"
+                  className="text-xl lg:text-2xl text-slate-400 mt-6 font-light"
                 >
-                  <FaGithub />
-                </a>
-              )}
+                  {profile.headline}
+                </h2>
 
-              {profile.linkedin_url && (
-                <a
-                  href={profile.linkedin_url}
-                  target="_blank"
-                  aria-label="LinkedIn"
-                  rel="noopener noreferrer"
-                  className="
-                    w-12 h-12 rounded-xl
-                    bg-white/5 border border-white/10
-                    flex items-center justify-center
-                    text-xl text-slate-400
-                    hover:text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/30
-                    hover:-translate-y-1
-                    transition-all duration-300
-                  "
+                {/* Short intro */}
+                <p
+                  data-aos="fade-up"
+                  data-aos-delay="300"
+                  className="mt-8 leading-8 text-slate-400 max-w-xl"
                 >
-                  <FaLinkedin />
-                </a>
-              )}
+                  {profile.short_bio}
+                </p>
 
-              {profile.instagram_url && (
-                <a
-                  href={profile.instagram_url}
-                  target="_blank"
-                  aria-label="Instagram"
-                  rel="noopener noreferrer"
-                  className="
-                    w-12 h-12 rounded-xl
-                    bg-white/5 border border-white/10
-                    flex items-center justify-center
-                    text-xl text-slate-400
-                    hover:text-pink-400 hover:bg-pink-500/10 hover:border-pink-500/30
-                    hover:-translate-y-1
-                    transition-all duration-300
-                  "
+                {/* Buttons */}
+                <div
+                  data-aos="fade-up"
+                  data-aos-delay="400"
+                  className="flex flex-wrap gap-4 mt-10"
                 >
-                  <FaInstagram />
-                </a>
-              )}
 
-            </div>
+                  <Button href="#projects">
+                    View Projects
+                  </Button>
+
+                  {profile.resume_url && (
+                    <Button
+                      href={profile.resume_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variant="secondary"
+                    >
+                      Download CV
+                    </Button>
+                  )}
+
+                </div>
+
+                {/* Social icons */}
+                <div
+                  data-aos="fade-up"
+                  data-aos-delay="500"
+                  className="flex gap-5 mt-10"
+                >
+
+                  {profile.github_url && (
+                    <a
+                      href={profile.github_url}
+                      target="_blank"
+                      aria-label="GitHub"
+                      rel="noopener noreferrer"
+                      className="
+                        w-12 h-12 rounded-xl
+                        bg-white/5 border border-white/10
+                        flex items-center justify-center
+                        text-xl text-slate-400
+                        hover:text-white hover:bg-white/10 hover:border-white/20
+                        hover:-translate-y-1
+                        transition-all duration-300
+                      "
+                    >
+                      <FaGithub />
+                    </a>
+                  )}
+
+                  {profile.linkedin_url && (
+                    <a
+                      href={profile.linkedin_url}
+                      target="_blank"
+                      aria-label="LinkedIn"
+                      rel="noopener noreferrer"
+                      className="
+                        w-12 h-12 rounded-xl
+                        bg-white/5 border border-white/10
+                        flex items-center justify-center
+                        text-xl text-slate-400
+                        hover:text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/30
+                        hover:-translate-y-1
+                        transition-all duration-300
+                      "
+                    >
+                      <FaLinkedin />
+                    </a>
+                  )}
+
+                  {profile.instagram_url && (
+                    <a
+                      href={profile.instagram_url}
+                      target="_blank"
+                      aria-label="Instagram"
+                      rel="noopener noreferrer"
+                      className="
+                        w-12 h-12 rounded-xl
+                        bg-white/5 border border-white/10
+                        flex items-center justify-center
+                        text-xl text-slate-400
+                        hover:text-pink-400 hover:bg-pink-500/10 hover:border-pink-500/30
+                        hover:-translate-y-1
+                        transition-all duration-300
+                      "
+                    >
+                      <FaInstagram />
+                    </a>
+                  )}
+
+                </div>
+              </>
+            ) : error ? (
+              <HeroError onRetry={onRetry} />
+            ) : (
+              <HeroTextSkeleton />
+            )}
 
           </div>
 
@@ -213,11 +269,21 @@ function Hero({ profile }) {
             {/* Profile image with gradient border */}
             <div className="relative rounded-full p-[3px] bg-gradient-to-br from-blue-400 via-cyan-400 to-blue-500">
               <div className="rounded-full overflow-hidden bg-slate-800">
-                <img
-                  src={profile.profile_image || profileImage}
-                  alt={profile.full_name}
-                  className="w-[260px] h-[260px] lg:w-[330px] lg:h-[330px] object-cover object-top"
-                />
+                {/* Largest image on the first screen: fetch it before anything
+                    else, and give it intrinsic dimensions so it reserves space. */}
+                {profile ? (
+                  <img
+                    src={profile.profile_image || profileImage}
+                    alt={profile.full_name}
+                    width={330}
+                    height={330}
+                    fetchPriority="high"
+                    className="w-[260px] h-[260px] lg:w-[330px] lg:h-[330px] object-cover object-top"
+                  />
+                ) : (
+                  // Same size as the photo, so nothing shifts when it arrives.
+                  <div aria-hidden="true" className="w-[260px] h-[260px] lg:w-[330px] lg:h-[330px] bg-slate-800 animate-pulse" />
+                )}
               </div>
             </div>
 
@@ -238,7 +304,7 @@ function Hero({ profile }) {
           href="#stats"
           className="
             flex flex-col items-center gap-2
-            text-slate-500 hover:text-blue-400
+            text-slate-400 hover:text-blue-400
             transition-all duration-300
             group
           "

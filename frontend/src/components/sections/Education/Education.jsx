@@ -109,23 +109,29 @@ function Education() {
 
                 </div>
 
+                {education.length === 0 && (
+                    <p className="text-center text-slate-400">No education listed yet.</p>
+                )}
+
                 {/* ── Timeline ── */}
-                <div className="relative max-w-4xl mx-auto">
+                {education.length > 0 && (
+                    <div className="relative max-w-4xl mx-auto">
 
-                    {/* Center timeline line */}
-                    <div className="absolute left-8 md:left-12 top-0 bottom-0 w-[2px] bg-gradient-to-b from-blue-500/40 via-cyan-500/30 to-transparent rounded-full" />
+                        {/* Center timeline line */}
+                        <div className="absolute left-8 md:left-12 top-0 bottom-0 w-[2px] bg-gradient-to-b from-blue-500/40 via-cyan-500/30 to-transparent rounded-full" />
 
-                    <div className="space-y-8">
-                        {education.map((item, index) => (
-                            <EducationCard
-                                key={item.id}
-                                education={item}
-                                index={index}
-                            />
-                        ))}
+                        <div className="space-y-8">
+                            {education.map((item, index) => (
+                                <EducationCard
+                                    key={item.id}
+                                    education={item}
+                                    index={index}
+                                />
+                            ))}
+                        </div>
+
                     </div>
-
-                </div>
+                )}
 
             </Container>
 

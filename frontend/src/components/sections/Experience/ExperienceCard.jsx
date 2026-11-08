@@ -36,7 +36,7 @@ function DateLine({ start, end }) {
     return (
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm text-slate-400">
             <span>{formatMonth(start)} – {formatMonth(end)}</span>
-            <span className="text-slate-500 whitespace-nowrap">
+            <span className="text-slate-400 whitespace-nowrap">
                 <span className="text-slate-600 mr-2" aria-hidden="true">·</span>
                 {formatDuration(start, end)}
             </span>

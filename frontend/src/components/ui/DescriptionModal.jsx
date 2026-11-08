@@ -1,21 +1,41 @@
-import { useEffect } from "react";
+import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 
 function DescriptionModal({ title, subtitle, description, onClose }) {
+    const titleId = useId();
+    const closeButtonRef = useRef(null);
+
+    // Callers pass an inline arrow, so onClose changes on every parent render.
+    // Keep the latest one in a ref so the open/close effect below runs once.
+    const onCloseRef = useRef(onClose);
     useEffect(() => {
+        onCloseRef.current = onClose;
+    });
+
+    useEffect(() => {
+        const previouslyFocused = document.activeElement;
+        const appRoot = document.getElementById("root");
+
         const handleKeyDown = (e) => {
-            if (e.key === "Escape") onClose();
+            if (e.key === "Escape") onCloseRef.current();
         };
 
+        // The modal is portaled outside #root, so making #root inert keeps
+        // Tab (and screen-reader browsing) inside the dialog while it is open.
+        if (appRoot) appRoot.inert = true;
         document.addEventListener("keydown", handleKeyDown);
         document.body.style.overflow = "hidden";
+        closeButtonRef.current?.focus();
 
         return () => {
+            if (appRoot) appRoot.inert = false;
             document.removeEventListener("keydown", handleKeyDown);
             document.body.style.overflow = "";
+            // Send focus back to the "Read more" button that opened it.
+            previouslyFocused?.focus?.();
         };
-    }, [onClose]);
+    }, []);
 
     return createPortal(
         <div
@@ -23,19 +43,25 @@ function DescriptionModal({ title, subtitle, description, onClose }) {
             onClick={onClose}
         >
             <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={title ? titleId : undefined}
+                aria-label={title ? undefined : "Details"}
                 className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl bg-slate-900 border border-white/10 p-6 md:p-8 shadow-2xl animate-modal-in"
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
+                    ref={closeButtonRef}
+                    type="button"
                     onClick={onClose}
                     aria-label="Close"
-                    className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+                    className="absolute top-3 right-3 w-11 h-11 rounded-full bg-white/5 hover:bg-white/10 active:bg-white/15 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
                 >
-                    <HiXMark className="text-lg" />
+                    <HiXMark className="text-lg" aria-hidden="true" />
                 </button>
 
                 {title && (
-                    <h3 className="text-xl font-bold text-white pr-10 leading-snug">
+                    <h3 id={titleId} className="text-xl font-bold text-white pr-12 leading-snug">
                         {title}
                     </h3>
                 )}

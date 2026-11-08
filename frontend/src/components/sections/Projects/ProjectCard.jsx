@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaGithub, FaExternalLinkAlt, FaCalendarAlt } from "react-icons/fa";
+import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 import { HiOutlineArrowUpRight, HiOutlineRocketLaunch } from "react-icons/hi2";
 import DescriptionModal from "../../ui/DescriptionModal";
 
@@ -10,16 +10,6 @@ function ProjectCard({ project }) {
   const [imageError, setImageError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const isLongDescription = project.description && project.description.length > DESCRIPTION_LIMIT;
-
-  // Format date nicely
-  const formatDate = (dateString) => {
-    if (!dateString) return null;
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-    });
-  };
 
   return (
     <div
@@ -70,6 +60,7 @@ function ProjectCard({ project }) {
             flex items-center justify-center gap-4
             transition-all duration-400
             ${isHovered ? "opacity-100" : "opacity-0"}
+            focus-within:opacity-100
           `}
         >
           {project.repo_link && (
@@ -211,57 +202,54 @@ function ProjectCard({ project }) {
           </div>
         )}
 
-        {/* Footer — Date + Links */}
-        <div className="flex items-center justify-between mt-auto pt-5 border-t border-white/[0.06]">
-          {/* Date */}
-          <div className="flex items-center gap-2 text-slate-500 text-xs">
-            <FaCalendarAlt className="text-[10px]" />
-            <span>{formatDate(project.created_at) || "Recent"}</span>
-          </div>
+        {/* Footer: links. No date here: the only date stored is created_at (when
+            the row was added), not when the project happened; the real year is
+            already in the description. */}
+        {(project.repo_link || project.demo_link) && (
+          <div className="flex items-center justify-end mt-auto pt-5 border-t border-white/[0.06]">
+            <div className="flex items-center gap-3">
+              {project.repo_link && (
+                <a
+                  href={project.repo_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+                    inline-flex items-center justify-center gap-2
+                    min-h-11 min-w-11 px-4 py-2 rounded-lg
+                    bg-white/[0.04] border border-white/[0.08]
+                    text-sm text-slate-300 font-medium
+                    hover:bg-white/[0.10] hover:border-white/[0.15] hover:text-white
+                    transition-all duration-300
+                  "
+                >
+                  <FaGithub className="text-sm" />
+                  <span className="sr-only sm:not-sr-only">Code</span>
+                </a>
+              )}
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-3">
-            {project.repo_link && (
-              <a
-                href={project.repo_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  inline-flex items-center gap-2
-                  px-4 py-2 rounded-lg
-                  bg-white/[0.04] border border-white/[0.08]
-                  text-sm text-slate-300 font-medium
-                  hover:bg-white/[0.10] hover:border-white/[0.15] hover:text-white
-                  transition-all duration-300
-                "
-              >
-                <FaGithub className="text-sm" />
-                <span className="hidden sm:inline">Code</span>
-              </a>
-            )}
-
-            {project.demo_link && (
-              <a
-                href={project.demo_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  inline-flex items-center gap-2
-                  px-4 py-2 rounded-lg
-                  bg-gradient-to-r from-blue-500/20 to-cyan-500/20
-                  border border-blue-400/20
-                  text-sm text-blue-300 font-medium
-                  hover:from-blue-500/30 hover:to-cyan-500/30
-                  hover:border-blue-400/40 hover:text-blue-200
-                  transition-all duration-300
-                "
-              >
-                <FaExternalLinkAlt className="text-xs" />
-                <span className="hidden sm:inline">Demo</span>
-              </a>
-            )}
+              {project.demo_link && (
+                <a
+                  href={project.demo_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+                    inline-flex items-center justify-center gap-2
+                    min-h-11 min-w-11 px-4 py-2 rounded-lg
+                    bg-gradient-to-r from-blue-500/20 to-cyan-500/20
+                    border border-blue-400/20
+                    text-sm text-blue-300 font-medium
+                    hover:from-blue-500/30 hover:to-cyan-500/30
+                    hover:border-blue-400/40 hover:text-blue-200
+                    transition-all duration-300
+                  "
+                >
+                  <FaExternalLinkAlt className="text-xs" />
+                  <span className="sr-only sm:not-sr-only">Demo</span>
+                </a>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Bottom accent line on hover */}

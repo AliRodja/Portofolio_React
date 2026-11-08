@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import api from "../services/api";
@@ -19,18 +19,32 @@ import ScrollTopButton from "../components/ui/ScrollTopButton";
 function Home() {
 
   const [profile, setProfile] = useState(null);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
-
+  // State is only set once the request settles, never synchronously.
+  const fetchProfile = useCallback(() => {
     api.get("/profile")
       .then((res) => {
 
         setProfile(res.data);
 
       })
-      .catch(console.error);
+      .catch((err) => {
 
+        console.error(err);
+        setError(true);
+
+      });
   }, []);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  const retry = () => {
+    setError(false);
+    fetchProfile();
+  };
 
   useEffect(() => {
     AOS.init({
@@ -38,33 +52,27 @@ function Home() {
       easing: "ease-out-cubic",
       once: true,
       offset: 60,
+      // Show content without the entrance animations for reduced-motion users.
+      disable: () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     });
   }, []);
 
-  if (!profile) {
-
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900">
-        <div className="w-10 h-10 rounded-full border-2 border-blue-400/30 border-t-blue-400 animate-spin" />
-        <p className="mt-4 text-slate-500 text-sm tracking-wider">Loading...</p>
-      </div>
-    );
-
-  }
-
+  // The page renders immediately: every section starts its own request at the
+  // same time instead of waiting for /api/profile first. Hero and About show
+  // their own loading and error states for the profile-driven parts.
   return (
     <>
       <Navbar />
 
-      <Hero profile={profile} />
+      <Hero profile={profile} error={error} onRetry={retry} />
       <Stats />
-      <About profile={profile} />
+      <About profile={profile} error={error} />
       <Skills />
       <Projects />
       <Experience />
       <Education />
       <Certificates />
-      <Contact profile={profile} />
+      <Contact profile={profile ?? undefined} />
 
       <ScrollTopButton />
     </>

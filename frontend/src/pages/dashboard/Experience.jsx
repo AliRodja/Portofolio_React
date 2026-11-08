@@ -488,7 +488,7 @@ function Experience() {
                                         </h3>
 
                                         <span className="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 text-xs font-medium">
-                                            {formatMonthYear(experience.start_date)} — {formatMonthYear(experience.end_date)}
+                                            {formatMonthYear(experience.start_date)} – {formatMonthYear(experience.end_date)}
                                         </span>
                                     </div>
 

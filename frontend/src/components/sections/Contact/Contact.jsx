@@ -224,7 +224,7 @@ function Contact({ profile = {} }) {
                                         {info.icon}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-sm text-slate-500 font-medium">
+                                        <p className="text-sm text-slate-400 font-medium">
                                             {info.label}
                                         </p>
                                         <p className="text-white font-semibold mt-0.5 break-words">
@@ -259,7 +259,7 @@ function Contact({ profile = {} }) {
                         {/* Social links */}
                         {socials.length > 0 && (
                             <div data-aos="fade-up" className="pt-4">
-                                <p className="text-sm text-slate-500 font-medium mb-4 tracking-wider uppercase">
+                                <p className="text-sm text-slate-400 font-medium mb-4 tracking-wider uppercase">
                                     Find me on
                                 </p>
                                 <div className="flex gap-3">
@@ -311,11 +311,12 @@ function Contact({ profile = {} }) {
 
                                 <div className="grid md:grid-cols-2 gap-5">
                                     <div>
-                                        <label className="block text-sm text-slate-400 font-medium mb-2">
+                                        <label htmlFor="contact-name" className="block text-sm text-slate-400 font-medium mb-2">
                                             Name
                                         </label>
                                         <input
                                             type="text"
+                                            id="contact-name"
                                             name="name"
                                             placeholder="Your Name"
                                             value={form.name}
@@ -324,20 +325,21 @@ function Contact({ profile = {} }) {
                                             className="
                                                 w-full rounded-xl p-4
                                                 bg-white/[0.05] border border-white/10
-                                                text-white placeholder-slate-600
+                                                text-white placeholder-slate-400
                                                 outline-none
-                                                focus:border-blue-500/50 focus:bg-white/[0.08]
+                                                focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:bg-white/[0.08]
                                                 transition-all duration-300
                                             "
                                         />
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm text-slate-400 font-medium mb-2">
+                                        <label htmlFor="contact-email" className="block text-sm text-slate-400 font-medium mb-2">
                                             Email
                                         </label>
                                         <input
                                             type="email"
+                                            id="contact-email"
                                             name="email"
                                             placeholder="your@email.com"
                                             value={form.email}
@@ -346,9 +348,9 @@ function Contact({ profile = {} }) {
                                             className="
                                                 w-full rounded-xl p-4
                                                 bg-white/[0.05] border border-white/10
-                                                text-white placeholder-slate-600
+                                                text-white placeholder-slate-400
                                                 outline-none
-                                                focus:border-blue-500/50 focus:bg-white/[0.08]
+                                                focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:bg-white/[0.08]
                                                 transition-all duration-300
                                             "
                                         />
@@ -356,11 +358,12 @@ function Contact({ profile = {} }) {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-slate-400 font-medium mb-2">
+                                    <label htmlFor="contact-subject" className="block text-sm text-slate-400 font-medium mb-2">
                                         Subject
                                     </label>
                                     <input
                                         type="text"
+                                        id="contact-subject"
                                         name="subject"
                                         placeholder="What's this about?"
                                         value={form.subject}
@@ -369,20 +372,21 @@ function Contact({ profile = {} }) {
                                         className="
                                             w-full rounded-xl p-4
                                             bg-white/[0.05] border border-white/10
-                                            text-white placeholder-slate-600
+                                            text-white placeholder-slate-400
                                             outline-none
-                                            focus:border-blue-500/50 focus:bg-white/[0.08]
+                                            focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:bg-white/[0.08]
                                             transition-all duration-300
                                         "
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-slate-400 font-medium mb-2">
+                                    <label htmlFor="contact-message" className="block text-sm text-slate-400 font-medium mb-2">
                                         Message
                                     </label>
                                     <textarea
                                         rows="5"
+                                        id="contact-message"
                                         name="message"
                                         placeholder="Your message..."
                                         value={form.message}
@@ -391,9 +395,9 @@ function Contact({ profile = {} }) {
                                         className="
                                             w-full rounded-xl p-4
                                             bg-white/[0.05] border border-white/10
-                                            text-white placeholder-slate-600
+                                            text-white placeholder-slate-400
                                             outline-none resize-none
-                                            focus:border-blue-500/50 focus:bg-white/[0.08]
+                                            focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:bg-white/[0.08]
                                             transition-all duration-300
                                         "
                                     />
@@ -440,7 +444,7 @@ function Contact({ profile = {} }) {
 
                 {/* ── Footer credits ── */}
                 <div className="mt-16 pt-6 border-t border-white/5 text-center">
-                    <p className="text-slate-600 text-sm">
+                    <p className="text-slate-400 text-sm">
                         © {new Date().getFullYear()} {profile.full_name || "Ali Imran Rodja"}. 
                     </p>
                 </div>

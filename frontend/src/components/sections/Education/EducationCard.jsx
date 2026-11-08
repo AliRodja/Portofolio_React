@@ -49,7 +49,7 @@ function EducationCard({ education, index = 0 }) {
 
                     {/* Year badge */}
                     <span className="inline-block px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold tracking-wider">
-                        {education.start_year} — {education.end_year || "Present"}
+                        {education.start_year} – {education.end_year || "Present"}
                     </span>
 
                     {/* Institution */}
@@ -65,7 +65,7 @@ function EducationCard({ education, index = 0 }) {
                     {/* Description */}
                     {education.description && (
                         <>
-                            <p className="mt-4 text-slate-500 leading-7 line-clamp-3">
+                            <p className="mt-4 text-slate-400 leading-7 line-clamp-3">
                                 {education.description}
                             </p>
 

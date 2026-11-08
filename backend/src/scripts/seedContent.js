@@ -44,7 +44,7 @@ const projects = [
         featured: true,
         tech_stack: ["Next.js 15", "TypeScript", "Tailwind CSS", "Node.js", "Express.js", "PostgreSQL"],
         description:
-            "Undergraduate thesis (2025–2026) — role: Full-Stack Developer.\n\n" +
+            "Undergraduate thesis (2025–2026). Role: Full-Stack Developer.\n\n" +
             "A web-based asset management system for the Informatics Engineering Study Program at UNPAS, " +
             "replacing manual processes with an integrated digital system. Features room-based asset grouping, " +
             "automated item coding, a borrowing procedure with PDF e-letters, photo-based return verification, " +
@@ -56,7 +56,7 @@ const projects = [
         featured: true,
         tech_stack: ["React", "Laravel", "Midtrans"],
         description:
-            "Software Engineering Project (PPL) coursework (2025) — role: Data Analyst.\n\n" +
+            "Software Engineering Project (PPL) coursework (2025). Role: Data Analyst.\n\n" +
             "A platform connecting users with service providers (e.g. report writing services). " +
             "In a class split into 8 module-based teams, my team owned the payment gateway module using Midtrans.",
     },
@@ -66,7 +66,7 @@ const projects = [
         featured: true,
         tech_stack: ["Laravel", "PHP Blade", "Tailwind CSS"],
         description:
-            "Web Practicum coursework (2024) — role: Backend Developer.\n\n" +
+            "Web Practicum coursework (2024). Role: Backend Developer.\n\n" +
             "A concert ticket booking website built as a team project, covering the booking system, " +
             "API integration, and payment gateway. Primarily responsible for the backend, " +
             "with additional contributions to the frontend.",
@@ -77,7 +77,7 @@ const projects = [
         featured: false,
         tech_stack: ["PHP"],
         description:
-            "Web Programming coursework (2023) — role: Full-Stack Developer.\n\n" +
+            "Web Programming coursework (2023). Role: Full-Stack Developer.\n\n" +
             "A dynamic medicine e-commerce website with login, registration, and full CRUD functionality, " +
             "built with native PHP.",
     },
@@ -87,7 +87,7 @@ const projects = [
         featured: false,
         tech_stack: ["Figma", "Java"],
         description:
-            "Programming Practicum II coursework (2025) — role: UI/UX Designer.\n\n" +
+            "Programming Practicum II coursework (2025). Role: UI/UX Designer.\n\n" +
             "Designed the dashboard management interface for a collaborative multi-team project in Figma, " +
             "before it was implemented as a Java-based application.",
     },
@@ -97,7 +97,7 @@ const projects = [
         featured: false,
         tech_stack: ["Unity", "C#"],
         description:
-            "Game Practicum coursework (2025) — role: Team Leader & Developer.\n\n" +
+            "Game Practicum coursework (2025). Role: Team Leader & Developer.\n\n" +
             "Led the team and developed the core gameplay mechanics of a shooter-themed game, " +
             "while other members handled visual assets and character art.",
     },
@@ -107,7 +107,7 @@ const projects = [
         featured: false,
         tech_stack: ["Figma", "ClickUp"],
         description:
-            "Team project (Aug 2024 – Jan 2025) — role: Team Leader.\n\n" +
+            "Team project (Aug 2024 – Jan 2025). Role: Team Leader.\n\n" +
             "• Led and coordinated a cross-functional team in designing and developing the core flow of the " +
             "E-Waste app, including authentication (login/register) and profile management.\n" +
             "• Handled task allocation, schedule oversight, and making sure the team hit its targets.",
@@ -165,7 +165,7 @@ const experiences = [
 const education = [
     {
         institution: "Universitas Pasundan",
-        degree: "Bachelor of Engineering (S.T.) — Informatics Engineering",
+        degree: "Bachelor of Engineering (S.T.), Informatics Engineering",
         start_year: 2022,
         end_year: 2026,
         description:

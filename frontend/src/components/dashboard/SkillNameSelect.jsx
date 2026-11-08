@@ -58,7 +58,7 @@ function SkillNameSelect({ value, onChange, onSelectPreset }) {
 
                         {suggestions.length === 0 ? (
                             <p className="px-3 py-3 text-sm text-slate-400">
-                                No matching icon — this will be saved as a custom name.
+                                No matching icon. This will be saved as a custom name.
                             </p>
                         ) : (
                             suggestions.map((item) => {

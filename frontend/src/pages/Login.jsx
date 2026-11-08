@@ -108,39 +108,45 @@ function Login() {
                         className="mt-10 space-y-6"
                     >
 
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            value={form.email}
-                            onChange={handleChange}
-                            required
-                            className="
-                w-full
-                border
-                rounded-xl
-                p-4
-                outline-none
-                focus:border-blue-600
-              "
-                        />
+                        <div>
+                            <label htmlFor="login-email" className="block text-sm font-medium text-slate-700 mb-2">
+                                Email
+                            </label>
+                            <input
+                                id="login-email"
+                                type="email"
+                                name="email"
+                                autoComplete="username"
+                                value={form.email}
+                                onChange={handleChange}
+                                required
+                                className="
+                                    w-full border rounded-xl p-4
+                                    outline-none
+                                    focus:border-blue-600 focus:ring-2 focus:ring-blue-600
+                                "
+                            />
+                        </div>
 
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            value={form.password}
-                            onChange={handleChange}
-                            required
-                            className="
-                w-full
-                border
-                rounded-xl
-                p-4
-                outline-none
-                focus:border-blue-600
-              "
-                        />
+                        <div>
+                            <label htmlFor="login-password" className="block text-sm font-medium text-slate-700 mb-2">
+                                Password
+                            </label>
+                            <input
+                                id="login-password"
+                                type="password"
+                                name="password"
+                                autoComplete="current-password"
+                                value={form.password}
+                                onChange={handleChange}
+                                required
+                                className="
+                                    w-full border rounded-xl p-4
+                                    outline-none
+                                    focus:border-blue-600 focus:ring-2 focus:ring-blue-600
+                                "
+                            />
+                        </div>
 
                         {error && (
 

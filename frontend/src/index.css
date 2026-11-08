@@ -1,5 +1,28 @@
 @import "tailwindcss";
 
+/* Tailwind v4's preflight gives <button> the default arrow cursor. Set the
+   pointer once here for every enabled control. Kept in the base layer so
+   utilities such as cursor-grab or disabled:cursor-not-allowed still win. */
+@layer base {
+  a[href],
+  button:not(:disabled),
+  summary,
+  select,
+  label[for],
+  input[type="checkbox"],
+  input[type="radio"],
+  [role="button"],
+  [role="tab"],
+  [role="switch"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -65,6 +88,14 @@ body {
   animation: marquee-reverse 30s linear infinite;
 }
 
+/* Pausing the marquee. Plain CSS on purpose: the `animation` shorthand above is
+   unlayered, so it beats any Tailwind utility (including an arbitrary
+   [animation-play-state:paused]). These selectors are more specific. */
+.marquee-row:hover .marquee-track,
+.marquee-track.is-paused {
+  animation-play-state: paused;
+}
+
 /* Toast pop-in animation */
 @keyframes toast-in {
   0% { opacity: 0; transform: translateY(-16px) scale(0.96); }
@@ -83,4 +114,33 @@ body {
 
 .animate-modal-in {
   animation: modal-in 0.2s ease-out;
+}
+
+/* Users who ask for less motion get none of the decorative loops. The loading
+   spinner (animate-spin) stays: it is the only sign that something is loading.
+   The Skills marquee becomes a static wrapped list in Skills.jsx. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-float,
+  .animate-float-delayed,
+  .animate-pulse-glow,
+  .animate-marquee,
+  .animate-marquee-reverse,
+  .animate-pulse,
+  .animate-bounce,
+  .animate-toast-in,
+  .animate-modal-in {
+    animation: none;
+  }
+
+  /* AOS keeps [data-aos] elements hidden until it animates them in, and with
+     AOS switched off (Home.jsx) that never happens. Show them as they are. */
+  [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

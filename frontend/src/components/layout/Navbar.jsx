@@ -103,17 +103,23 @@ function Navbar() {
 
         {/* Mobile / tablet hamburger */}
         <button
+          type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden text-white text-2xl p-2 rounded-lg hover:bg-white/10 transition"
-          aria-label="Toggle menu"
+          className="lg:hidden text-white text-2xl p-2.5 rounded-lg hover:bg-white/10 active:bg-white/15 transition"
+          aria-label="Menu"
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-menu"
         >
           {mobileOpen ? <HiX /> : <HiMenuAlt3 />}
         </button>
 
       </div>
 
-      {/* Mobile / tablet drawer */}
+      {/* Mobile / tablet drawer. inert while closed: it is only collapsed to
+          zero height, so without it Tab would still reach the hidden links. */}
       <div
+        id="mobile-menu"
+        inert={!mobileOpen}
         className={`
           lg:hidden overflow-hidden
           transition-all duration-300 ease-in-out

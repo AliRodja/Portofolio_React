@@ -74,7 +74,7 @@ function CategorySelect({ value, onChange, extraCategories = [] }) {
 
                         {suggestions.length === 0 ? (
                             <p className="px-3 py-3 text-sm text-slate-400">
-                                No match — this will be saved as a custom category.
+                                No match. This will be saved as a custom category.
                             </p>
                         ) : (
                             suggestions.map((category) => (
