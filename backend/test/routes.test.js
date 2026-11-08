@@ -56,12 +56,12 @@ describe("authorization", () => {
 
 describe("GET /api/stats", () => {
     it("counts everything in a single query", async () => {
-        db.handler = () => ({ rows: [{ projects: "3", skills: "12", experiences: "2", certificates: "5" }] });
+        db.handler = () => ({ rows: [{ projects: "3", skills: "12", experiences: "2", certificates: "5", experience_years: "1" }] });
 
         const res = await request("GET", "/api/stats");
 
         assert.equal(res.status, 200);
-        assert.deepEqual(res.body, { projects: 3, skills: 12, experiences: 2, certificates: 5 });
+        assert.deepEqual(res.body, { projects: 3, skills: 12, experiences: 2, certificates: 5, experience_years: 1 });
         assert.equal(db.queries.length, 1);
     });
 
