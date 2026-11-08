@@ -26,6 +26,7 @@ Portofolio_React/
 ├── backend/          API Express
 │   ├── api/          entry point Vercel (serverless)
 │   ├── migrations/   file SQL, dijalankan berurutan
+│   ├── test/         test API (npm test)
 │   ├── src/
 │   │   ├── config/       koneksi DB
 │   │   ├── controllers/  logika tiap resource
@@ -160,6 +161,8 @@ Buka http://localhost:5173
 | `npm run migrate` | jalankan migrasi SQL yang belum diterapkan |
 | `npm run seed:admin` | buat akun admin pertama dari `ADMIN_*` (skip kalau sudah ada) |
 | `npm run reset:admin` | ganti password admin yang sudah ada (pakai `ADMIN_EMAIL` + `ADMIN_PASSWORD` baru) |
+| `npm run seed:content` | isi konten portfolio (projects, skills, dll.) dari data CV |
+| `npm test` | jalankan test API (`node:test`). Database di-stub, jadi tidak butuh Postgres dan tidak menyentuh data asli |
 
 ### frontend
 
@@ -168,6 +171,7 @@ Buka http://localhost:5173
 | `npm run dev` | dev server Vite |
 | `npm run build` | build produksi ke `dist/` |
 | `npm run preview` | preview hasil build |
+| `npm test` | jalankan test unit (Vitest) |
 
 ---
 
