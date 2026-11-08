@@ -1,13 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  HiOutlineExclamationTriangle,
-  HiOutlineWrenchScrewdriver,
-  HiChevronLeft,
-  HiChevronRight,
-} from "react-icons/hi2";
+import { TriangleAlert, ChevronLeft, ChevronRight } from "lucide-react";
 import Container from "../../ui/Container";
+import SectionHeading from "../../ui/SectionHeading";
 import ProjectCard from "./ProjectCard";
 import useProjects from "../../../hooks/useProjects";
+import Reveal from "../../ui/Reveal";
 
 // Card widths per breakpoint: ~1 card + a peek of the next on phones (so it's
 // obvious the row scrolls), 2 per view on tablets, 3 on desktop. The calc()
@@ -163,7 +160,7 @@ function useCarousel(itemCount) {
 }
 
 function ArrowButton({ direction, disabled, onClick }) {
-  const Icon = direction < 0 ? HiChevronLeft : HiChevronRight;
+  const Icon = direction < 0 ? ChevronLeft : ChevronRight;
 
   return (
     <button
@@ -172,64 +169,32 @@ function ArrowButton({ direction, disabled, onClick }) {
       disabled={disabled}
       aria-label={direction < 0 ? "Previous projects" : "Next projects"}
       className="
-        w-11 h-11 rounded-full
+        w-11 h-11 rounded-xl
         flex items-center justify-center
-        bg-white/[0.04] border border-white/[0.1]
-        text-slate-300 text-lg
-        hover:bg-white/[0.1] hover:border-white/20 hover:text-white
-        disabled:opacity-30 disabled:pointer-events-none
-        transition-all duration-300
+        border border-zinc-300 bg-white
+        text-ink text-lg
+        hover:bg-zinc-100 hover:border-ink active:bg-zinc-200
+        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
+        disabled:opacity-40
+        transition-colors duration-200
       "
     >
-      <Icon />
+      <Icon aria-hidden="true" className="size-4.5" />
     </button>
   );
 }
 
 function SectionShell({ children }) {
   return (
-    <section id="projects" className="relative py-24 md:py-32 bg-slate-900 overflow-hidden">
-      {/* ── Background decorations ── */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 -left-32 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[140px]" />
-        <div className="absolute bottom-40 -right-32 w-[400px] h-[400px] rounded-full bg-indigo-500/5 blur-[120px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-cyan-500/3 blur-[180px]" />
-      </div>
-
-      {/* Grid pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
-
-      <Container className="relative z-10">
-        {/* ── Section Header ── */}
-        <div data-aos="fade-up" className="text-center mb-12 md:mb-16">
-          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
-            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-            <span className="text-sm text-indigo-300 font-medium tracking-wider uppercase">
-              Featured Projects
-            </span>
-          </div>
-
-          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-            Some Things I've
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              {" "}Built
-            </span>
-          </h2>
-
-          <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">
-            A collection of projects I've worked on, from full-stack web apps to
-            creative experiments.
-          </p>
-        </div>
-
-        {children}
+    <section id="projects" className="bg-zinc-50 border-y border-zinc-200 py-24 md:py-28 overflow-hidden">
+      <Container>
+        <SectionHeading
+          className="mb-12"
+          before="Projects I've"
+          highlight="built"
+          intro="Most recently updated first."
+        />
+        <Reveal delay={100}>{children}</Reveal>
       </Container>
     </section>
   );
@@ -237,11 +202,10 @@ function SectionShell({ children }) {
 
 // Shared track layout: bleeds to the screen edge so cards can slide off it,
 // while scroll-padding keeps the snapped card aligned with the page content.
-// Vertical padding leaves room for the card hover lift and shadow.
 // Snap classes are added per-state below: they must be absent (not just
 // overridden) while mouse-dragging, or the browser snaps on every move.
 const TRACK_CLASS =
-  "flex gap-6 overflow-x-auto -mx-6 px-6 scroll-px-6 lg:-mx-8 lg:px-8 lg:scroll-px-8 pt-3 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
+  "flex gap-6 overflow-x-auto -mx-6 px-6 scroll-px-6 sm:-mx-10 sm:px-10 sm:scroll-px-10 lg:-mx-20 lg:px-20 lg:scroll-px-20 xl:-mx-24 xl:px-24 xl:scroll-px-24 2xl:-mx-32 2xl:px-32 2xl:scroll-px-32 pt-1 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
 
 function Projects() {
   const { projects, loading, error } = useProjects();
@@ -253,16 +217,12 @@ function Projects() {
       <SectionShell>
         <div className={TRACK_CLASS.replace("overflow-x-auto", "overflow-hidden")} aria-busy="true" aria-label="Loading projects">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className={`${SLIDE_WIDTH} shrink-0 rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden animate-pulse`}>
-              <div className="h-52 md:h-56 bg-white/[0.05]" />
-              <div className="p-6 md:p-7 space-y-4">
-                <div className="h-6 w-2/3 bg-white/[0.05] rounded-lg" />
-                <div className="h-4 w-full bg-white/[0.04] rounded-lg" />
-                <div className="h-4 w-4/5 bg-white/[0.04] rounded-lg" />
-                <div className="flex gap-2 pt-2">
-                  <div className="h-7 w-16 bg-white/[0.04] rounded-lg" />
-                  <div className="h-7 w-20 bg-white/[0.04] rounded-lg" />
-                </div>
+            <div key={i} className={`${SLIDE_WIDTH} shrink-0 rounded-xl bg-white border border-zinc-200 overflow-hidden animate-pulse`}>
+              <div className="h-48 bg-zinc-200" />
+              <div className="p-6 space-y-4">
+                <div className="h-6 w-2/3 bg-zinc-200 rounded-lg" />
+                <div className="h-4 w-full bg-zinc-100 rounded-lg" />
+                <div className="h-4 w-4/5 bg-zinc-100 rounded-lg" />
               </div>
             </div>
           ))}
@@ -274,12 +234,10 @@ function Projects() {
   if (error) {
     return (
       <SectionShell>
-        <div className="text-center">
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-red-500/10 border border-red-500/20">
-            <span className="text-red-400"><HiOutlineExclamationTriangle /></span>
-            <span className="text-red-300 text-sm font-medium">{error}</span>
-          </div>
-        </div>
+        <p className="inline-flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          <TriangleAlert aria-hidden="true" className="size-4 shrink-0" />
+          {error}
+        </p>
       </SectionShell>
     );
   }
@@ -287,13 +245,7 @@ function Projects() {
   if (projects.length === 0) {
     return (
       <SectionShell>
-        <div className="text-center py-20">
-          <div className="flex justify-center text-6xl text-slate-600 mb-6"><HiOutlineWrenchScrewdriver /></div>
-          <h3 className="text-2xl font-bold text-white mb-3">No Projects Yet</h3>
-          <p className="text-slate-400 max-w-md mx-auto">
-            Projects are coming soon. Stay tuned for some awesome work!
-          </p>
-        </div>
+        <p className="text-zinc-600">No projects listed yet.</p>
       </SectionShell>
     );
   }
@@ -304,14 +256,14 @@ function Projects() {
 
   return (
     <SectionShell>
-      {/* ── Counter + arrows ── */}
-      <div data-aos="fade-up" className="flex items-center justify-between gap-4 mb-4">
-        <p className="text-sm text-slate-400" aria-live="polite">
+      {/* Counter + arrows */}
+      <div className="flex items-center justify-between gap-4 mb-4">
+        <p className="text-sm text-zinc-600" aria-live="polite">
           Showing{" "}
-          <span className="font-semibold text-white">
+          <span className="font-semibold text-ink">
             {first === last ? first : `${first}–${last}`}
           </span>{" "}
-          of <span className="font-semibold text-white">{projects.length}</span> projects
+          of <span className="font-semibold text-ink">{projects.length}</span> projects
         </p>
 
         {scrollable && (
@@ -322,8 +274,8 @@ function Projects() {
         )}
       </div>
 
-      {/* ── Track ── */}
-      <div data-aos="fade-up" className="relative">
+      {/* Track */}
+      <div className="relative">
         <div
           {...trackProps}
           tabIndex={0}
@@ -332,7 +284,7 @@ function Projects() {
           aria-label="Projects. Use the arrow keys or swipe to browse"
           className={`
             ${TRACK_CLASS}
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 rounded-2xl
+            focus-visible:outline-2 focus-visible:outline-blue-700 rounded-xl
             ${dragging ? "cursor-grabbing select-none" : "snap-x snap-mandatory md:cursor-grab"}
           `}
         >
@@ -352,15 +304,15 @@ function Projects() {
         {/* Edge fades hint that there's more to either side */}
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-y-0 -left-6 lg:-left-8 w-6 lg:w-8 bg-gradient-to-r from-slate-900 to-transparent transition-opacity duration-300 ${canPrev ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-y-0 -left-6 sm:-left-10 lg:-left-20 xl:-left-24 2xl:-left-32 w-6 sm:w-10 lg:w-20 xl:w-24 2xl:w-32 bg-gradient-to-r from-zinc-50 to-transparent transition-opacity duration-300 ${canPrev ? "opacity-100" : "opacity-0"}`}
         />
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-y-0 -right-6 lg:-right-8 w-6 lg:w-8 bg-gradient-to-l from-slate-900 to-transparent transition-opacity duration-300 ${canNext ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-y-0 -right-6 sm:-right-10 lg:-right-20 xl:-right-24 2xl:-right-32 w-6 sm:w-10 lg:w-20 xl:w-24 2xl:w-32 bg-gradient-to-l from-zinc-50 to-transparent transition-opacity duration-300 ${canNext ? "opacity-100" : "opacity-0"}`}
         />
       </div>
 
-      {/* ── Dots ── Each button is a 44px tap target around a small visible dot.
+      {/* Dots. Each button is a 44px tap target around a small visible dot.
           Hidden on phones: up to 9 dots x 44px would overflow a 375px screen,
           and the 44px arrow buttons, the counter and swiping already cover it. */}
       {scrollable && (
@@ -372,12 +324,12 @@ function Projects() {
               onClick={() => goTo(i)}
               aria-label={`Go to project ${i + 1}`}
               aria-current={i === index ? "true" : undefined}
-              className="group/dot h-11 min-w-11 px-1 flex items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-blue-400"
+              className="group/dot h-11 min-w-11 px-1 flex items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-blue-700"
             >
               <span
                 className={`
-                  block h-2 rounded-full transition-all duration-300
-                  ${i === index ? "w-6 bg-gradient-to-r from-blue-400 to-cyan-400" : "w-2 bg-white/15 group-hover/dot:bg-white/30"}
+                  block h-2 rounded-full transition-[width,background-color] duration-200
+                  ${i === index ? "w-6 bg-blue-700" : "w-2 bg-zinc-300 group-hover/dot:bg-zinc-500"}
                 `}
               />
             </button>

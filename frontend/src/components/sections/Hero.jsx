@@ -1,14 +1,15 @@
 import profileImage from "../../assets/images/profile.webp";
 
-import {
-  FaGithub,
-  FaLinkedin,
-  FaInstagram,
-} from "react-icons/fa";
-// import { HiArrowDown } from "react-icons/hi2";
+import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
+import { MessageCircleMore } from "lucide-react";
 
 import Container from "../ui/Container";
 import Button from "../ui/Button";
+import Reveal from "../ui/Reveal";
+
+// "Junior Full-Stack Web Developer | UI/UX Design" -> "Junior Full-Stack Web Developer"
+// "Cimahi, West java, Indonesia" -> "Cimahi"
+const firstPart = (text, separator) => (text || "").split(separator)[0].trim();
 
 // Shown while /api/profile is loading. Same rough shape as the real text so
 // the layout doesn't jump when it arrives.
@@ -16,17 +17,16 @@ function HeroTextSkeleton() {
   return (
     <div aria-busy="true" className="animate-pulse">
       <span className="sr-only">Loading profile</span>
-      <div className="h-14 md:h-16 lg:h-20 w-3/4 rounded-2xl bg-white/[0.06]" />
-      <div className="h-14 md:h-16 lg:h-20 w-1/2 rounded-2xl bg-white/[0.06] mt-3" />
-      <div className="h-6 w-2/3 rounded-lg bg-white/[0.05] mt-8" />
+      <div className="h-12 md:h-14 lg:h-16 w-11/12 rounded-xl bg-zinc-200" />
+      <div className="h-12 md:h-14 lg:h-16 w-3/4 rounded-xl bg-zinc-200 mt-3" />
+      <div className="h-12 md:h-14 lg:h-16 w-1/2 rounded-xl bg-zinc-200 mt-3" />
       <div className="space-y-3 mt-8 max-w-xl">
-        <div className="h-4 w-full rounded-lg bg-white/[0.04]" />
-        <div className="h-4 w-full rounded-lg bg-white/[0.04]" />
-        <div className="h-4 w-4/5 rounded-lg bg-white/[0.04]" />
+        <div className="h-4 w-full rounded-lg bg-zinc-200" />
+        <div className="h-4 w-4/5 rounded-lg bg-zinc-200" />
       </div>
       <div className="flex gap-4 mt-10">
-        <div className="h-12 w-36 rounded-xl bg-white/[0.06]" />
-        <div className="h-12 w-36 rounded-xl bg-white/[0.04]" />
+        <div className="h-12 w-36 rounded-xl bg-zinc-200" />
+        <div className="h-12 w-36 rounded-xl bg-zinc-100" />
       </div>
     </div>
   );
@@ -35,20 +35,20 @@ function HeroTextSkeleton() {
 function HeroError({ onRetry }) {
   return (
     <div>
-      <h1 className="text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight text-white">
-        Ali Imran Rodja
+      <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight text-ink">
+        Hello! I&apos;m <strong className="font-bold">Ali Imran Rodja</strong>
       </h1>
-      <p className="mt-6 text-slate-400 max-w-xl">
+      <p className="mt-6 text-zinc-600 max-w-xl">
         The profile couldn&apos;t be loaded right now. Check your connection and try again.
       </p>
       <button
         type="button"
         onClick={onRetry}
         className="
-          mt-8 min-h-11 px-6 rounded-xl
-          text-sm font-semibold text-white
-          bg-blue-600 hover:bg-blue-500 active:bg-blue-700
-          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400
+          mt-8 min-h-12 px-6 rounded-xl
+          font-medium text-white
+          bg-ink hover:bg-zinc-800 active:bg-black
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
           transition-colors duration-200
         "
       >
@@ -58,183 +58,140 @@ function HeroError({ onRetry }) {
   );
 }
 
+function SocialLink({ href, label, children }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="
+        w-11 h-11 rounded-xl
+        border border-zinc-300
+        flex items-center justify-center
+        text-lg text-zinc-700
+        hover:text-ink hover:border-ink hover:bg-zinc-100
+        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
+        transition-colors duration-200
+      "
+    >
+      {children}
+    </a>
+  );
+}
+
+// Photo framed like a selected frame in a design tool: dashed guides and
+// corner marks (DESIGN.md motif), plus an offset accent ring. The frame-*
+// classes (index.css) draw the guides in once the photo column is shown.
+function FramedPhoto({ profile }) {
+  return (
+    <div className="relative w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] lg:w-[360px] lg:h-[360px]">
+
+      {/* Guides and marks: decoration only */}
+      <div aria-hidden="true">
+        <span className="frame-line-v absolute -left-6 top-10 -bottom-6 border-l-2 border-dashed border-zinc-400" />
+        <span className="frame-line-h absolute -bottom-6 -left-6 right-12 border-b-2 border-dashed border-zinc-400" />
+        <span className="frame-mark absolute -top-6 -right-6 w-10 h-10 border-t-2 border-r-2 border-ink" />
+        <span className="frame-mark absolute -bottom-10 -left-10 w-10 h-10 border-b-2 border-l-2 border-ink" />
+        {/* Sparkle kept by the owner's choice (DESIGN.md, exceptions). */}
+        <span className="frame-sparkle absolute -top-3 right-6 text-2xl leading-none text-blue-700">✦</span>
+        <span className="frame-mark absolute bottom-8 -left-1.5 w-3 h-3 rounded-full bg-blue-700" />
+      </div>
+
+      {/* Offset accent ring */}
+      <span aria-hidden="true" className="frame-ring absolute inset-0 rounded-full border-2 border-blue-700 translate-x-3 translate-y-2" />
+
+      {/* Photo: the largest image on the first screen, so it is fetched first
+          and has intrinsic dimensions to reserve its space. */}
+      <div className="frame-photo relative w-full h-full rounded-full overflow-hidden bg-zinc-200">
+        {profile ? (
+          <img
+            src={profile.profile_image || profileImage}
+            alt={profile.full_name}
+            width={360}
+            height={360}
+            fetchPriority="high"
+            className="w-full h-full object-cover object-top"
+          />
+        ) : (
+          <div aria-hidden="true" className="w-full h-full animate-pulse" />
+        )}
+      </div>
+    </div>
+  );
+}
+
 function Hero({ profile, error, onRetry }) {
+  const firstName = firstPart(profile?.full_name, " ");
+  const role = firstPart(profile?.headline, "|");
+  const city = firstPart(profile?.location, ",");
+  const profileState = profile ? "loaded" : error ? "error" : "loading";
+
   return (
     <section
       id="hero"
-      className="relative min-h-screen pt-24 bg-slate-900 flex items-center overflow-hidden"
+      className="relative overflow-hidden bg-white pt-32 pb-24 md:pt-36 md:pb-28"
     >
 
-      {/* ── Background decorations ── */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Top-left glow */}
-        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-blue-500/8 blur-[140px] animate-pulse-glow" />
-        {/* Center glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-indigo-500/5 blur-[180px]" />
-        {/* Bottom-right glow */}
-        <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full bg-cyan-500/8 blur-[120px] animate-pulse-glow" style={{ animationDelay: "2s" }} />
+      {/* Pastel background blobs: kept by the owner's choice (DESIGN.md,
+          exceptions). Static, pale tints of the blue accent, Hero only. */}
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-blue-200/60 blur-[110px]" />
+        <div className="absolute bottom-0 left-1/3 w-[360px] h-[360px] rounded-full bg-sky-100 blur-[100px]" />
+        <div className="absolute top-10 right-0 w-[380px] h-[380px] rounded-full bg-blue-100 blur-[110px]" />
       </div>
 
-      {/* Grid pattern overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
+      <Container className="relative">
+        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-16 lg:gap-12 items-center">
 
-      {/* ── Content ── */}
-      <Container className="relative z-10 w-full">
-
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-
-          {/* ── LEFT — Text ── */}
-          <div>
-
-            {/* Tag */}
-            <div
-              data-aos="fade-down"
-              className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8"
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-sm text-slate-300 font-medium">
-                Available for work
-              </span>
-            </div>
-
+          {/* Text: heading, bio, buttons and links enter one after another.
+              Keyed on the profile state so the entrance plays for the real
+              content, not just for the loading skeleton. */}
+          <Reveal key={`text-${profileState}`} variant="group" stagger={110}>
             {profile ? (
               <>
-                {/* Name */}
-                <h1
-                  data-aos="fade-up"
-                  data-aos-delay="100"
-                  className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-white"
-                >
-                  {profile.full_name?.split(" ").map((word, i, arr) =>
-                    i === arr.length - 1 ? (
-                      <span key={i}>
-                        <br className="hidden sm:block" />
-                        <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                          {word}
-                        </span>
-                      </span>
-                    ) : (
-                      <span key={i}>{word} </span>
-                    )
-                  )}
+                <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-ink">
+                  Hello! I&apos;m <strong className="font-bold">{firstName || profile.full_name}</strong>
+                  {role && <>, a <strong className="font-bold">{role}</strong></>}
+                  {city && <> based in <strong className="font-bold">{city}</strong></>}
                 </h1>
 
-                {/* Headline */}
-                <h2
-                  data-aos="fade-up"
-                  data-aos-delay="200"
-                  className="text-xl lg:text-2xl text-slate-400 mt-6 font-light"
-                >
-                  {profile.headline}
-                </h2>
+                {profile.short_bio && (
+                  <p className="mt-6 text-lg leading-8 text-zinc-600 max-w-xl">
+                    {profile.short_bio}
+                  </p>
+                )}
 
-                {/* Short intro */}
-                <p
-                  data-aos="fade-up"
-                  data-aos-delay="300"
-                  className="mt-8 leading-8 text-slate-400 max-w-xl"
-                >
-                  {profile.short_bio}
-                </p>
-
-                {/* Buttons */}
-                <div
-                  data-aos="fade-up"
-                  data-aos-delay="400"
-                  className="flex flex-wrap gap-4 mt-10"
-                >
-
-                  <Button href="#projects">
-                    View Projects
+                <div className="flex flex-wrap items-center gap-4 mt-10">
+                  <Button href="#contact">
+                    Let&apos;s Talk
+                    <MessageCircleMore className="size-5" aria-hidden="true" />
                   </Button>
 
                   {profile.resume_url && (
-                    <Button
-                      href={profile.resume_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="secondary"
-                    >
+                    <Button href={profile.resume_url} target="_blank" rel="noopener noreferrer" variant="outline">
                       Download CV
                     </Button>
                   )}
-
                 </div>
 
-                {/* Social icons */}
-                <div
-                  data-aos="fade-up"
-                  data-aos-delay="500"
-                  className="flex gap-5 mt-10"
-                >
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-4 mt-8">
+                  <p className="inline-flex items-center gap-2 text-sm text-zinc-600">
+                    <span aria-hidden="true" className="w-2 h-2 rounded-full bg-emerald-600" />
+                    Available for work
+                  </p>
 
-                  {profile.github_url && (
-                    <a
-                      href={profile.github_url}
-                      target="_blank"
-                      aria-label="GitHub"
-                      rel="noopener noreferrer"
-                      className="
-                        w-12 h-12 rounded-xl
-                        bg-white/5 border border-white/10
-                        flex items-center justify-center
-                        text-xl text-slate-400
-                        hover:text-white hover:bg-white/10 hover:border-white/20
-                        hover:-translate-y-1
-                        transition-all duration-300
-                      "
-                    >
-                      <FaGithub />
-                    </a>
-                  )}
-
-                  {profile.linkedin_url && (
-                    <a
-                      href={profile.linkedin_url}
-                      target="_blank"
-                      aria-label="LinkedIn"
-                      rel="noopener noreferrer"
-                      className="
-                        w-12 h-12 rounded-xl
-                        bg-white/5 border border-white/10
-                        flex items-center justify-center
-                        text-xl text-slate-400
-                        hover:text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/30
-                        hover:-translate-y-1
-                        transition-all duration-300
-                      "
-                    >
-                      <FaLinkedin />
-                    </a>
-                  )}
-
-                  {profile.instagram_url && (
-                    <a
-                      href={profile.instagram_url}
-                      target="_blank"
-                      aria-label="Instagram"
-                      rel="noopener noreferrer"
-                      className="
-                        w-12 h-12 rounded-xl
-                        bg-white/5 border border-white/10
-                        flex items-center justify-center
-                        text-xl text-slate-400
-                        hover:text-pink-400 hover:bg-pink-500/10 hover:border-pink-500/30
-                        hover:-translate-y-1
-                        transition-all duration-300
-                      "
-                    >
-                      <FaInstagram />
-                    </a>
-                  )}
-
+                  <div className="flex gap-3">
+                    {profile.github_url && (
+                      <SocialLink href={profile.github_url} label="GitHub"><FaGithub aria-hidden="true" /></SocialLink>
+                    )}
+                    {profile.linkedin_url && (
+                      <SocialLink href={profile.linkedin_url} label="LinkedIn"><FaLinkedin aria-hidden="true" /></SocialLink>
+                    )}
+                    {profile.instagram_url && (
+                      <SocialLink href={profile.instagram_url} label="Instagram"><FaInstagram aria-hidden="true" /></SocialLink>
+                    )}
+                  </div>
                 </div>
               </>
             ) : error ? (
@@ -242,79 +199,15 @@ function Hero({ profile, error, onRetry }) {
             ) : (
               <HeroTextSkeleton />
             )}
+          </Reveal>
 
-          </div>
-
-          {/* ── RIGHT — Profile image ── */}
-          <div
-            data-aos="zoom-in"
-            data-aos-delay="200"
-            className="relative flex justify-center items-center"
-          >
-
-            {/* Outer glow ring */}
-            <div className="absolute w-[340px] h-[340px] lg:w-[420px] lg:h-[420px] rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/15 blur-3xl animate-float" />
-
-            {/* Rotating ring */}
-            <div
-              className="absolute w-[320px] h-[320px] lg:w-[400px] lg:h-[400px] rounded-full border border-white/10"
-              style={{
-                background: "conic-gradient(from 0deg, transparent 0%, rgba(56,189,248,0.15) 25%, transparent 50%, rgba(96,165,250,0.15) 75%, transparent 100%)",
-              }}
-            />
-
-            {/* Inner gradient circle */}
-            <div className="absolute w-[280px] h-[280px] lg:w-[350px] lg:h-[350px] rounded-full bg-gradient-to-br from-blue-500/10 to-cyan-500/10" />
-
-            {/* Profile image with gradient border */}
-            <div className="relative rounded-full p-[3px] bg-gradient-to-br from-blue-400 via-cyan-400 to-blue-500">
-              <div className="rounded-full overflow-hidden bg-slate-800">
-                {/* Largest image on the first screen: fetch it before anything
-                    else, and give it intrinsic dimensions so it reserves space. */}
-                {profile ? (
-                  <img
-                    src={profile.profile_image || profileImage}
-                    alt={profile.full_name}
-                    width={330}
-                    height={330}
-                    fetchPriority="high"
-                    className="w-[260px] h-[260px] lg:w-[330px] lg:h-[330px] object-cover object-top"
-                  />
-                ) : (
-                  // Same size as the photo, so nothing shifts when it arrives.
-                  <div aria-hidden="true" className="w-[260px] h-[260px] lg:w-[330px] lg:h-[330px] bg-slate-800 animate-pulse" />
-                )}
-              </div>
-            </div>
-
-            {/* Floating accent dots */}
-            <div className="absolute top-6 right-10 lg:top-4 lg:right-8 w-4 h-4 rounded-full bg-blue-400 shadow-lg shadow-blue-400/40 animate-float" />
-            <div className="absolute bottom-10 left-6 lg:bottom-8 lg:left-4 w-3 h-3 rounded-full bg-cyan-400 shadow-lg shadow-cyan-400/40 animate-float-delayed" />
-            <div className="absolute top-1/2 -right-2 w-2 h-2 rounded-full bg-indigo-400 opacity-60 animate-float-delayed" />
-
-          </div>
+          {/* Photo */}
+          <Reveal key={`photo-${profileState}`} variant="fade" delay={150} className="flex justify-center lg:justify-end lg:pr-8 py-8">
+            <FramedPhoto profile={profile} />
+          </Reveal>
 
         </div>
-
       </Container>
-
-      {/* ── Scroll indicator ── */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <a
-          href="#stats"
-          className="
-            flex flex-col items-center gap-2
-            text-slate-400 hover:text-blue-400
-            transition-all duration-300
-            group
-          "
-        >
-          <span className="text-xs tracking-widest uppercase font-medium">Scroll</span>
-          <span className="w-8 h-12 rounded-full border-2 border-current flex items-start justify-center p-2">
-            <span className="w-1.5 h-3 rounded-full bg-current animate-bounce" />
-          </span>
-        </a>
-      </div>
 
     </section>
   );

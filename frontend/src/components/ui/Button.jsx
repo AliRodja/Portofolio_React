@@ -1,23 +1,11 @@
-function Button({
-  children,
-  href,
-  variant = "primary",
-  target,
-  rel,
-  onClick,
-}) {
+// Link styled as a button. Solid ink for the main action, ink outline for the
+// secondary one (DESIGN.md). 48px tall, so it clears the 44px tap target.
+const VARIANTS = {
+  primary: "bg-ink text-white hover:bg-zinc-800 active:bg-black",
+  outline: "border border-ink text-ink hover:bg-zinc-100 active:bg-zinc-200",
+};
 
-  const styles = {
-    primary:
-      "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-400/30 hover:from-blue-400 hover:to-cyan-400",
-
-    secondary:
-      "bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:border-white/20 hover:text-white backdrop-blur-sm",
-
-    outline:
-      "border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 hover:border-blue-400 hover:text-blue-300",
-  };
-
+function Button({ children, href, variant = "primary", target, rel, onClick }) {
   return (
     <a
       href={href}
@@ -25,19 +13,12 @@ function Button({
       rel={rel}
       onClick={onClick}
       className={`
-        inline-flex
-        items-center
-        justify-center
-        gap-2
-        min-w-[180px]
-        px-8
-        py-4
-        rounded-xl
-        font-semibold
-        transition-all
-        duration-300
-        hover:-translate-y-1
-        ${styles[variant]}
+        inline-flex items-center justify-center gap-2
+        min-h-12 px-6 rounded-xl
+        font-medium
+        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
+        transition-colors duration-200
+        ${VARIANTS[variant]}
       `}
     >
       {children}

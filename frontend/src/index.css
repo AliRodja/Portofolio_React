@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Design tokens for the public site (see DESIGN.md). */
+@theme {
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #111113;
+}
+
 /* Tailwind v4's preflight gives <button> the default arrow cursor. Set the
    pointer once here for every enabled control. Kept in the base layer so
    utilities such as cursor-grab or disabled:cursor-not-allowed still win. */
@@ -28,72 +35,7 @@ html {
 }
 
 body {
-  background: #0f172a;
-}
-
-/* Custom scrollbar for dark theme */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-/* Smooth glow animation for decorations */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.7; }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: float 6s ease-in-out 3s infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 4s ease-in-out infinite;
-}
-
-/* Marquee / ticker scroll animation */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@keyframes marquee-reverse {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-}
-
-.animate-marquee {
-  animation: marquee 30s linear infinite;
-}
-
-.animate-marquee-reverse {
-  animation: marquee-reverse 30s linear infinite;
-}
-
-/* Pausing the marquee. Plain CSS on purpose: the `animation` shorthand above is
-   unlayered, so it beats any Tailwind utility (including an arbitrary
-   [animation-play-state:paused]). These selectors are more specific. */
-.marquee-row:hover .marquee-track,
-.marquee-track.is-paused {
-  animation-play-state: paused;
+  background: #ffffff;
 }
 
 /* Toast pop-in animation */
@@ -116,19 +58,110 @@ body {
   animation: modal-in 0.2s ease-out;
 }
 
-/* Users who ask for less motion get none of the decorative loops. The loading
-   spinner (animate-spin) stays: it is the only sign that something is loading.
-   The Skills marquee becomes a static wrapped list in Skills.jsx. */
+/* ── Scroll reveal (MOTION 2, DESIGN.md) ──────────────────────────────────
+   Reveal.jsx sets [data-shown] the first time a block scrolls into view.
+   Every effect runs once and then stays put; nothing loops. */
+.reveal {
+  --reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-property: opacity, transform, filter;
+  transition-duration: 0.9s;
+  transition-timing-function: var(--reveal-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* up: rises into place. On wider screens it also comes into focus from a
+   slight blur (skipped on phones, where filters cost more). */
+.reveal--up:not([data-shown]) {
+  opacity: 0;
+  transform: translateY(32px);
+}
+
+@media (min-width: 768px) {
+  .reveal--up:not([data-shown]) {
+    filter: blur(6px);
+  }
+}
+
+.reveal--fade:not([data-shown]) {
+  opacity: 0;
+}
+
+/* group: the block itself stays put and its children enter one after
+   another, in reading order. --stagger sets the gap between them. */
+.reveal--group > * {
+  transition:
+    opacity 0.8s var(--reveal-ease),
+    transform 0.8s var(--reveal-ease);
+  transition-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * var(--stagger, 90ms));
+}
+
+.reveal--group:not([data-shown]) > * {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.reveal--group > :nth-child(2) { --i: 1; }
+.reveal--group > :nth-child(3) { --i: 2; }
+.reveal--group > :nth-child(4) { --i: 3; }
+.reveal--group > :nth-child(5) { --i: 4; }
+.reveal--group > :nth-child(6) { --i: 5; }
+.reveal--group > :nth-child(7) { --i: 6; }
+.reveal--group > :nth-child(8) { --i: 7; }
+.reveal--group > :nth-child(9) { --i: 8; }
+.reveal--group > :nth-child(10) { --i: 9; }
+.reveal--group > :nth-child(n + 11) { --i: 10; }
+
+/* draw-y: a line that grows downward (the Experience timeline). */
+.reveal--draw-y {
+  transform-origin: top;
+  transition-property: transform;
+  transition-duration: 1.6s;
+}
+
+.reveal--draw-y:not([data-shown]) {
+  transform: scaleY(0);
+}
+
+/* Section heading keyword: its highlight box wipes in from the left after
+   the heading arrives, then the word switches to the on-highlight colour. */
+.hl {
+  background-image: linear-gradient(var(--hl-bg), var(--hl-bg));
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  color: var(--hl-fg);
+  transition:
+    background-size 0.7s var(--reveal-ease) calc(var(--reveal-delay, 0ms) + 0.35s),
+    color 0.25s ease calc(var(--reveal-delay, 0ms) + 0.6s);
+}
+
+.reveal:not([data-shown]) .hl {
+  background-size: 0% 100%;
+  color: inherit;
+}
+
+/* Hero photo frame: the design-tool guides draw in around the photo. */
+.frame-photo { transition: transform 1s var(--reveal-ease), opacity 0.8s ease; }
+.frame-ring { transition: translate 1s var(--reveal-ease) 0.25s, opacity 0.6s ease 0.25s; }
+.frame-line-v { transform-origin: top; transition: transform 0.9s var(--reveal-ease) 0.4s; }
+.frame-line-h { transform-origin: left; transition: transform 0.9s var(--reveal-ease) 0.6s; }
+.frame-mark { transition: opacity 0.5s ease 0.95s, transform 0.6s var(--reveal-ease) 0.95s; }
+.frame-sparkle { transition: opacity 0.5s ease 1.15s, transform 0.9s var(--reveal-ease) 1.15s; }
+
+.reveal:not([data-shown]) .frame-photo { opacity: 0; transform: scale(0.92); }
+.reveal:not([data-shown]) .frame-ring { opacity: 0; translate: 0 0; }
+.reveal:not([data-shown]) .frame-line-v { transform: scaleY(0); }
+.reveal:not([data-shown]) .frame-line-h { transform: scaleX(0); }
+.reveal:not([data-shown]) .frame-mark { opacity: 0; transform: scale(0.5); }
+.reveal:not([data-shown]) .frame-sparkle { opacity: 0; transform: rotate(-120deg) scale(0.4); }
+
+/* Users who ask for less motion get no pop-ins, skeleton pulses or reveal
+   transitions (Reveal.jsx also shows every block from the start). The
+   loading spinner (animate-spin) stays: it is the only sign of progress. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  .animate-float,
-  .animate-float-delayed,
-  .animate-pulse-glow,
-  .animate-marquee,
-  .animate-marquee-reverse,
   .animate-pulse,
   .animate-bounce,
   .animate-toast-in,
@@ -136,11 +169,9 @@ body {
     animation: none;
   }
 
-  /* AOS keeps [data-aos] elements hidden until it animates them in, and with
-     AOS switched off (Home.jsx) that never happens. Show them as they are. */
-  [data-aos] {
-    opacity: 1 !important;
-    transform: none !important;
+  .reveal,
+  .reveal *,
+  .hl {
     transition: none !important;
   }
 }

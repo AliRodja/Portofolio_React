@@ -1,141 +1,75 @@
-import { HiOutlineExclamationTriangle } from "react-icons/hi2";
+import { TriangleAlert } from "lucide-react";
 
 import Container from "../../ui/Container";
+import SectionHeading from "../../ui/SectionHeading";
 import useEducation from "../../../hooks/useEducation";
 import EducationCard from "./EducationCard";
 
-function Education() {
+// One shell for every state, so the navbar's #education always has a target.
+function EducationShell({ children }) {
+    return (
+        <section id="education" className="bg-zinc-50 border-y border-zinc-200 py-24 md:py-28">
+            <Container>
+                <div className="grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-16">
+                    <SectionHeading
+                        before="Academic"
+                        highlight="journey"
+                        intro="My educational background and academic milestones."
+                    />
+                    <div>{children}</div>
+                </div>
+            </Container>
+        </section>
+    );
+}
 
-    const {
-        education,
-        loading,
-        error,
-    } = useEducation();
+function Education() {
+    const { education, loading, error } = useEducation();
 
     if (loading) {
         return (
-            <section className="relative py-32 bg-slate-900 overflow-hidden">
-                <Container className="relative z-10">
-
-                    {/* Skeleton header */}
-                    <div className="text-center mb-20">
-                        <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
-                            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                            <span className="text-sm text-blue-300 font-medium tracking-wider uppercase">
-                                Loading Education
-                            </span>
+            <EducationShell>
+                <div className="space-y-6" aria-busy="true">
+                    <span className="sr-only">Loading education</span>
+                    {[...Array(2)].map((_, i) => (
+                        <div key={i} className="rounded-xl bg-white border border-zinc-200 p-6 md:p-8 animate-pulse">
+                            <div className="h-4 w-24 bg-zinc-200 rounded-lg mb-4" />
+                            <div className="h-6 w-2/3 bg-zinc-200 rounded-lg mb-3" />
+                            <div className="h-4 w-1/2 bg-zinc-100 rounded-lg" />
                         </div>
-                    </div>
-
-                    {/* Skeleton cards */}
-                    <div className="max-w-4xl mx-auto space-y-8">
-                        {[...Array(3)].map((_, i) => (
-                            <div
-                                key={i}
-                                className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-8 animate-pulse"
-                            >
-                                <div className="h-4 w-24 bg-white/[0.05] rounded-lg mb-4" />
-                                <div className="h-6 w-2/3 bg-white/[0.05] rounded-lg mb-3" />
-                                <div className="h-4 w-1/2 bg-white/[0.04] rounded-lg mb-4" />
-                                <div className="h-4 w-full bg-white/[0.04] rounded-lg" />
-                            </div>
-                        ))}
-                    </div>
-
-                </Container>
-            </section>
+                    ))}
+                </div>
+            </EducationShell>
         );
     }
 
     if (error) {
         return (
-            <section className="relative py-32 bg-slate-900 overflow-hidden">
-                <Container className="relative z-10">
-                    <div className="text-center">
-                        <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-red-500/10 border border-red-500/20">
-                            <span className="text-red-400"><HiOutlineExclamationTriangle /></span>
-                            <span className="text-red-300 text-sm font-medium">{error}</span>
-                        </div>
-                    </div>
-                </Container>
-            </section>
+            <EducationShell>
+                <p className="inline-flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                    <TriangleAlert aria-hidden="true" className="size-4 shrink-0" />
+                    {error}
+                </p>
+            </EducationShell>
+        );
+    }
+
+    if (education.length === 0) {
+        return (
+            <EducationShell>
+                <p className="text-zinc-600">No education listed yet.</p>
+            </EducationShell>
         );
     }
 
     return (
-        <section
-            id="education"
-            className="relative py-32 bg-slate-900 overflow-hidden"
-        >
-
-            {/* ── Background decorations ── */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-20 -left-32 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[140px]" />
-                <div className="absolute bottom-20 -right-32 w-[400px] h-[400px] rounded-full bg-cyan-500/5 blur-[120px]" />
-            </div>
-
-            {/* Grid pattern */}
-            <div
-                className="absolute inset-0 opacity-[0.03]"
-                style={{
-                    backgroundImage:
-                        "linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)",
-                    backgroundSize: "60px 60px",
-                }}
-            />
-
-            <Container className="relative z-10">
-
-                {/* ── Section Header ── */}
-                <div data-aos="fade-up" className="text-center mb-20">
-
-                    <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
-                        <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                        <span className="text-sm text-blue-300 font-medium tracking-wider uppercase">
-                            Education
-                        </span>
-                    </div>
-
-                    <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-                        Academic
-                        <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                            {" "}Journey
-                        </span>
-                    </h2>
-
-                    <p className="mt-4 text-lg text-slate-400 max-w-xl mx-auto">
-                        My educational background and academic milestones.
-                    </p>
-
-                </div>
-
-                {education.length === 0 && (
-                    <p className="text-center text-slate-400">No education listed yet.</p>
-                )}
-
-                {/* ── Timeline ── */}
-                {education.length > 0 && (
-                    <div className="relative max-w-4xl mx-auto">
-
-                        {/* Center timeline line */}
-                        <div className="absolute left-8 md:left-12 top-0 bottom-0 w-[2px] bg-gradient-to-b from-blue-500/40 via-cyan-500/30 to-transparent rounded-full" />
-
-                        <div className="space-y-8">
-                            {education.map((item, index) => (
-                                <EducationCard
-                                    key={item.id}
-                                    education={item}
-                                    index={index}
-                                />
-                            ))}
-                        </div>
-
-                    </div>
-                )}
-
-            </Container>
-
-        </section>
+        <EducationShell>
+            <ol className="space-y-6">
+                {education.map((item) => (
+                    <EducationCard key={item.id} education={item} />
+                ))}
+            </ol>
+        </EducationShell>
     );
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
-import { HiXMark } from "react-icons/hi2";
+import { X } from "lucide-react";
 
 function DescriptionModal({ title, subtitle, description, onClose }) {
     const titleId = useId();
@@ -39,7 +39,7 @@ function DescriptionModal({ title, subtitle, description, onClose }) {
 
     return createPortal(
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/60"
             onClick={onClose}
         >
             <div
@@ -47,7 +47,7 @@ function DescriptionModal({ title, subtitle, description, onClose }) {
                 aria-modal="true"
                 aria-labelledby={title ? titleId : undefined}
                 aria-label={title ? undefined : "Details"}
-                className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl bg-slate-900 border border-white/10 p-6 md:p-8 shadow-2xl animate-modal-in"
+                className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-xl bg-white border border-zinc-200 p-6 md:p-8 animate-modal-in"
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
@@ -55,24 +55,24 @@ function DescriptionModal({ title, subtitle, description, onClose }) {
                     type="button"
                     onClick={onClose}
                     aria-label="Close"
-                    className="absolute top-3 right-3 w-11 h-11 rounded-full bg-white/5 hover:bg-white/10 active:bg-white/15 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+                    className="absolute top-3 right-3 w-11 h-11 rounded-xl text-zinc-600 hover:text-ink hover:bg-zinc-100 active:bg-zinc-200 focus-visible:outline-2 focus-visible:outline-blue-700 flex items-center justify-center transition-colors"
                 >
-                    <HiXMark className="text-lg" aria-hidden="true" />
+                    <X className="size-4.5" aria-hidden="true" />
                 </button>
 
                 {title && (
-                    <h3 id={titleId} className="text-xl font-bold text-white pr-12 leading-snug">
+                    <h3 id={titleId} className="font-display text-xl font-bold text-ink pr-12 leading-snug">
                         {title}
                     </h3>
                 )}
 
                 {subtitle && (
-                    <p className="mt-1 text-slate-400 font-medium">
+                    <p className="mt-1 text-zinc-600 font-medium">
                         {subtitle}
                     </p>
                 )}
 
-                <p className="mt-4 text-slate-300 leading-7 whitespace-pre-line">
+                <p className="mt-4 text-zinc-700 leading-7 whitespace-pre-line">
                     {description}
                 </p>
             </div>

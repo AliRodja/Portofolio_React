@@ -1,46 +1,52 @@
 import { useEffect, useState } from "react";
 import api from "../../../services/api";
 import Container from "../../ui/Container";
+import SectionHeading from "../../ui/SectionHeading";
 
-import {
-    HiOutlineEnvelope,
-    HiOutlinePhone,
-    HiOutlineMapPin,
-    HiOutlinePaperAirplane,
-    HiOutlineCheckCircle,
-    HiOutlineExclamationTriangle,
-} from "react-icons/hi2";
+import { Mail, Phone, MapPin, Send, CircleCheck, TriangleAlert } from "lucide-react";
 
-import {
-    FaGithub,
-    FaLinkedin,
-    FaInstagram,
-} from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
+import Reveal from "../../ui/Reveal";
+
+const EMPTY_FORM = { name: "", email: "", subject: "", message: "" };
+
+// Fields sit on the dark band: zinc-500 borders reach 3.9:1 against ink, and
+// the focus ring is the dark-band accent (blue-400).
+const FIELD_CLASS = `
+    w-full rounded-xl p-4
+    bg-zinc-900 border border-zinc-500
+    text-white placeholder-zinc-400
+    outline-none
+    focus:border-blue-400 focus:ring-2 focus:ring-blue-400
+    transition-colors duration-200
+`;
+
+function Field({ id, label, children }) {
+    return (
+        <div>
+            <label htmlFor={id} className="block text-sm font-medium text-zinc-300 mb-2">
+                {label}
+            </label>
+            {children}
+        </div>
+    );
+}
 
 function Contact({ profile = {} }) {
-    const [form, setForm] = useState({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-    });
-
+    const [form, setForm] = useState(EMPTY_FORM);
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState(null);
 
     useEffect(() => {
         if (!feedback) return;
 
-        const timer = setTimeout(() => setFeedback(null), 4000);
+        const timer = setTimeout(() => setFeedback(null), 5000);
 
         return () => clearTimeout(timer);
     }, [feedback]);
 
     const handleChange = (e) => {
-        setForm((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.value,
-        }));
+        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const handleSubmit = async (e) => {
@@ -51,406 +57,231 @@ function Contact({ profile = {} }) {
 
             await api.post("/messages", form);
 
-            setForm({
-                name: "",
-                email: "",
-                subject: "",
-                message: "",
-            });
-
-            setFeedback({ type: "success", message: "Message sent successfully!" });
-
+            setForm(EMPTY_FORM);
+            setFeedback({ type: "success", message: "Message sent. I'll reply by email." });
         } catch (err) {
             console.error(err);
-            setFeedback({ type: "error", message: "Failed to send message. Please try again." });
+            // The API explains validation errors and rate limits; show that
+            // instead of a generic failure when it is available.
+            setFeedback({
+                type: "error",
+                message: err.response?.data?.message || "Failed to send message. Please try again.",
+            });
         } finally {
             setLoading(false);
         }
     };
 
     const contactInfo = [
-        profile.email && {
-            icon: <HiOutlineEnvelope />,
-            label: "Email",
-            value: profile.email,
-            href: `mailto:${profile.email}`,
-            color: "text-blue-400",
-            bgColor: "from-blue-500/10 to-blue-500/5",
-            borderColor: "border-blue-500/10",
-        },
-        profile.phone && {
-            icon: <HiOutlinePhone />,
-            label: "Phone",
-            value: profile.phone,
-            href: `tel:${profile.phone.replace(/\s+/g, "")}`,
-            color: "text-emerald-400",
-            bgColor: "from-emerald-500/10 to-emerald-500/5",
-            borderColor: "border-emerald-500/10",
-        },
-        profile.location && {
-            icon: <HiOutlineMapPin />,
-            label: "Location",
-            value: profile.location,
-            href: null,
-            color: "text-amber-400",
-            bgColor: "from-amber-500/10 to-amber-500/5",
-            borderColor: "border-amber-500/10",
-        },
+        profile.email && { icon: Mail, label: "Email", value: profile.email, href: `mailto:${profile.email}` },
+        profile.phone && { icon: Phone, label: "Phone", value: profile.phone, href: `tel:${profile.phone.replace(/\s+/g, "")}` },
+        profile.location && { icon: MapPin, label: "Location", value: profile.location, href: null },
     ].filter(Boolean);
 
     const socials = [
-        profile.github_url && {
-            icon: <FaGithub />,
-            label: "GitHub",
-            href: profile.github_url,
-            hoverColor: "hover:text-white hover:bg-white/10 hover:border-white/20",
-        },
-        profile.linkedin_url && {
-            icon: <FaLinkedin />,
-            label: "LinkedIn",
-            href: profile.linkedin_url,
-            hoverColor: "hover:text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/30",
-        },
-        profile.instagram_url && {
-            icon: <FaInstagram />,
-            label: "Instagram",
-            href: profile.instagram_url,
-            hoverColor: "hover:text-pink-400 hover:bg-pink-500/10 hover:border-pink-500/30",
-        },
+        profile.github_url && { icon: FaGithub, label: "GitHub", href: profile.github_url },
+        profile.linkedin_url && { icon: FaLinkedin, label: "LinkedIn", href: profile.linkedin_url },
+        profile.instagram_url && { icon: FaInstagram, label: "Instagram", href: profile.instagram_url },
     ].filter(Boolean);
 
     return (
-        <section
-            id="contact"
-            className="relative pt-32 pb-10 bg-slate-900 overflow-hidden"
-        >
+        <section id="contact" className="bg-ink text-white pt-24 md:pt-28 pb-10">
 
-            {/* ── Toast notification ── */}
+            {/* Toast */}
             {feedback && (
                 <div
+                    role="status"
                     className={`
-                        fixed top-24 right-6 z-50
+                        fixed top-24 right-6 left-6 sm:left-auto z-50
                         flex items-center gap-3
-                        px-5 py-4 rounded-2xl
-                        backdrop-blur-md border shadow-2xl
-                        animate-toast-in
-                        ${feedback.type === "success"
-                            ? "bg-emerald-500/95 border-emerald-400/30 text-white"
-                            : "bg-red-500/95 border-red-400/30 text-white"
-                        }
+                        px-5 py-4 rounded-xl shadow-lg
+                        animate-toast-in text-white
+                        ${feedback.type === "success" ? "bg-emerald-700" : "bg-red-700"}
                     `}
                 >
                     {feedback.type === "success" ? (
-                        <HiOutlineCheckCircle className="text-xl shrink-0" />
+                        <CircleCheck className="size-5 shrink-0" aria-hidden="true" />
                     ) : (
-                        <HiOutlineExclamationTriangle className="text-xl shrink-0" />
+                        <TriangleAlert className="size-5 shrink-0" aria-hidden="true" />
                     )}
                     <span className="text-sm font-medium">{feedback.message}</span>
                 </div>
             )}
 
-            {/* ── Background decorations ── */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-20 -left-32 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[140px]" />
-                <div className="absolute bottom-20 -right-32 w-[400px] h-[400px] rounded-full bg-cyan-500/5 blur-[120px]" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-indigo-500/3 blur-[180px]" />
-            </div>
+            <Container>
+                <div className="grid lg:grid-cols-[1fr_1.2fr] gap-14 lg:gap-20">
 
-            {/* Grid pattern */}
-            <div
-                className="absolute inset-0 opacity-[0.03]"
-                style={{
-                    backgroundImage:
-                        "linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)",
-                    backgroundSize: "60px 60px",
-                }}
-            />
+                    {/* Left: how to reach me */}
+                    <div>
+                        <SectionHeading
+                            dark
+                            before="Let's build something"
+                            highlight="together"
+                            intro="I'm open to freelance work, collaborations, internships, and full-time opportunities."
+                        />
 
-            <Container className="relative z-10">
+                        <Reveal variant="group" stagger={140} delay={100}>
+                            {contactInfo.length > 0 && (
+                                <ul className="mt-10 space-y-5">
+                                    {contactInfo.map(({ icon: Icon, label, value, href }) => {
+                                        const content = (
+                                            <>
+                                                <span className="w-11 h-11 shrink-0 rounded-xl border border-zinc-700 flex items-center justify-center text-lg text-blue-400">
+                                                    <Icon aria-hidden="true" className="size-4.5" />
+                                                </span>
+                                                <span className="min-w-0">
+                                                    <span className="block text-sm text-zinc-400">{label}</span>
+                                                    <span className="block font-medium text-white break-words">{value}</span>
+                                                </span>
+                                            </>
+                                        );
 
-                {/* ── Section Header ── */}
-                <div data-aos="fade-up" className="text-center mb-20">
+                                        return (
+                                            <li key={label}>
+                                                {href ? (
+                                                    <a
+                                                        href={href}
+                                                        className="flex items-center gap-4 rounded-xl -m-2 p-2 hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-blue-400 transition-colors"
+                                                    >
+                                                        {content}
+                                                    </a>
+                                                ) : (
+                                                    <div className="flex items-center gap-4">{content}</div>
+                                                )}
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            )}
 
-                    <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
-                        <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                        <span className="text-sm text-blue-300 font-medium tracking-wider uppercase">
-                            Get In Touch
-                        </span>
+                            {socials.length > 0 && (
+                                <div className="mt-10">
+                                    <p className="text-sm text-zinc-400 mb-3">Find me on</p>
+                                    <div className="flex gap-3">
+                                        {socials.map(({ icon: Icon, label, href }) => (
+                                            <a
+                                                key={label}
+                                                href={href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                aria-label={label}
+                                                className="
+                                                    w-11 h-11 rounded-xl
+                                                    border border-zinc-700
+                                                    flex items-center justify-center
+                                                    text-lg text-zinc-300
+                                                    hover:text-white hover:border-zinc-400 hover:bg-zinc-900
+                                                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400
+                                                    transition-colors duration-200
+                                                "
+                                            >
+                                                <Icon aria-hidden="true" />
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </Reveal>
                     </div>
 
-                    <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-                        Let's Build Something
-                        <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                            {" "}Together
-                        </span>
-                    </h2>
+                    {/* Right: form */}
+                    <Reveal as="form" delay={150} onSubmit={handleSubmit} className="space-y-5">
+                        <div className="grid md:grid-cols-2 gap-5">
+                            <Field id="contact-name" label="Name">
+                                <input
+                                    id="contact-name"
+                                    type="text"
+                                    name="name"
+                                    autoComplete="name"
+                                    placeholder="Your name"
+                                    value={form.name}
+                                    onChange={handleChange}
+                                    required
+                                    maxLength={100}
+                                    className={FIELD_CLASS}
+                                />
+                            </Field>
 
-                    <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">
-                        I'm open to freelance work, collaborations, internships, and full-time opportunities.
-                    </p>
-
-                </div>
-
-                <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-start">
-
-                    {/* ── LEFT — Info ── */}
-                    <div data-aos="fade-right" className="lg:col-span-2 space-y-6">
-
-                        {/* Contact info cards */}
-                        {contactInfo.map((info, i) => {
-                            const cardClassName = `
-                                group
-                                flex items-center gap-5
-                                rounded-2xl p-5
-                                bg-white/[0.03] border border-white/[0.06]
-                                backdrop-blur-sm
-                                hover:bg-white/[0.06] hover:border-white/10
-                                transition-all duration-300
-                            `;
-
-                            const cardContent = (
-                                <>
-                                    <div
-                                        className={`
-                                            w-12 h-12 shrink-0
-                                            rounded-2xl
-                                            bg-gradient-to-br ${info.bgColor}
-                                            border ${info.borderColor}
-                                            flex items-center justify-center
-                                            text-xl ${info.color}
-                                            transition-all duration-300
-                                        `}
-                                    >
-                                        {info.icon}
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-sm text-slate-400 font-medium">
-                                            {info.label}
-                                        </p>
-                                        <p className="text-white font-semibold mt-0.5 break-words">
-                                            {info.value}
-                                        </p>
-                                    </div>
-                                </>
-                            );
-
-                            return info.href ? (
-                                <a
-                                    key={info.label}
-                                    href={info.href}
-                                    data-aos="fade-up"
-                                    data-aos-delay={i * 100}
-                                    className={cardClassName}
-                                >
-                                    {cardContent}
-                                </a>
-                            ) : (
-                                <div
-                                    key={info.label}
-                                    data-aos="fade-up"
-                                    data-aos-delay={i * 100}
-                                    className={cardClassName}
-                                >
-                                    {cardContent}
-                                </div>
-                            );
-                        })}
-
-                        {/* Social links */}
-                        {socials.length > 0 && (
-                            <div data-aos="fade-up" className="pt-4">
-                                <p className="text-sm text-slate-400 font-medium mb-4 tracking-wider uppercase">
-                                    Find me on
-                                </p>
-                                <div className="flex gap-3">
-                                    {socials.map((social) => (
-                                        <a
-                                            key={social.label}
-                                            href={social.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            aria-label={social.label}
-                                            className={`
-                                                w-12 h-12 rounded-xl
-                                                bg-white/5 border border-white/10
-                                                flex items-center justify-center
-                                                text-xl text-slate-400
-                                                hover:-translate-y-1
-                                                transition-all duration-300
-                                                ${social.hoverColor}
-                                            `}
-                                        >
-                                            {social.icon}
-                                        </a>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                    </div>
-
-                    {/* ── RIGHT — Form ── */}
-                    <div data-aos="fade-left" className="lg:col-span-3">
-
-                        <div
-                            className="
-                                rounded-2xl p-8 md:p-10
-                                bg-white/[0.03] border border-white/[0.06]
-                                backdrop-blur-sm
-                                relative overflow-hidden
-                            "
-                        >
-
-                            {/* Top accent line */}
-                            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500/50 via-cyan-500/30 to-transparent" />
-
-                            <form
-                                onSubmit={handleSubmit}
-                                className="space-y-5"
-                            >
-
-                                <div className="grid md:grid-cols-2 gap-5">
-                                    <div>
-                                        <label htmlFor="contact-name" className="block text-sm text-slate-400 font-medium mb-2">
-                                            Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="contact-name"
-                                            name="name"
-                                            placeholder="Your Name"
-                                            value={form.name}
-                                            onChange={handleChange}
-                                            required
-                                            className="
-                                                w-full rounded-xl p-4
-                                                bg-white/[0.05] border border-white/10
-                                                text-white placeholder-slate-400
-                                                outline-none
-                                                focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:bg-white/[0.08]
-                                                transition-all duration-300
-                                            "
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="contact-email" className="block text-sm text-slate-400 font-medium mb-2">
-                                            Email
-                                        </label>
-                                        <input
-                                            type="email"
-                                            id="contact-email"
-                                            name="email"
-                                            placeholder="your@email.com"
-                                            value={form.email}
-                                            onChange={handleChange}
-                                            required
-                                            className="
-                                                w-full rounded-xl p-4
-                                                bg-white/[0.05] border border-white/10
-                                                text-white placeholder-slate-400
-                                                outline-none
-                                                focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:bg-white/[0.08]
-                                                transition-all duration-300
-                                            "
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="contact-subject" className="block text-sm text-slate-400 font-medium mb-2">
-                                        Subject
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="contact-subject"
-                                        name="subject"
-                                        placeholder="What's this about?"
-                                        value={form.subject}
-                                        onChange={handleChange}
-                                        required
-                                        className="
-                                            w-full rounded-xl p-4
-                                            bg-white/[0.05] border border-white/10
-                                            text-white placeholder-slate-400
-                                            outline-none
-                                            focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:bg-white/[0.08]
-                                            transition-all duration-300
-                                        "
-                                    />
-                                </div>
-
-                                <div>
-                                    <label htmlFor="contact-message" className="block text-sm text-slate-400 font-medium mb-2">
-                                        Message
-                                    </label>
-                                    <textarea
-                                        rows="5"
-                                        id="contact-message"
-                                        name="message"
-                                        placeholder="Your message..."
-                                        value={form.message}
-                                        onChange={handleChange}
-                                        required
-                                        className="
-                                            w-full rounded-xl p-4
-                                            bg-white/[0.05] border border-white/10
-                                            text-white placeholder-slate-400
-                                            outline-none resize-none
-                                            focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:bg-white/[0.08]
-                                            transition-all duration-300
-                                        "
-                                    />
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="
-                                        w-full
-                                        inline-flex items-center justify-center gap-3
-                                        px-8 py-4
-                                        rounded-xl
-                                        bg-gradient-to-r from-blue-500 to-cyan-500
-                                        text-white font-semibold
-                                        shadow-lg shadow-blue-500/20
-                                        hover:shadow-blue-400/30
-                                        hover:from-blue-400 hover:to-cyan-400
-                                        hover:-translate-y-0.5
-                                        transition-all duration-300
-                                        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
-                                    "
-                                >
-                                    {loading ? (
-                                        <>
-                                            <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                                            <span>Sending...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span>Send Message</span>
-                                            <HiOutlinePaperAirplane className="text-lg" />
-                                        </>
-                                    )}
-                                </button>
-
-                            </form>
-
+                            <Field id="contact-email" label="Email">
+                                <input
+                                    id="contact-email"
+                                    type="email"
+                                    name="email"
+                                    autoComplete="email"
+                                    placeholder="your@email.com"
+                                    value={form.email}
+                                    onChange={handleChange}
+                                    required
+                                    maxLength={255}
+                                    className={FIELD_CLASS}
+                                />
+                            </Field>
                         </div>
 
-                    </div>
+                        <Field id="contact-subject" label="Subject">
+                            <input
+                                id="contact-subject"
+                                type="text"
+                                name="subject"
+                                placeholder="What's this about?"
+                                value={form.subject}
+                                onChange={handleChange}
+                                required
+                                maxLength={150}
+                                className={FIELD_CLASS}
+                            />
+                        </Field>
+
+                        <Field id="contact-message" label="Message">
+                            <textarea
+                                id="contact-message"
+                                name="message"
+                                rows={6}
+                                placeholder="Your message"
+                                value={form.message}
+                                onChange={handleChange}
+                                required
+                                maxLength={5000}
+                                className={`${FIELD_CLASS} resize-none`}
+                            />
+                        </Field>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="
+                                w-full sm:w-auto inline-flex items-center justify-center gap-2
+                                min-h-12 px-6 rounded-xl
+                                bg-white text-ink font-medium
+                                hover:bg-zinc-200 active:bg-zinc-300
+                                focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400
+                                disabled:opacity-60
+                                transition-colors duration-200
+                            "
+                        >
+                            {loading ? (
+                                <>
+                                    <span aria-hidden="true" className="w-5 h-5 rounded-full border-2 border-zinc-400 border-t-ink animate-spin" />
+                                    Sending...
+                                </>
+                            ) : (
+                                <>
+                                    Send Message
+                                    <Send aria-hidden="true" className="size-4" />
+                                </>
+                            )}
+                        </button>
+                    </Reveal>
 
                 </div>
 
-                {/* ── Footer credits ── */}
-                <div className="mt-16 pt-6 border-t border-white/5 text-center">
-                    <p className="text-slate-400 text-sm">
-                        © {new Date().getFullYear()} {profile.full_name || "Ali Imran Rodja"}. 
+                {/* Footer */}
+                <div className="mt-20 pt-6 border-t border-zinc-800">
+                    <p className="text-sm text-zinc-400">
+                        © {new Date().getFullYear()} {profile.full_name || "Ali Imran Rodja"}
                     </p>
                 </div>
-
             </Container>
-
         </section>
     );
 }

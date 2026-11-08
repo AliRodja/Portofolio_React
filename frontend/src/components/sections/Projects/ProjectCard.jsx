@@ -1,174 +1,69 @@
 import { useState } from "react";
-import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
-import { HiOutlineArrowUpRight, HiOutlineRocketLaunch } from "react-icons/hi2";
+import { FaGithub } from "react-icons/fa";
+import { ExternalLink } from "lucide-react";
 import DescriptionModal from "../../ui/DescriptionModal";
 
 const DESCRIPTION_LIMIT = 140;
 
+const STATUS_LABEL = { completed: "Completed", in_progress: "In progress" };
+
 function ProjectCard({ project }) {
-  const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const isLongDescription = project.description && project.description.length > DESCRIPTION_LIMIT;
 
   return (
-    <div
+    <article
       className="
-        group relative
         h-full flex flex-col
-        rounded-2xl
-        bg-white/[0.03] border border-white/[0.06]
-        backdrop-blur-sm
-        overflow-hidden
-        hover:bg-white/[0.05] hover:border-white/10
-        hover:-translate-y-2
-        transition-all duration-500
+        rounded-xl overflow-hidden
+        bg-white border border-zinc-200
+        hover:border-zinc-400
+        transition-colors duration-200
       "
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* ── Image Section ── */}
-      <div className="relative overflow-hidden h-52 md:h-56 shrink-0">
-        {/* Image */}
+      {/* Image */}
+      <div className="relative h-48 shrink-0 bg-zinc-100 border-b border-zinc-200">
         {project.image_url && !imageError ? (
           <img
             src={project.image_url}
             alt={project.title}
+            width={640}
+            height={384}
+            loading="lazy"
             draggable={false}
-            className="
-              w-full h-full object-cover
-              group-hover:scale-110
-              transition-transform duration-700 ease-out
-            "
+            className="w-full h-full object-cover"
             onError={() => setImageError(true)}
           />
         ) : (
-          /* Placeholder gradient when no image */
-          <div className="w-full h-full bg-gradient-to-br from-blue-500/20 via-indigo-500/15 to-cyan-500/20 flex items-center justify-center">
-            <HiOutlineRocketLaunch className="text-5xl text-white opacity-40" />
-          </div>
-        )}
-
-        {/* Dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
-
-        {/* Hover overlay with quick-action links */}
-        <div
-          className={`
-            absolute inset-0
-            bg-gradient-to-t from-blue-900/80 via-blue-900/40 to-transparent
-            flex items-center justify-center gap-4
-            transition-all duration-400
-            ${isHovered ? "opacity-100" : "opacity-0"}
-            focus-within:opacity-100
-          `}
-        >
-          {project.repo_link && (
-            <a
-              href={project.repo_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                w-12 h-12 rounded-xl
-                bg-white/10 border border-white/20
-                backdrop-blur-md
-                flex items-center justify-center
-                text-white text-lg
-                hover:bg-white/20 hover:border-white/30
-                hover:scale-110
-                transition-all duration-300
-              "
-              aria-label="View source code on GitHub"
-            >
-              <FaGithub />
-            </a>
-          )}
-
-          {project.demo_link && (
-            <a
-              href={project.demo_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                w-12 h-12 rounded-xl
-                bg-white/10 border border-white/20
-                backdrop-blur-md
-                flex items-center justify-center
-                text-white text-lg
-                hover:bg-white/20 hover:border-white/30
-                hover:scale-110
-                transition-all duration-300
-              "
-              aria-label="View live demo"
-            >
-              <HiOutlineArrowUpRight />
-            </a>
-          )}
-        </div>
-
-        {/* Category badge floating top-left */}
-        {project.category && (
-          <div className="absolute top-4 left-4 z-10">
-            <span
-              className="
-                px-3 py-1.5 rounded-full
-                bg-blue-500/20 border border-blue-400/30
-                backdrop-blur-md
-                text-xs font-semibold text-blue-300
-                uppercase tracking-wider
-              "
-            >
-              {project.category}
-            </span>
-          </div>
-        )}
-
-        {/* Status indicator top-right */}
-        {project.status && (
-          <div className="absolute top-4 right-4 z-10">
-            <span
-              className={`
-                inline-flex items-center gap-1.5
-                px-3 py-1.5 rounded-full
-                backdrop-blur-md
-                text-xs font-medium tracking-wide
-                ${
-                  project.status === "completed"
-                    ? "bg-emerald-500/20 border border-emerald-400/30 text-emerald-300"
-                    : project.status === "in_progress"
-                    ? "bg-amber-500/20 border border-amber-400/30 text-amber-300"
-                    : "bg-slate-500/20 border border-slate-400/30 text-slate-300"
-                }
-              `}
-            >
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  project.status === "completed"
-                    ? "bg-emerald-400"
-                    : project.status === "in_progress"
-                    ? "bg-amber-400 animate-pulse"
-                    : "bg-slate-400"
-                }`}
-              />
-              {project.status === "completed"
-                ? "Completed"
-                : project.status === "in_progress"
-                ? "In Progress"
-                : project.status}
-            </span>
-          </div>
+          <p className="w-full h-full flex items-center justify-center text-sm text-zinc-600">
+            No preview image
+          </p>
         )}
       </div>
 
-      {/* ── Content Section ── */}
-      <div className="flex flex-col flex-1 p-6 md:p-7">
-        {/* Title */}
-        <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-6">
+        {(project.category || project.status) && (
+          <div className="flex flex-wrap gap-2 mb-3">
+            {project.category && (
+              <span className="rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-800">
+                {project.category}
+              </span>
+            )}
+            {project.status && (
+              <span className="rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700">
+                {STATUS_LABEL[project.status] || project.status}
+              </span>
+            )}
+          </div>
+        )}
+
+        <h3 className="font-display text-xl font-bold leading-snug text-ink">
           {project.title}
         </h3>
 
-        {/* Description */}
-        <p className="mt-3 text-slate-400 leading-relaxed text-sm md:text-base line-clamp-3">
+        <p className="mt-3 text-zinc-600 leading-relaxed line-clamp-3">
           {project.description}
         </p>
 
@@ -176,84 +71,67 @@ function ProjectCard({ project }) {
           <button
             type="button"
             onClick={() => setShowModal(true)}
-            className="mt-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+            className="self-start inline-flex items-center min-h-11 text-sm font-semibold text-blue-700 hover:text-blue-900 hover:underline focus-visible:outline-2 focus-visible:outline-blue-700 rounded"
           >
             Read more
           </button>
         )}
 
-        {/* Tech Stack */}
         {project.tech_stack && project.tech_stack.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-5 mb-6">
+          <ul className="flex flex-wrap gap-2 mt-5 mb-6" aria-label="Tech stack">
             {project.tech_stack.map((tech) => (
-              <span
-                key={tech}
-                className="
-                  px-3 py-1 rounded-lg
-                  bg-white/[0.04] border border-white/[0.08]
-                  text-xs font-medium text-slate-300
-                  group-hover:bg-white/[0.08] group-hover:border-white/[0.12]
-                  transition-all duration-300
-                "
-              >
+              <li key={tech} className="rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700">
                 {tech}
-              </span>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
-        {/* Footer: links. No date here: the only date stored is created_at (when
-            the row was added), not when the project happened; the real year is
+        {/* Links. No date here: the only date stored is created_at (when the
+            row was added), not when the project happened; the real year is
             already in the description. */}
         {(project.repo_link || project.demo_link) && (
-          <div className="flex items-center justify-end mt-auto pt-5 border-t border-white/[0.06]">
-            <div className="flex items-center gap-3">
-              {project.repo_link && (
-                <a
-                  href={project.repo_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="
-                    inline-flex items-center justify-center gap-2
-                    min-h-11 min-w-11 px-4 py-2 rounded-lg
-                    bg-white/[0.04] border border-white/[0.08]
-                    text-sm text-slate-300 font-medium
-                    hover:bg-white/[0.10] hover:border-white/[0.15] hover:text-white
-                    transition-all duration-300
-                  "
-                >
-                  <FaGithub className="text-sm" />
-                  <span className="sr-only sm:not-sr-only">Code</span>
-                </a>
-              )}
+          <div className="flex items-center gap-3 mt-auto pt-5 border-t border-zinc-200">
+            {project.repo_link && (
+              <a
+                href={project.repo_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  inline-flex items-center justify-center gap-2
+                  min-h-11 min-w-11 px-4 rounded-lg
+                  border border-zinc-300 text-sm font-medium text-ink
+                  hover:border-ink hover:bg-zinc-100 active:bg-zinc-200
+                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
+                  transition-colors duration-200
+                "
+              >
+                <FaGithub aria-hidden="true" />
+                <span className="sr-only sm:not-sr-only">Code</span>
+              </a>
+            )}
 
-              {project.demo_link && (
-                <a
-                  href={project.demo_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="
-                    inline-flex items-center justify-center gap-2
-                    min-h-11 min-w-11 px-4 py-2 rounded-lg
-                    bg-gradient-to-r from-blue-500/20 to-cyan-500/20
-                    border border-blue-400/20
-                    text-sm text-blue-300 font-medium
-                    hover:from-blue-500/30 hover:to-cyan-500/30
-                    hover:border-blue-400/40 hover:text-blue-200
-                    transition-all duration-300
-                  "
-                >
-                  <FaExternalLinkAlt className="text-xs" />
-                  <span className="sr-only sm:not-sr-only">Demo</span>
-                </a>
-              )}
-            </div>
+            {project.demo_link && (
+              <a
+                href={project.demo_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  inline-flex items-center justify-center gap-2
+                  min-h-11 min-w-11 px-4 rounded-lg
+                  bg-ink text-sm font-medium text-white
+                  hover:bg-zinc-800 active:bg-black
+                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
+                  transition-colors duration-200
+                "
+              >
+                <ExternalLink className="size-4" aria-hidden="true" />
+                <span className="sr-only sm:not-sr-only">Demo</span>
+              </a>
+            )}
           </div>
         )}
       </div>
-
-      {/* Bottom accent line on hover */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-24 h-[2px] bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full transition-all duration-500" />
 
       {showModal && (
         <DescriptionModal
@@ -263,7 +141,7 @@ function ProjectCard({ project }) {
           onClose={() => setShowModal(false)}
         />
       )}
-    </div>
+    </article>
   );
 }
 

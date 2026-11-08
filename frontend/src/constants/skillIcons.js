@@ -41,7 +41,11 @@ import {
     SiSwift,
     SiDjango,
     SiSpring,
+    SiUnity,
+    SiWordpress,
+    SiCanva,
 } from "react-icons/si";
+import { TbBrandCSharp } from "react-icons/tb";
 
 import { VscCode } from "react-icons/vsc";
 
@@ -67,6 +71,7 @@ export const SKILL_ICONS = [
     { key: "SiSpring", label: "Spring", icon: SiSpring },
     { key: "FaPython", label: "Python", icon: FaPython },
     { key: "FaJava", label: "Java", icon: FaJava },
+    { key: "TbBrandCSharp", label: "C#", icon: TbBrandCSharp },
     { key: "SiGraphql", label: "GraphQL", icon: SiGraphql },
     { key: "SiPostgresql", label: "PostgreSQL", icon: SiPostgresql },
     { key: "SiMysql", label: "MySQL", icon: SiMysql },
@@ -82,6 +87,9 @@ export const SKILL_ICONS = [
     { key: "SiWebpack", label: "Webpack", icon: SiWebpack },
     { key: "FaNpm", label: "npm", icon: FaNpm },
     { key: "FaFigma", label: "Figma", icon: FaFigma },
+    { key: "SiCanva", label: "Canva", icon: SiCanva },
+    { key: "SiUnity", label: "Unity", icon: SiUnity },
+    { key: "SiWordpress", label: "WordPress", icon: SiWordpress },
     { key: "VscCode", label: "VS Code", icon: VscCode },
     { key: "SiFlutter", label: "Flutter", icon: SiFlutter },
     { key: "SiKotlin", label: "Kotlin", icon: SiKotlin },
@@ -90,4 +98,15 @@ export const SKILL_ICONS = [
 
 export function getSkillIcon(key) {
     return SKILL_ICONS.find((item) => item.key === key)?.icon || null;
+}
+
+// Icon for a skill row: its saved icon_name first, otherwise the icon whose
+// label matches the skill name (e.g. "WordPress" with no icon_name saved).
+// Returns null when there is no real logo, rather than a generic glyph.
+export function findSkillIcon(skill) {
+    const name = (skill.name || "").trim().toLowerCase();
+
+    return getSkillIcon(skill.icon_name)
+        || SKILL_ICONS.find((item) => item.label.toLowerCase() === name)?.icon
+        || null;
 }
