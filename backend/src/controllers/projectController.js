@@ -36,6 +36,7 @@ const createProject = async (req, res) => {
             repo_link,
             category,
             featured,
+            started_on,
         } = req.body;
 
         const result = await pool.query(
@@ -49,10 +50,11 @@ const createProject = async (req, res) => {
         demo_link,
         repo_link,
         category,
-        featured
+        featured,
+        started_on
       )
       VALUES
-      ($1,$2,$3,$4,$5,$6,$7,$8)
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9)
       RETURNING *
       `,
             [
@@ -64,6 +66,7 @@ const createProject = async (req, res) => {
                 repo_link,
                 category,
                 featured,
+                started_on,
             ]
         );
 
@@ -93,6 +96,7 @@ const updateProject = async (req, res) => {
             repo_link,
             category,
             featured,
+            started_on,
         } = req.body;
 
         // Simpan URL gambar lama sebelum ditimpa.
@@ -113,8 +117,9 @@ const updateProject = async (req, res) => {
         repo_link=$6,
         category=$7,
         featured=$8,
+        started_on=$9,
         updated_at=NOW()
-      WHERE id=$9
+      WHERE id=$10
       RETURNING *
       `,
             [
@@ -126,6 +131,7 @@ const updateProject = async (req, res) => {
                 repo_link,
                 category,
                 featured,
+                started_on,
                 id,
             ]
         );

@@ -127,7 +127,19 @@ describe("POST /api/projects", () => {
             null,
             "Web",
             false,
+            null,
         ]);
+    });
+
+    it("rejects a malformed started_on", async () => {
+        const res = await request("POST", "/api/projects", {
+            token: adminToken,
+            body: { title: "x", description: "y", category: "z", tech_stack: ["React"], started_on: "2024-13" },
+        });
+
+        assert.equal(res.status, 400);
+        assert.ok(res.body.errors.started_on);
+        assert.equal(db.queries.length, 0);
     });
 
     it("rejects an invalid project without querying", async () => {

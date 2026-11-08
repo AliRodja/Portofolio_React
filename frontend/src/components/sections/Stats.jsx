@@ -5,8 +5,9 @@ import Container from "../ui/Container";
 import Reveal from "../ui/Reveal";
 
 // Exact numbers from the database, shown as-is: no "+" (it implied "more than").
-// experience_years is whole years across all experiences, rounded down by
-// the API (owner's choice, 2026-11-08), so it never overstates.
+// experience_years is whole years since the earliest project start date,
+// rounded down by the API (owner's choice, 2026-11-08), so it never
+// overstates. Until a project has a start date it is 0 and stays hidden.
 // Kept as a bar under the Hero by the owner's choice (DESIGN.md, exceptions).
 const ITEMS = [
   { key: "projects", title: "Projects" },

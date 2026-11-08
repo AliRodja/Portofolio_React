@@ -12,6 +12,7 @@ const project = {
     repo_link: { type: "url", max: 500 },
     category: { type: "string", required: true, max: 100 },
     featured: { type: "boolean", default: false },
+    started_on: { type: "date" },
 };
 
 const skill = {

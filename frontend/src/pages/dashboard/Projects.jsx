@@ -32,6 +32,8 @@ function Projects() {
         repo_link: "",
         category: "",
         featured: false,
+        // "YYYY-MM" while editing; sent as the first of that month.
+        started_on: "",
     };
 
     const [projects, setProjects] = useState([]);
@@ -128,6 +130,10 @@ function Projects() {
         if (!form.description.trim()) return "Description is required.";
         if (!form.category.trim()) return "Category is required.";
         if (!form.tech_stack.trim()) return "Tech stack is required.";
+        // Browsers without a month picker show a plain text box instead.
+        if (form.started_on && !/^\d{4}-(0[1-9]|1[0-2])$/.test(form.started_on)) {
+            return "Started must be a month like 2024-03.";
+        }
 
         return "";
     };
@@ -150,6 +156,7 @@ function Projects() {
                 .split(",")
                 .map((item) => item.trim())
                 .filter(Boolean),
+            started_on: form.started_on ? `${form.started_on}-01` : null,
         };
 
         try {
@@ -186,6 +193,7 @@ function Projects() {
             tech_stack: Array.isArray(project.tech_stack)
                 ? project.tech_stack.join(", ")
                 : "",
+            started_on: project.started_on ? project.started_on.slice(0, 7) : "",
         });
 
         window.scrollTo({
@@ -269,6 +277,23 @@ function Projects() {
                                 onChange={handleChange}
                                 className={inputClass}
                             />
+                        </div>
+
+                        <div>
+                            <FieldLabel htmlFor="started_on">Started</FieldLabel>
+                            <input
+                                id="started_on"
+                                type="month"
+                                name="started_on"
+                                placeholder="YYYY-MM"
+                                value={form.started_on}
+                                onChange={handleChange}
+                                aria-describedby="started_on-hint"
+                                className={inputClass}
+                            />
+                            <p id="started_on-hint" className="mt-1.5 text-xs text-slate-500">
+                                Month you started this project. The earliest one sets "Years of Experience" on the home page.
+                            </p>
                         </div>
 
                     </div>
