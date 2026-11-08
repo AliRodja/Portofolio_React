@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const { verifyToken } = require("../middleware/authMiddleware");
+const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
 const { validateBody, validateId } = require("../middleware/validate");
 const schemas = require("../validators/schemas");
 
@@ -15,10 +15,10 @@ const {
 
 router.get("/", getAllProjects);
 
-router.post("/", verifyToken, validateBody(schemas.project), createProject);
+router.post("/", verifyToken, requireAdmin, validateBody(schemas.project), createProject);
 
-router.put("/:id", verifyToken, validateId, validateBody(schemas.project), updateProject);
+router.put("/:id", verifyToken, requireAdmin, validateId, validateBody(schemas.project), updateProject);
 
-router.delete("/:id", verifyToken, validateId, deleteProject);
+router.delete("/:id", verifyToken, requireAdmin, validateId, deleteProject);
 
 module.exports = router;

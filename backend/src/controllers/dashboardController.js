@@ -3,55 +3,50 @@ const pool = require("../config/db");
 const getOverview = async (req, res) => {
     try {
 
-        const [
-            projects,
-            skills,
-            experiences,
-            educations,
-            certificates,
-            messages
-        ] = await Promise.all([
+        // All six counts in one query, run alongside the latest-messages query,
+        // so the overview needs two connections instead of seven.
+        const [counts, latestMessages] = await Promise.all([
 
-            pool.query("SELECT COUNT(*) FROM projects"),
+            pool.query(`
+                SELECT
+                    (SELECT COUNT(*) FROM projects) AS projects,
+                    (SELECT COUNT(*) FROM skills) AS skills,
+                    (SELECT COUNT(*) FROM experiences) AS experiences,
+                    (SELECT COUNT(*) FROM education) AS educations,
+                    (SELECT COUNT(*) FROM certificates) AS certificates,
+                    (SELECT COUNT(*) FROM messages) AS messages
+            `),
 
-            pool.query("SELECT COUNT(*) FROM skills"),
-
-            pool.query("SELECT COUNT(*) FROM experiences"),
-
-            pool.query("SELECT COUNT(*) FROM education"),
-
-            pool.query("SELECT COUNT(*) FROM certificates"),
-
-            pool.query("SELECT COUNT(*) FROM messages")
+            pool.query(`
+                SELECT
+                    id,
+                    name,
+                    email,
+                    subject,
+                    message,
+                    created_at
+                FROM messages
+                ORDER BY created_at DESC
+                LIMIT 5
+            `)
 
         ]);
 
-        const latestMessages = await pool.query(`
-            SELECT
-                id,
-                name,
-                email,
-                subject,
-                message,
-                created_at
-            FROM messages
-            ORDER BY created_at DESC
-            LIMIT 5
-        `);
+        const total = counts.rows[0];
 
         res.json({
 
-            totalProjects: Number(projects.rows[0].count),
+            totalProjects: Number(total.projects),
 
-            totalSkills: Number(skills.rows[0].count),
+            totalSkills: Number(total.skills),
 
-            totalExperiences: Number(experiences.rows[0].count),
+            totalExperiences: Number(total.experiences),
 
-            totalEducations: Number(educations.rows[0].count),
+            totalEducations: Number(total.educations),
 
-            totalCertificates: Number(certificates.rows[0].count),
+            totalCertificates: Number(total.certificates),
 
-            totalMessages: Number(messages.rows[0].count),
+            totalMessages: Number(total.messages),
 
             latestMessages: latestMessages.rows
 

@@ -3,31 +3,26 @@ const pool = require("../config/db");
 const getStats = async (req, res) => {
   try {
 
-    const projects = await pool.query(
-      "SELECT COUNT(*) FROM projects"
-    );
+    // One round trip instead of four — matters on serverless cold starts.
+    const result = await pool.query(`
+      SELECT
+        (SELECT COUNT(*) FROM projects) AS projects,
+        (SELECT COUNT(*) FROM skills) AS skills,
+        (SELECT COUNT(*) FROM experiences) AS experiences,
+        (SELECT COUNT(*) FROM certificates) AS certificates
+    `);
 
-    const skills = await pool.query(
-      "SELECT COUNT(*) FROM skills"
-    );
-
-    const experiences = await pool.query(
-      "SELECT COUNT(*) FROM experiences"
-    );
-
-    const certificates = await pool.query(
-      "SELECT COUNT(*) FROM certificates"
-    );
+    const counts = result.rows[0];
 
     res.json({
 
-      projects: Number(projects.rows[0].count),
+      projects: Number(counts.projects),
 
-      skills: Number(skills.rows[0].count),
+      skills: Number(counts.skills),
 
-      experiences: Number(experiences.rows[0].count),
+      experiences: Number(counts.experiences),
 
-      certificates: Number(certificates.rows[0].count)
+      certificates: Number(counts.certificates)
 
     });
 

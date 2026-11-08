@@ -2,6 +2,12 @@ const pool = require("../config/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+// Hash of a random string nobody knows, same cost (10) as real passwords.
+// Login compares against it when the email doesn't exist, so an unknown email
+// takes as long as a wrong password and response time can't reveal which
+// emails are registered. Hard-coded so cold starts don't pay for hashing.
+const DUMMY_HASH = "$2b$10$Ti4R8XSCQ3EnKhpoWPcX0ut.PhVMG80AcrDpksmE1gMerfnINK9Su";
+
 const register = async (req, res) => {
     try {
         const {
@@ -74,20 +80,15 @@ const login = async (req, res) => {
             [email]
         );
 
-        if (result.rows.length === 0) {
-            return res.status(401).json({
-                message: "Invalid credentials",
-            });
-        }
-
         const user = result.rows[0];
 
+        // Always run bcrypt, even for an unknown email (see DUMMY_HASH).
         const isMatch = await bcrypt.compare(
             password,
-            user.password_hash
+            user ? user.password_hash : DUMMY_HASH
         );
 
-        if (!isMatch) {
+        if (!user || !isMatch) {
             return res.status(401).json({
                 message: "Invalid credentials",
             });
