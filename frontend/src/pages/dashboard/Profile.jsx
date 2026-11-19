@@ -19,6 +19,7 @@ import PageHeader from "../../components/dashboard/PageHeader";
 import DashboardCard from "../../components/dashboard/DashboardCard";
 import DashboardButton from "../../components/dashboard/DashboardButton";
 import FieldLabel from "../../components/dashboard/FieldLabel";
+import ImageCropModal from "../../components/dashboard/ImageCropModal";
 
 const inputClass = "w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition";
 
@@ -44,6 +45,7 @@ function Profile() {
     const [saving, setSaving] = useState(false);
     const [uploadingImage, setUploadingImage] = useState(false);
     const [uploadingResume, setUploadingResume] = useState(false);
+    const [cropFile, setCropFile] = useState(null);
 
     const [formError, setFormError] = useState("");
 
@@ -82,22 +84,30 @@ function Profile() {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleImageChange = async (e) => {
+    const handleImageChange = (e) => {
         const file = e.target.files[0];
+        e.target.value = "";
 
         if (!file) return;
 
+        setFormError("");
+        setCropFile(file);
+    };
+
+    const handleCropConfirm = async (croppedFile) => {
         try {
             setUploadingImage(true);
             setFormError("");
 
-            const response = await uploadService.uploadFile(file);
+            const response = await uploadService.uploadFile(croppedFile);
 
             setForm((prev) => ({ ...prev, profile_image: response.data.url }));
+            setCropFile(null);
         } catch (error) {
             console.error(error);
 
             setFormError(error.response?.data?.message || "Failed to upload image.");
+            setCropFile(null);
         } finally {
             setUploadingImage(false);
 
@@ -503,6 +513,15 @@ function Profile() {
                 </form>
 
             </DashboardCard>
+
+            {cropFile && (
+                <ImageCropModal
+                    file={cropFile}
+                    uploading={uploadingImage}
+                    onCancel={() => setCropFile(null)}
+                    onConfirm={handleCropConfirm}
+                />
+            )}
 
         </div>
     );
