@@ -161,6 +161,63 @@ describe("POST /api/projects", () => {
     });
 });
 
+describe("POST /api/experiences", () => {
+    it("inserts experience with activity_images array", async () => {
+        db.handler = () => ({ rows: [{ id: 1 }] });
+
+        const res = await request("POST", "/api/experiences", {
+            token: adminToken,
+            body: {
+                position: "General Chairman",
+                organization: "HMTIF-UNPAS",
+                start_date: "2025-06-01",
+                end_date: "2026-06-30",
+                description: "Led the organization",
+                activity_images: ["https://example.com/1.webp", "https://example.com/2.webp"],
+            },
+        });
+
+        assert.equal(res.status, 201);
+        assert.deepEqual(db.queries[0].params, [
+            "General Chairman",
+            "HMTIF-UNPAS",
+            "2025-06-01",
+            "2026-06-30",
+            "Led the organization",
+            null,
+            ["https://example.com/1.webp", "https://example.com/2.webp"],
+        ]);
+    });
+});
+
+describe("POST /api/education", () => {
+    it("inserts education with activity_images array", async () => {
+        db.handler = () => ({ rows: [{ id: 1 }] });
+
+        const res = await request("POST", "/api/education", {
+            token: adminToken,
+            body: {
+                institution: "Universitas Pasundan",
+                degree: "Bachelor of Informatics Engineering",
+                start_year: 2022,
+                end_year: 2026,
+                description: "Undergraduate thesis",
+                activity_images: ["https://example.com/campus1.webp", "https://example.com/campus2.webp"],
+            },
+        });
+
+        assert.equal(res.status, 201);
+        assert.deepEqual(db.queries[0].params, [
+            "Universitas Pasundan",
+            "Bachelor of Informatics Engineering",
+            2022,
+            2026,
+            "Undergraduate thesis",
+            ["https://example.com/campus1.webp", "https://example.com/campus2.webp"],
+        ]);
+    });
+});
+
 describe("POST /api/messages", () => {
     const valid = { name: "Visitor", email: "visitor@example.com", message: "Hello!" };
 

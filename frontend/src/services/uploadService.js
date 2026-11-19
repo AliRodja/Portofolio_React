@@ -1,10 +1,12 @@
 import api from "./api";
+import { toWebpIfImage } from "../utils/file";
 
 const uploadService = {
 
-    uploadFile(file) {
+    async uploadFile(file) {
+        const prepared = await toWebpIfImage(file);
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", prepared);
 
         return api.post("/uploads", formData);
     },

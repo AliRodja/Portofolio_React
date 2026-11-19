@@ -29,6 +29,7 @@ const experience = {
     end_date: { type: "date" },
     description: { type: "string", max: TEXT_MAX },
     image_url: { type: "url", max: 500 },
+    activity_images: { type: "urlArray", maxItems: 12, maxItemLength: 500, default: [] },
 };
 
 // "YYYY-MM-DD" strings compare correctly as plain strings.
@@ -43,6 +44,7 @@ const education = {
     start_year: { type: "integer", required: true, min: 1950, max: 2100 },
     end_year: { type: "integer", min: 1950, max: 2100 },
     description: { type: "string", max: TEXT_MAX },
+    activity_images: { type: "urlArray", maxItems: 12, maxItemLength: 500, default: [] },
 };
 
 const educationRefine = ({ start_year, end_year }) =>

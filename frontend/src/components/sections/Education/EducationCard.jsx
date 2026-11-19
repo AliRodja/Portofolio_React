@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DescriptionModal from "../../ui/DescriptionModal";
 import Reveal from "../../ui/Reveal";
+import ActivityGallery from "../../ui/ActivityGallery";
 
 const DESCRIPTION_LIMIT = 180;
 
@@ -41,6 +42,11 @@ function EducationCard({ education }) {
                     )}
                 </>
             )}
+
+            <ActivityGallery
+                images={education.activity_images}
+                label={education.degree ? `${education.degree} at ${education.institution}` : education.institution}
+            />
 
             {showModal && (
                 <DescriptionModal

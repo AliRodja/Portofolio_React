@@ -21,15 +21,15 @@ const getAllExperiences = async (req, res) => {
 
 const createExperience = async (req, res) => {
     try {
-        const { position, organization, start_date, end_date, description, image_url } = req.body;
+        const { position, organization, start_date, end_date, description, image_url, activity_images } = req.body;
 
         const result = await pool.query(
             `
-            INSERT INTO experiences (position, organization, start_date, end_date, description, image_url)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            INSERT INTO experiences (position, organization, start_date, end_date, description, image_url, activity_images)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *
             `,
-            [position, organization, start_date, end_date || null, description, image_url || null]
+            [position, organization, start_date, end_date || null, description, image_url || null, activity_images || []]
         );
 
         res.status(201).json(result.rows[0]);
@@ -45,21 +45,23 @@ const createExperience = async (req, res) => {
 const updateExperience = async (req, res) => {
     try {
         const { id } = req.params;
-        const { position, organization, start_date, end_date, description, image_url } = req.body;
+        const { position, organization, start_date, end_date, description, image_url, activity_images } = req.body;
 
         const existing = await pool.query(
-            'SELECT image_url FROM experiences WHERE id = $1',
+            'SELECT image_url, activity_images FROM experiences WHERE id = $1',
             [id]
         );
+
+        const nextActivities = activity_images || [];
 
         const result = await pool.query(
             `
             UPDATE experiences
-            SET position = $1, organization = $2, start_date = $3, end_date = $4, description = $5, image_url = $6
-            WHERE id = $7
+            SET position = $1, organization = $2, start_date = $3, end_date = $4, description = $5, image_url = $6, activity_images = $7
+            WHERE id = $8
             RETURNING *
             `,
-            [position, organization, start_date, end_date || null, description, image_url || null, id]
+            [position, organization, start_date, end_date || null, description, image_url || null, nextActivities, id]
         );
 
         if (result.rows.length === 0) {
@@ -68,9 +70,17 @@ const updateExperience = async (req, res) => {
             });
         }
 
-        const oldImage = existing.rows[0]?.image_url;
-        if (oldImage && oldImage !== image_url) {
-            await deleteFile(oldImage);
+        const oldRow = existing.rows[0];
+        if (oldRow?.image_url && oldRow.image_url !== image_url) {
+            await deleteFile(oldRow.image_url);
+        }
+
+        const oldActivities = Array.isArray(oldRow?.activity_images) ? oldRow.activity_images : [];
+        const nextSet = new Set(nextActivities);
+        for (const oldUrl of oldActivities) {
+            if (!nextSet.has(oldUrl)) {
+                await deleteFile(oldUrl);
+            }
         }
 
         res.json(result.rows[0]);
@@ -102,7 +112,13 @@ const deleteExperience = async (req, res) => {
             });
         }
 
-        await deleteFile(result.rows[0].image_url);
+        const deleted = result.rows[0];
+        await deleteFile(deleted.image_url);
+
+        const oldActivities = Array.isArray(deleted.activity_images) ? deleted.activity_images : [];
+        for (const url of oldActivities) {
+            await deleteFile(url);
+        }
 
         res.json({
             message: 'Experience deleted successfully'

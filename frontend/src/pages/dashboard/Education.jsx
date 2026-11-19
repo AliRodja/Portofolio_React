@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
     FaSearch,
     FaEdit,
@@ -6,9 +6,13 @@ import {
     FaGraduationCap,
     FaExclamationCircle,
     FaUniversity,
+    FaUpload,
+    FaSpinner,
+    FaTimes,
 } from "react-icons/fa";
 
 import educationService from "../../services/educationService";
+import uploadService from "../../services/uploadService";
 import { useToast } from "../../context/ToastContext";
 
 import PageHeader from "../../components/dashboard/PageHeader";
@@ -25,6 +29,7 @@ function Education() {
         start_year: "",
         end_year: "",
         description: "",
+        activity_images: [],
     };
 
     const [educationList, setEducationList] = useState([]);
@@ -35,6 +40,8 @@ function Education() {
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploadingActivity, setUploadingActivity] = useState(false);
+    const activityInputRef = useRef(null);
 
     const [search, setSearch] = useState("");
     const [formError, setFormError] = useState("");
@@ -84,6 +91,55 @@ function Education() {
         setForm(emptyForm);
         setCurrentlyStudying(false);
         setFormError("");
+
+        if (activityInputRef.current) {
+            activityInputRef.current.value = "";
+        }
+    };
+
+    const handleActivityImagesChange = async (e) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+
+        const remaining = 12 - (form.activity_images?.length || 0);
+        if (remaining <= 0) {
+            setFormError("Maximum 12 activity photos allowed per education entry.");
+            if (activityInputRef.current) activityInputRef.current.value = "";
+            return;
+        }
+
+        const toUpload = files.slice(0, remaining);
+
+        try {
+            setUploadingActivity(true);
+            setFormError("");
+
+            const uploadedUrls = [];
+            for (const file of toUpload) {
+                const response = await uploadService.uploadFile(file);
+                uploadedUrls.push(response.data.url);
+            }
+
+            setForm((prev) => ({
+                ...prev,
+                activity_images: [...(prev.activity_images || []), ...uploadedUrls],
+            }));
+        } catch (error) {
+            console.error(error);
+            setFormError(error.response?.data?.message || "Failed to upload activity photo.");
+        } finally {
+            setUploadingActivity(false);
+            if (activityInputRef.current) {
+                activityInputRef.current.value = "";
+            }
+        }
+    };
+
+    const handleRemoveActivityImage = (indexToRemove) => {
+        setForm((prev) => ({
+            ...prev,
+            activity_images: (prev.activity_images || []).filter((_, i) => i !== indexToRemove),
+        }));
     };
 
     const validateForm = () => {
@@ -158,6 +214,7 @@ function Education() {
             start_year: item.start_year || "",
             end_year: item.end_year || "",
             description: item.description || "",
+            activity_images: Array.isArray(item.activity_images) ? item.activity_images : [],
         });
 
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -283,6 +340,68 @@ function Education() {
                     </div>
 
                     <div>
+                        <FieldLabel>Activity Photos</FieldLabel>
+
+                        <div className="flex flex-wrap gap-3">
+                            {(form.activity_images || []).map((url, idx) => (
+                                <div key={`${url}-${idx}`} className="relative w-24 h-24">
+                                    <img
+                                        src={url}
+                                        alt={`Activity ${idx + 1}`}
+                                        className="w-24 h-24 object-cover rounded-xl border border-slate-200 bg-slate-100"
+                                    />
+
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveActivityImage(idx)}
+                                        title="Remove activity photo"
+                                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow hover:bg-red-600 transition"
+                                    >
+                                        <FaTimes className="text-xs" />
+                                    </button>
+                                </div>
+                            ))}
+
+                            {(form.activity_images?.length || 0) < 12 && (
+                                <label
+                                    className={`
+                                        flex flex-col items-center justify-center gap-1.5
+                                        w-24 h-24 rounded-xl border-2 border-dashed
+                                        text-xs text-slate-400 transition
+                                        ${uploadingActivity
+                                            ? "border-blue-300 bg-blue-50 cursor-wait"
+                                            : "border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer"
+                                        }
+                                    `}
+                                >
+                                    {uploadingActivity ? (
+                                        <FaSpinner className="animate-spin text-base text-blue-500" />
+                                    ) : (
+                                        <>
+                                            <FaUpload className="text-base" />
+                                            Add photo
+                                        </>
+                                    )}
+
+                                    <input
+                                        ref={activityInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={handleActivityImagesChange}
+                                        disabled={uploadingActivity}
+                                        className="hidden"
+                                    />
+                                </label>
+                            )}
+                        </div>
+
+                        <p className="text-xs text-slate-400 mt-2">
+                            Optional. Upload up to 12 photos of campus life, classes, graduation, or academic activities.
+                        </p>
+                    </div>
+
+                    <div>
                         <FieldLabel htmlFor="description">Description</FieldLabel>
                         <textarea
                             id="description"
@@ -297,7 +416,7 @@ function Education() {
 
                     <div className="flex gap-3 pt-2">
 
-                        <DashboardButton type="submit" disabled={saving}>
+                        <DashboardButton type="submit" disabled={saving || uploadingActivity}>
                             {saving
                                 ? "Saving..."
                                 : editingId
@@ -378,6 +497,12 @@ function Education() {
                                         <span className="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 text-xs font-medium">
                                             {item.start_year} – {item.end_year || "Present"}
                                         </span>
+
+                                        {Array.isArray(item.activity_images) && item.activity_images.length > 0 && (
+                                            <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 text-xs font-medium">
+                                                {item.activity_images.length} {item.activity_images.length === 1 ? "photo" : "photos"}
+                                            </span>
+                                        )}
                                     </div>
 
                                     <p className="text-sm text-slate-500 mt-0.5">

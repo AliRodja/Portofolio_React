@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const { deleteFile } = require('../utils/storage');
 
 const getEducation = async (req, res) => {
     try {
@@ -20,15 +21,15 @@ const getEducation = async (req, res) => {
 
 const createEducation = async (req, res) => {
     try {
-        const { institution, degree, start_year, end_year, description } = req.body;
+        const { institution, degree, start_year, end_year, description, activity_images } = req.body;
 
         const result = await pool.query(
             `
-            INSERT INTO education (institution, degree, start_year, end_year, description)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO education (institution, degree, start_year, end_year, description, activity_images)
+            VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *
             `,
-            [institution, degree, start_year, end_year || null, description]
+            [institution, degree, start_year, end_year || null, description, activity_images || []]
         );
 
         res.status(201).json(result.rows[0]);
@@ -44,22 +45,37 @@ const createEducation = async (req, res) => {
 const updateEducation = async (req, res) => {
     try {
         const { id } = req.params;
-        const { institution, degree, start_year, end_year, description } = req.body;
+        const { institution, degree, start_year, end_year, description, activity_images } = req.body;
+
+        const existing = await pool.query(
+            'SELECT activity_images FROM education WHERE id = $1',
+            [id]
+        );
+
+        const nextActivities = activity_images || [];
 
         const result = await pool.query(
             `
             UPDATE education
-            SET institution = $1, degree = $2, start_year = $3, end_year = $4, description = $5
-            WHERE id = $6
+            SET institution = $1, degree = $2, start_year = $3, end_year = $4, description = $5, activity_images = $6
+            WHERE id = $7
             RETURNING *
             `,
-            [institution, degree, start_year, end_year || null, description, id]
+            [institution, degree, start_year, end_year || null, description, nextActivities, id]
         );
 
         if (result.rows.length === 0) {
             return res.status(404).json({
                 message: 'Education not found'
             });
+        }
+
+        const oldActivities = Array.isArray(existing.rows[0]?.activity_images) ? existing.rows[0].activity_images : [];
+        const nextSet = new Set(nextActivities);
+        for (const oldUrl of oldActivities) {
+            if (!nextSet.has(oldUrl)) {
+                await deleteFile(oldUrl);
+            }
         }
 
         res.json(result.rows[0]);
@@ -89,6 +105,11 @@ const deleteEducation = async (req, res) => {
             return res.status(404).json({
                 message: 'Education not found'
             });
+        }
+
+        const oldActivities = Array.isArray(result.rows[0]?.activity_images) ? result.rows[0].activity_images : [];
+        for (const url of oldActivities) {
+            await deleteFile(url);
         }
 
         res.json({

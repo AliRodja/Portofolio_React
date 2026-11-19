@@ -34,6 +34,7 @@ describe("validateBody", () => {
         email: { type: "email" },
         day: { type: "date" },
         tags: { type: "stringArray", maxItems: 2, maxItemLength: 5 },
+        photos: { type: "urlArray", maxItems: 2, maxItemLength: 50, default: [] },
         secret: { type: "string", min: 3, trim: false },
     };
 
@@ -44,6 +45,7 @@ describe("validateBody", () => {
                 count: "3",
                 featured: "true",
                 tags: [" a ", "", "b"],
+                photos: [" https://example.com/a.webp ", ""],
                 secret: " pw ",
                 extra: "dropped",
             },
@@ -59,6 +61,7 @@ describe("validateBody", () => {
             email: null,
             day: null,
             tags: ["a", "b"],
+            photos: ["https://example.com/a.webp"],
             secret: " pw ",
         });
     });
@@ -68,6 +71,7 @@ describe("validateBody", () => {
 
         assert.equal(req.body.count, 0);
         assert.equal(req.body.featured, false);
+        assert.deepEqual(req.body.photos, []);
     });
 
     it("rejects with a 400 listing every invalid field", () => {
@@ -80,6 +84,7 @@ describe("validateBody", () => {
                 email: "not-an-email",
                 day: "2025-02-31",
                 tags: ["a", "b", "c"],
+                photos: ["ftp://bad.com/x.png"],
                 secret: "ab",
             },
         });
@@ -94,6 +99,7 @@ describe("validateBody", () => {
             email: "must be a valid email",
             day: "must be a valid date (YYYY-MM-DD)",
             tags: "must have at most 2 items",
+            photos: "items must be valid http(s) URLs",
             secret: "must be at least 3 characters",
         });
         assert.match(body.message, /^title is required; /);

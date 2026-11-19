@@ -103,6 +103,22 @@ const checkers = {
 
         return [items];
     },
+
+    urlArray(value, rule) {
+        if (!Array.isArray(value)) return [undefined, "must be a list"];
+
+        const maxLen = rule.maxItemLength || 500;
+        const items = value
+            .map((item) => (typeof item === "string" ? item.trim() : item))
+            .filter((item) => item !== "");
+
+        if (items.some((item) => typeof item !== "string")) return [undefined, "must be a list of URLs"];
+        if (rule.maxItems && items.length > rule.maxItems) return [undefined, `must have at most ${rule.maxItems} items`];
+        if (items.some((item) => item.length > maxLen)) return [undefined, `items must be at most ${maxLen} characters`];
+        if (items.some((item) => !isValidUrl(item))) return [undefined, "items must be valid http(s) URLs"];
+
+        return [items];
+    },
 };
 
 function validateBody(schema, refine) {
@@ -113,7 +129,8 @@ function validateBody(schema, refine) {
 
         for (const [field, rule] of Object.entries(schema)) {
             const raw = body[field];
-            const blank = isBlank(raw) || (rule.type === "stringArray" && Array.isArray(raw) && raw.every(isBlank));
+            const isArrayRule = rule.type === "stringArray" || rule.type === "urlArray";
+            const blank = isBlank(raw) || (isArrayRule && Array.isArray(raw) && raw.every(isBlank));
 
             if (blank) {
                 if (rule.required) {

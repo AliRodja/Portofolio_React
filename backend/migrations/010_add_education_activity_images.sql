@@ -1,0 +1,2 @@
+ALTER TABLE education
+ADD COLUMN IF NOT EXISTS activity_images TEXT[] NOT NULL DEFAULT '{}';

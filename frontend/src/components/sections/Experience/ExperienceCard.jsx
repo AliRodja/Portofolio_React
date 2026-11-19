@@ -3,6 +3,7 @@ import { Briefcase, ChevronDown } from "lucide-react";
 
 import { formatDuration, formatMonth } from "./experienceDates";
 import Reveal from "../../ui/Reveal";
+import ActivityGallery from "../../ui/ActivityGallery";
 
 const COLLAPSED_ITEMS = 2;
 
@@ -168,7 +169,13 @@ function ExperienceCard({ group }) {
 
                 {/* Body */}
                 {single ? (
-                    <Description text={roles[0].description} />
+                    <>
+                        <Description text={roles[0].description} />
+                        <ActivityGallery
+                            images={roles[0].activity_images}
+                            label={`${roles[0].position} at ${organization}`}
+                        />
+                    </>
                 ) : (
                     <ol className="mt-6 space-y-7 border-l border-zinc-200 ml-1.5 md:ml-7">
                         {roles.map((role) => (
@@ -184,6 +191,10 @@ function ExperienceCard({ group }) {
                                     <DateLine start={role.start} end={role.end} />
                                 </div>
                                 <Description text={role.description} />
+                                <ActivityGallery
+                                    images={role.activity_images}
+                                    label={`${role.position} at ${organization}`}
+                                />
                             </li>
                         ))}
                     </ol>

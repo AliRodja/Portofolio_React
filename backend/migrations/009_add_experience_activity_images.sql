@@ -1,0 +1,2 @@
+ALTER TABLE experiences
+ADD COLUMN IF NOT EXISTS activity_images TEXT[] NOT NULL DEFAULT '{}';
