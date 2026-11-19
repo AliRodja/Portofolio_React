@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { FaGithub } from "react-icons/fa";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, X } from "lucide-react";
 import DescriptionModal from "../../ui/DescriptionModal";
 
 const DESCRIPTION_LIMIT = 140;
@@ -10,7 +11,21 @@ const STATUS_LABEL = { completed: "Completed", in_progress: "In progress" };
 function ProjectCard({ project }) {
   const [imageError, setImageError] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
   const isLongDescription = project.description && project.description.length > DESCRIPTION_LIMIT;
+
+  useEffect(() => {
+    if (!showImageModal) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setShowImageModal(false);
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [showImageModal]);
 
   return (
     <article
@@ -25,16 +40,23 @@ function ProjectCard({ project }) {
       {/* Image */}
       <div className="relative h-48 shrink-0 bg-zinc-100 border-b border-zinc-200">
         {project.image_url && !imageError ? (
-          <img
-            src={project.image_url}
-            alt={project.title}
-            width={640}
-            height={384}
-            loading="lazy"
-            draggable={false}
-            className="w-full h-full object-cover"
-            onError={() => setImageError(true)}
-          />
+          <button
+            type="button"
+            onClick={() => setShowImageModal(true)}
+            aria-label={`View full image of ${project.title}`}
+            className="group block w-full h-full overflow-hidden focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-700"
+          >
+            <img
+              src={project.image_url}
+              alt={project.title}
+              width={640}
+              height={384}
+              loading="lazy"
+              draggable={false}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              onError={() => setImageError(true)}
+            />
+          </button>
         ) : (
           <p className="w-full h-full flex items-center justify-center text-sm text-zinc-600">
             No preview image
@@ -140,6 +162,47 @@ function ProjectCard({ project }) {
           description={project.description}
           onClose={() => setShowModal(false)}
         />
+      )}
+
+      {showImageModal && createPortal(
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Full image preview: ${project.title}`}
+          onClick={() => setShowImageModal(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/85 p-4 sm:p-6 animate-modal-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative flex flex-col items-center max-w-4xl w-full"
+          >
+            <div className="w-full flex items-center justify-between gap-4 mb-3 text-white">
+              <p className="text-sm font-medium truncate">
+                {project.title}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => setShowImageModal(false)}
+                aria-label="Close image preview"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-zinc-900 border border-zinc-700 text-white hover:bg-zinc-800 active:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 transition-colors"
+              >
+                <X aria-hidden="true" className="size-5" />
+              </button>
+            </div>
+
+            <div className="relative w-full flex items-center justify-center rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">
+              <img
+                src={project.image_url}
+                alt={project.title}
+                width={1280}
+                height={768}
+                className="max-h-[80vh] w-auto object-contain"
+              />
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
     </article>
   );

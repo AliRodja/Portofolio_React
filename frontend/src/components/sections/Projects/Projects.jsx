@@ -192,7 +192,7 @@ function SectionShell({ children }) {
           className="mb-12"
           before="Projects I've"
           highlight="built"
-          intro="Most recently updated first."
+          intro="Most recent first."
         />
         <Reveal delay={100}>{children}</Reveal>
       </Container>

@@ -6,7 +6,7 @@ const getAllCertificates = async (req, res) => {
         const result = await pool.query(`
       SELECT *
       FROM certificates
-      ORDER BY issue_date DESC
+      ORDER BY issue_date DESC NULLS LAST, id DESC
     `);
 
         res.json(result.rows);
