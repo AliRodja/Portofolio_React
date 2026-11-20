@@ -189,9 +189,9 @@ function Navbar({ showCertificates = true }) {
       <div className="flex items-center justify-between gap-4 h-16 pl-3 pr-2 sm:pl-4 rounded-full bg-white border border-zinc-200 shadow-[0_8px_28px_-14px_rgba(17,17,19,0.22)]">
 
         {/* Logo and name */}
-        <a href="#hero" className={`shrink-0 flex items-center gap-2.5 min-h-11 pr-2 rounded-full ${FOCUS_RING}`}>
-          <img src="/logoAli.png" alt="" width={36} height={36} className="h-9 w-9 object-contain" />
-          <span className="font-display text-lg font-bold text-ink">Ali Imran Rodja</span>
+        <a href="#hero" className={`min-w-0 flex items-center gap-2 sm:gap-2.5 min-h-11 pr-2 rounded-full ${FOCUS_RING}`}>
+          <img src="/logoAli.png" alt="" width={36} height={36} className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 object-contain" />
+          <span className="font-display text-base sm:text-lg font-bold text-ink truncate">Ali Imran Rodja</span>
         </a>
 
         {/* Desktop Nav */}

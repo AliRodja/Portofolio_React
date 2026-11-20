@@ -22,10 +22,10 @@ function groupByCategory(skills) {
 
 function SkillsShell({ children }) {
   return (
-    <section id="skills" className="bg-white py-24 md:py-28">
+    <section id="skills" className="bg-white py-16 md:py-24 lg:py-28">
       <Container>
         <SectionHeading before="Tools I" highlight="work with" intro="Grouped by where I use them." />
-        <div className="mt-12">{children}</div>
+        <div className="mt-8 md:mt-12">{children}</div>
       </Container>
     </section>
   );

@@ -128,19 +128,19 @@ function Stats() {
 
   return (
     <StatsShell>
-      <dl className="flex divide-x divide-zinc-200">
+      <dl className="grid grid-cols-2 sm:flex sm:divide-x divide-zinc-200">
         {data.map((item) => (
           <div
             key={item.key}
-            className="flex-1 flex flex-col sm:flex-row items-center justify-start sm:justify-center gap-1 sm:gap-3 px-3 py-5 sm:py-6"
+            className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 px-4 py-4 sm:py-6 border-b sm:border-b-0 odd:border-r sm:odd:border-r-0 [&:nth-last-child(-n+2)]:border-b-0 border-zinc-200"
           >
             {/* dt must come first in the DOM; `order` shows the number first.
                 On phones a two-line label stays centred and the numbers stay
                 on one line, because cells line up from the top. */}
-            <dt className="order-2 text-center sm:text-left text-sm text-zinc-600">
+            <dt className="order-2 text-center sm:text-left text-xs sm:text-sm text-zinc-600">
               {labelFor(item, Number(stats[item.key]))}
             </dt>
-            <dd className="order-1 font-display text-3xl sm:text-4xl font-bold text-ink tabular-nums">
+            <dd className="order-1 font-display text-2xl sm:text-4xl font-bold text-ink tabular-nums">
               <CountUp value={Number(stats[item.key])} />
             </dd>
           </div>

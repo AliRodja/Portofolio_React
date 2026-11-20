@@ -81,7 +81,7 @@ function Contact({ profile = {}, socialLinks = [] }) {
     const socials = buildSocialItems(profile, socialLinks);
 
     return (
-        <section id="contact" className="bg-ink text-white pt-24 md:pt-28 pb-10">
+        <section id="contact" className="bg-ink text-white pt-16 md:pt-24 lg:pt-28 pb-10">
 
             {/* Toast */}
             {feedback && (
@@ -105,7 +105,7 @@ function Contact({ profile = {}, socialLinks = [] }) {
             )}
 
             <Container>
-                <div className="grid lg:grid-cols-[1fr_1.2fr] gap-14 lg:gap-20">
+                <div className="grid lg:grid-cols-[1fr_1.2fr] gap-10 md:gap-14 lg:gap-20">
 
                     {/* Left: how to reach me */}
                     <div>
@@ -273,7 +273,7 @@ function Contact({ profile = {}, socialLinks = [] }) {
                 </div>
 
                 {/* Footer */}
-                <div className="mt-20 pt-6 border-t border-zinc-800">
+                <div className="mt-12 md:mt-20 pt-6 border-t border-zinc-800">
                     <p className="text-sm text-zinc-400">
                         © {new Date().getFullYear()} {profile.full_name || "Ali Imran Rodja"}
                     </p>

@@ -78,9 +78,9 @@ function About({ profile, error }) {
   ].filter((fact) => fact.value);
 
   return (
-    <section id="about" className="bg-ink text-white py-24 md:py-28">
+    <section id="about" className="bg-ink text-white py-16 md:py-24 lg:py-28">
       <Container>
-        <div className="grid lg:grid-cols-2 gap-14 lg:gap-20">
+        <div className="grid lg:grid-cols-2 gap-10 md:gap-14 lg:gap-20">
 
           {/* Left: who */}
           <div>

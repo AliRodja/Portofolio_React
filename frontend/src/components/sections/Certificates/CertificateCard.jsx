@@ -1,36 +1,72 @@
-import { useState } from "react";
-import { ExternalLink, FileText } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { ExternalLink, FileText, X } from "lucide-react";
 import { isPdfUrl } from "../../../utils/file";
 import Reveal from "../../ui/Reveal";
 
+const FOCUS_RING = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700";
+
+function formatIssueDate(date) {
+    if (!date) return "";
+    return new Date(date).toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+        timeZone: "UTC",
+    });
+}
+
 function CertificateCard({ certificate }) {
     const [imageError, setImageError] = useState(false);
+    const [showLightbox, setShowLightbox] = useState(false);
     const isPdf = isPdfUrl(certificate.image_url);
+    const hasImage = Boolean(certificate.image_url) && !isPdf && !imageError;
 
-    const formatDate = (date) => {
-        return new Date(date).toLocaleDateString("en-US", {
-            month: "long",
-            year: "numeric",
-            timeZone: "UTC",
-        });
-    };
+    useEffect(() => {
+        if (!showLightbox) return undefined;
+
+        const onKeyDown = (event) => {
+            if (event.key === "Escape") {
+                setShowLightbox(false);
+            }
+        };
+
+        document.addEventListener("keydown", onKeyDown);
+        return () => document.removeEventListener("keydown", onKeyDown);
+    }, [showLightbox]);
 
     return (
-        <Reveal as="li" className="flex flex-col rounded-xl overflow-hidden bg-white border border-zinc-200 hover:border-zinc-400">
+        <Reveal
+            as="li"
+            className="flex flex-col rounded-xl bg-white border border-zinc-200 hover:border-zinc-400 transition-colors duration-200 p-5 sm:p-6"
+        >
+            {/* Top metadata: issuer tag + issue date */}
+            <div className="flex items-center justify-between gap-3">
+                {certificate.issuer ? (
+                    <span className="inline-block rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-800 truncate">
+                        {certificate.issuer}
+                    </span>
+                ) : (
+                    <span />
+                )}
 
-            {/* Certificate image or PDF link */}
-            <div className="h-48 bg-zinc-100 border-b border-zinc-200">
-                {isPdf ? (
-                    <a
-                        href={certificate.image_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full h-full flex flex-col items-center justify-center gap-2 text-zinc-700 hover:text-ink hover:bg-zinc-200 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-700 transition-colors"
+                {certificate.issue_date && (
+                    <time
+                        dateTime={certificate.issue_date}
+                        className="shrink-0 text-xs font-medium text-zinc-600"
                     >
-                        <FileText className="size-9 text-red-700" aria-hidden="true" />
-                        <span className="text-sm font-medium">View PDF: {certificate.title}</span>
-                    </a>
-                ) : certificate.image_url && !imageError ? (
+                        {formatIssueDate(certificate.issue_date)}
+                    </time>
+                )}
+            </div>
+
+            {/* Optional image preview (only for image certificates, clickable to zoom) */}
+            {hasImage && (
+                <button
+                    type="button"
+                    onClick={() => setShowLightbox(true)}
+                    aria-label={`View full image of ${certificate.title}`}
+                    className={`group mt-4 block w-full overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 ${FOCUS_RING}`}
+                >
                     <img
                         src={certificate.image_url}
                         alt={certificate.title}
@@ -38,49 +74,113 @@ function CertificateCard({ certificate }) {
                         height={384}
                         loading="lazy"
                         onError={() => setImageError(true)}
-                        className="w-full h-full object-cover"
+                        className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
                     />
-                ) : (
-                    <p className="w-full h-full flex items-center justify-center text-sm text-zinc-600">
-                        No preview image
-                    </p>
-                )}
-            </div>
+                </button>
+            )}
 
-            <div className="flex flex-col flex-1 p-6">
-                <h3 className="font-display text-lg font-bold leading-snug text-ink">
-                    {certificate.title}
-                </h3>
+            {/* Title */}
+            <h3 className="mt-4 font-display text-lg font-bold leading-snug text-ink">
+                {certificate.title}
+            </h3>
 
-                {certificate.issuer && (
-                    <p className="mt-1 font-medium text-zinc-700">{certificate.issuer}</p>
-                )}
+            {/* Actions */}
+            {(certificate.image_url || certificate.credential_url) && (
+                <div className="mt-auto pt-5 flex flex-wrap items-center gap-2.5">
+                    {isPdf && (
+                        <a
+                            href={certificate.image_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`
+                                inline-flex items-center justify-center gap-2
+                                min-h-11 px-3.5 rounded-lg
+                                border border-zinc-300 text-sm font-medium text-ink
+                                hover:border-ink hover:bg-zinc-100 active:bg-zinc-200
+                                transition-colors duration-200 ${FOCUS_RING}
+                            `}
+                        >
+                            <FileText className="size-4 text-red-700" aria-hidden="true" />
+                            <span>View PDF</span>
+                        </a>
+                    )}
 
-                {certificate.issue_date && (
-                    <p className="mt-2 text-sm text-zinc-600">
-                        Issued {formatDate(certificate.issue_date)}
-                    </p>
-                )}
+                    {hasImage && (
+                        <button
+                            type="button"
+                            onClick={() => setShowLightbox(true)}
+                            className={`
+                                inline-flex items-center justify-center gap-2
+                                min-h-11 px-3.5 rounded-lg
+                                border border-zinc-300 text-sm font-medium text-ink
+                                hover:border-ink hover:bg-zinc-100 active:bg-zinc-200
+                                transition-colors duration-200 ${FOCUS_RING}
+                            `}
+                        >
+                            View image
+                        </button>
+                    )}
 
-                {certificate.credential_url && (
-                    <a
-                        href={certificate.credential_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="
-                            self-start inline-flex items-center gap-2
-                            mt-5 min-h-11 px-4 rounded-lg
-                            border border-ink text-sm font-medium text-ink
-                            hover:bg-zinc-100 active:bg-zinc-200
-                            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
-                            transition-colors duration-200
-                        "
+                    {certificate.credential_url && (
+                        <a
+                            href={certificate.credential_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`
+                                inline-flex items-center justify-center gap-2
+                                min-h-11 px-3.5 rounded-lg
+                                bg-ink text-sm font-medium text-white
+                                hover:bg-zinc-800 active:bg-black
+                                transition-colors duration-200 ${FOCUS_RING}
+                            `}
+                        >
+                            <span>Verify</span>
+                            <ExternalLink aria-hidden="true" className="size-3.5" />
+                        </a>
+                    )}
+                </div>
+            )}
+
+            {showLightbox && createPortal(
+                <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={`Certificate preview: ${certificate.title}`}
+                    onClick={() => setShowLightbox(false)}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-ink/85 p-4 sm:p-6 animate-modal-in"
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="relative flex flex-col items-center max-w-4xl w-full"
                     >
-                        View credential
-                        <ExternalLink aria-hidden="true" className="size-4" />
-                    </a>
-                )}
-            </div>
+                        <div className="w-full flex items-center justify-between gap-4 mb-3 text-white">
+                            <p className="text-sm font-medium truncate">
+                                {certificate.title}
+                            </p>
+
+                            <button
+                                type="button"
+                                onClick={() => setShowLightbox(false)}
+                                aria-label="Close certificate preview"
+                                className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-zinc-900 border border-zinc-700 text-white hover:bg-zinc-800 active:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 transition-colors"
+                            >
+                                <X aria-hidden="true" className="size-5" />
+                            </button>
+                        </div>
+
+                        <div className="relative w-full flex items-center justify-center rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">
+                            <img
+                                src={certificate.image_url}
+                                alt={certificate.title}
+                                width={1280}
+                                height={768}
+                                className="max-h-[80vh] w-auto object-contain"
+                            />
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
         </Reveal>
     );
 }

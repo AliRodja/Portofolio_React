@@ -43,9 +43,9 @@ function groupByOrganization(experiences) {
 
 function SectionShell({ children }) {
     return (
-        <section id="experience" className="bg-white py-24 md:py-28">
+        <section id="experience" className="bg-white py-16 md:py-24 lg:py-28">
             <Container>
-                <div className="grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-16">
+                <div className="grid lg:grid-cols-[1fr_2fr] gap-8 md:gap-12 lg:gap-16">
                     <SectionHeading
                         before="Work &"
                         highlight="leadership"

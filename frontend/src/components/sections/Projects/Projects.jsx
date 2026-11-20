@@ -186,10 +186,10 @@ function ArrowButton({ direction, disabled, onClick }) {
 
 function SectionShell({ children }) {
   return (
-    <section id="projects" className="bg-zinc-50 border-y border-zinc-200 py-24 md:py-28 overflow-hidden">
+    <section id="projects" className="bg-zinc-50 border-y border-zinc-200 py-16 md:py-24 lg:py-28 overflow-hidden">
       <Container>
         <SectionHeading
-          className="mb-12"
+          className="mb-8 md:mb-12"
           before="Projects I've"
           highlight="built"
           intro="Most recent first."

@@ -86,21 +86,21 @@ function SocialLink({ href, label, brandColor, brandBg, children }) {
 // classes (index.css) draw the guides in once the photo column is shown.
 function FramedPhoto({ profile }) {
   return (
-    <div className="relative w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] lg:w-[360px] lg:h-[360px]">
+    <div className="relative w-[220px] h-[220px] sm:w-[300px] sm:h-[300px] lg:w-[360px] lg:h-[360px]">
 
       {/* Guides and marks: decoration only */}
       <div aria-hidden="true">
-        <span className="frame-line-v absolute -left-6 top-10 -bottom-6 border-l-2 border-dashed border-zinc-400" />
-        <span className="frame-line-h absolute -bottom-6 -left-6 right-12 border-b-2 border-dashed border-zinc-400" />
-        <span className="frame-mark absolute -top-6 -right-6 w-10 h-10 border-t-2 border-r-2 border-ink" />
-        <span className="frame-mark absolute -bottom-10 -left-10 w-10 h-10 border-b-2 border-l-2 border-ink" />
+        <span className="frame-line-v absolute -left-4 sm:-left-6 top-8 sm:top-10 -bottom-4 sm:-bottom-6 border-l-2 border-dashed border-zinc-400" />
+        <span className="frame-line-h absolute -bottom-4 sm:-bottom-6 -left-4 sm:-left-6 right-8 sm:right-12 border-b-2 border-dashed border-zinc-400" />
+        <span className="frame-mark absolute -top-4 -right-4 sm:-top-6 sm:-right-6 w-8 h-8 sm:w-10 sm:h-10 border-t-2 border-r-2 border-ink" />
+        <span className="frame-mark absolute -bottom-6 -left-6 sm:-bottom-10 sm:-left-10 w-8 h-8 sm:w-10 sm:h-10 border-b-2 border-l-2 border-ink" />
         {/* Sparkle kept by the owner's choice (DESIGN.md, exceptions). */}
-        <span className="frame-sparkle absolute -top-3 right-6 text-2xl leading-none text-blue-700">✦</span>
-        <span className="frame-mark absolute bottom-8 -left-1.5 w-3 h-3 rounded-full bg-blue-700" />
+        <span className="frame-sparkle absolute -top-2 right-4 sm:-top-3 sm:right-6 text-xl sm:text-2xl leading-none text-blue-700">✦</span>
+        <span className="frame-mark absolute bottom-6 sm:bottom-8 -left-1.5 w-3 h-3 rounded-full bg-blue-700" />
       </div>
 
       {/* Offset accent ring */}
-      <span aria-hidden="true" className="frame-ring absolute inset-0 rounded-full border-2 border-blue-700 translate-x-3 translate-y-2" />
+      <span aria-hidden="true" className="frame-ring absolute inset-0 rounded-full border-2 border-blue-700 translate-x-2 translate-y-1.5 sm:translate-x-3 sm:translate-y-2" />
 
       {/* Photo: the largest image on the first screen, so it is fetched first
           and has intrinsic dimensions to reserve its space. */}
@@ -132,7 +132,7 @@ function Hero({ profile, socialLinks = [], error, onRetry }) {
   return (
     <section
       id="hero"
-      className="relative overflow-hidden bg-white pt-32 pb-24 md:pt-36 md:pb-28"
+      className="relative overflow-hidden bg-white pt-28 pb-16 md:pt-36 md:pb-28"
     >
 
       {/* Pastel background blobs: kept by the owner's choice (DESIGN.md,
@@ -144,7 +144,7 @@ function Hero({ profile, socialLinks = [], error, onRetry }) {
       </div>
 
       <Container className="relative">
-        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-16 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-10 sm:gap-14 lg:gap-12 items-center">
 
           {/* Text: heading, bio, buttons and links enter one after another.
               Keyed on the profile state so the entrance plays for the real
@@ -152,19 +152,19 @@ function Hero({ profile, socialLinks = [], error, onRetry }) {
           <Reveal key={`text-${profileState}`} variant="group" stagger={110}>
             {profile ? (
               <>
-                <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-ink">
+                <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-ink">
                   Hello! I&apos;m <strong className="font-bold">{firstName || profile.full_name}</strong>
                   {role && <>, a <strong className="font-bold">{role}</strong></>}
                   {city && <> based in <strong className="font-bold">{city}</strong></>}
                 </h1>
 
                 {profile.short_bio && (
-                  <p className="mt-6 text-lg leading-8 text-zinc-600 max-w-xl">
+                  <p className="mt-5 sm:mt-6 text-base sm:text-lg leading-7 sm:leading-8 text-zinc-600 max-w-xl">
                     {profile.short_bio}
                   </p>
                 )}
 
-                <div className="flex flex-wrap items-center gap-4 mt-10">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-8 sm:mt-10">
                   <Button href="#contact">
                     Let&apos;s Talk
                     <MessageCircleMore className="size-5" aria-hidden="true" />
@@ -208,7 +208,7 @@ function Hero({ profile, socialLinks = [], error, onRetry }) {
           </Reveal>
 
           {/* Photo */}
-          <Reveal key={`photo-${profileState}`} variant="fade" delay={150} className="flex justify-center lg:justify-end lg:pr-8 py-8">
+          <Reveal key={`photo-${profileState}`} variant="fade" delay={150} className="flex justify-center lg:justify-end lg:pr-8 py-4 sm:py-8">
             <FramedPhoto profile={profile} />
           </Reveal>
 

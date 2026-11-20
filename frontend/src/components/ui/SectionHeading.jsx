@@ -27,7 +27,7 @@ function SectionHeading({ before, highlight, after, intro, dark = false, classNa
       </h2>
 
       {intro && (
-        <p className={`mt-4 text-lg max-w-2xl ${dark ? "text-zinc-400" : "text-zinc-600"}`}>
+        <p className={`mt-3 sm:mt-4 text-base sm:text-lg max-w-2xl ${dark ? "text-zinc-400" : "text-zinc-600"}`}>
           {intro}
         </p>
       )}
