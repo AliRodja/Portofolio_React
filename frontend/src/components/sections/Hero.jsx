@@ -1,11 +1,11 @@
 import profileImage from "../../assets/images/profile.webp";
 
-import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { MessageCircleMore } from "lucide-react";
 
 import Container from "../ui/Container";
 import Button from "../ui/Button";
 import Reveal from "../ui/Reveal";
+import { buildSocialItems } from "../../constants/socialPlatforms";
 
 // "Junior Full-Stack Web Developer | UI/UX Design" -> "Junior Full-Stack Web Developer"
 // "Cimahi, West java, Indonesia" -> "Cimahi"
@@ -58,19 +58,20 @@ function HeroError({ onRetry }) {
   );
 }
 
-function SocialLink({ href, label, children }) {
+function SocialLink({ href, label, brandColor, brandBg, children }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
+      style={{ "--brand-color": brandColor, "--brand-bg": brandBg }}
       className="
         w-11 h-11 rounded-xl
         border border-zinc-300
         flex items-center justify-center
         text-lg text-zinc-700
-        hover:text-ink hover:border-ink hover:bg-zinc-100
+        hover:text-(--brand-color) hover:border-(--brand-color) hover:bg-(--brand-bg)
         focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
         transition-colors duration-200
       "
@@ -121,11 +122,12 @@ function FramedPhoto({ profile }) {
   );
 }
 
-function Hero({ profile, error, onRetry }) {
+function Hero({ profile, socialLinks = [], error, onRetry }) {
   const firstName = firstPart(profile?.full_name, " ");
   const role = firstPart(profile?.headline, "|");
   const city = firstPart(profile?.location, ",");
   const profileState = profile ? "loaded" : error ? "error" : "loading";
+  const socials = buildSocialItems(profile || {}, socialLinks);
 
   return (
     <section
@@ -181,17 +183,21 @@ function Hero({ profile, error, onRetry }) {
                     Available for work
                   </p>
 
-                  <div className="flex gap-3">
-                    {profile.github_url && (
-                      <SocialLink href={profile.github_url} label="GitHub"><FaGithub aria-hidden="true" /></SocialLink>
-                    )}
-                    {profile.linkedin_url && (
-                      <SocialLink href={profile.linkedin_url} label="LinkedIn"><FaLinkedin aria-hidden="true" /></SocialLink>
-                    )}
-                    {profile.instagram_url && (
-                      <SocialLink href={profile.instagram_url} label="Instagram"><FaInstagram aria-hidden="true" /></SocialLink>
-                    )}
-                  </div>
+                  {socials.length > 0 && (
+                    <div className="flex flex-wrap gap-3">
+                      {socials.map(({ key, href, label, brandColor, brandBg, icon: Icon }) => (
+                        <SocialLink
+                          key={key}
+                          href={href}
+                          label={label}
+                          brandColor={brandColor}
+                          brandBg={brandBg}
+                        >
+                          <Icon aria-hidden="true" />
+                        </SocialLink>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </>
             ) : error ? (

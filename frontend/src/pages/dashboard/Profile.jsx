@@ -20,6 +20,7 @@ import DashboardCard from "../../components/dashboard/DashboardCard";
 import DashboardButton from "../../components/dashboard/DashboardButton";
 import FieldLabel from "../../components/dashboard/FieldLabel";
 import ImageCropModal from "../../components/dashboard/ImageCropModal";
+import OtherSocialLinksCard from "../../components/dashboard/OtherSocialLinksCard";
 
 const inputClass = "w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition";
 
@@ -513,6 +514,8 @@ function Profile() {
                 </form>
 
             </DashboardCard>
+
+            <OtherSocialLinksCard />
 
             {cropFile && (
                 <ImageCropModal

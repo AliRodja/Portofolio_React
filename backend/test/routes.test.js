@@ -20,6 +20,9 @@ const protectedRoutes = [
     ["POST", "/api/certificates"],
     ["PUT", "/api/certificates/1"],
     ["DELETE", "/api/certificates/1"],
+    ["POST", "/api/social-links"],
+    ["PUT", "/api/social-links/1"],
+    ["DELETE", "/api/social-links/1"],
     ["PUT", "/api/profile"],
     ["GET", "/api/messages"],
     ["DELETE", "/api/messages/1"],
@@ -214,6 +217,30 @@ describe("POST /api/education", () => {
             2026,
             "Undergraduate thesis",
             ["https://example.com/campus1.webp", "https://example.com/campus2.webp"],
+        ]);
+    });
+});
+
+describe("POST /api/social-links", () => {
+    it("inserts a new social link", async () => {
+        db.handler = () => ({ rows: [{ id: 1 }] });
+
+        const res = await request("POST", "/api/social-links", {
+            token: adminToken,
+            body: {
+                platform: "YouTube",
+                url: "https://youtube.com/@alirodja",
+                icon_name: "youtube",
+                order_index: 1,
+            },
+        });
+
+        assert.equal(res.status, 201);
+        assert.deepEqual(db.queries[0].params, [
+            "YouTube",
+            "https://youtube.com/@alirodja",
+            "youtube",
+            1,
         ]);
     });
 });

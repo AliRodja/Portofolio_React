@@ -90,6 +90,13 @@ const register = {
     password: { type: "string", required: true, min: 8, max: 72, trim: false },
 };
 
+const socialLink = {
+    platform: { type: "string", required: true, max: 100 },
+    url: { type: "url", required: true, max: 500 },
+    icon_name: { type: "string", max: 100 },
+    order_index: { type: "integer", min: 0, max: 10000, default: 0 },
+};
+
 module.exports = {
     login,
     register,
@@ -101,4 +108,5 @@ module.exports = {
     educationRefine,
     certificate,
     profile,
+    socialLink,
 };

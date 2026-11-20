@@ -5,8 +5,8 @@ import SectionHeading from "../../ui/SectionHeading";
 
 import { Mail, Phone, MapPin, Send, CircleCheck, TriangleAlert } from "lucide-react";
 
-import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import Reveal from "../../ui/Reveal";
+import { buildSocialItems } from "../../../constants/socialPlatforms";
 
 const EMPTY_FORM = { name: "", email: "", subject: "", message: "" };
 
@@ -32,7 +32,7 @@ function Field({ id, label, children }) {
     );
 }
 
-function Contact({ profile = {} }) {
+function Contact({ profile = {}, socialLinks = [] }) {
     const [form, setForm] = useState(EMPTY_FORM);
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState(null);
@@ -78,11 +78,7 @@ function Contact({ profile = {} }) {
         profile.location && { icon: MapPin, label: "Location", value: profile.location, href: null },
     ].filter(Boolean);
 
-    const socials = [
-        profile.github_url && { icon: FaGithub, label: "GitHub", href: profile.github_url },
-        profile.linkedin_url && { icon: FaLinkedin, label: "LinkedIn", href: profile.linkedin_url },
-        profile.instagram_url && { icon: FaInstagram, label: "Instagram", href: profile.instagram_url },
-    ].filter(Boolean);
+    const socials = buildSocialItems(profile, socialLinks);
 
     return (
         <section id="contact" className="bg-ink text-white pt-24 md:pt-28 pb-10">
@@ -157,20 +153,21 @@ function Contact({ profile = {} }) {
                             {socials.length > 0 && (
                                 <div className="mt-10">
                                     <p className="text-sm text-zinc-400 mb-3">Find me on</p>
-                                    <div className="flex gap-3">
-                                        {socials.map(({ icon: Icon, label, href }) => (
+                                    <div className="flex flex-wrap gap-3">
+                                        {socials.map(({ key, icon: Icon, label, href, darkBrandColor, darkBrandBg }) => (
                                             <a
-                                                key={label}
+                                                key={key}
                                                 href={href}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 aria-label={label}
+                                                style={{ "--brand-color": darkBrandColor, "--brand-bg": darkBrandBg }}
                                                 className="
                                                     w-11 h-11 rounded-xl
                                                     border border-zinc-700
                                                     flex items-center justify-center
                                                     text-lg text-zinc-300
-                                                    hover:text-white hover:border-zinc-400 hover:bg-zinc-900
+                                                    hover:text-(--brand-color) hover:border-(--brand-color) hover:bg-(--brand-bg)
                                                     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400
                                                     transition-colors duration-200
                                                 "

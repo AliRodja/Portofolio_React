@@ -18,6 +18,7 @@ import ScrollTopButton from "../components/ui/ScrollTopButton";
 function Home() {
 
   const [profile, setProfile] = useState(null);
+  const [socialLinks, setSocialLinks] = useState([]);
   const [error, setError] = useState(false);
 
   // Fetched here rather than inside Certificates: the navbar also needs to
@@ -40,13 +41,25 @@ function Home() {
       });
   }, []);
 
+  const fetchSocialLinks = useCallback(() => {
+    api.get("/social-links")
+      .then((res) => {
+        setSocialLinks(Array.isArray(res.data) ? res.data : []);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
   useEffect(() => {
     fetchProfile();
-  }, [fetchProfile]);
+    fetchSocialLinks();
+  }, [fetchProfile, fetchSocialLinks]);
 
   const retry = () => {
     setError(false);
     fetchProfile();
+    fetchSocialLinks();
   };
 
   // The page renders immediately: every section starts its own request at the
@@ -59,7 +72,7 @@ function Home() {
       <Navbar showCertificates={certificates.certificates.length > 0} />
 
       <main>
-        <Hero profile={profile} error={error} onRetry={retry} />
+        <Hero profile={profile} socialLinks={socialLinks} error={error} onRetry={retry} />
         <Stats />
         <About profile={profile} error={error} />
         <Skills />
@@ -67,7 +80,7 @@ function Home() {
         <Experience />
         <Education />
         <Certificates {...certificates} />
-        <Contact profile={profile ?? undefined} />
+        <Contact profile={profile ?? undefined} socialLinks={socialLinks} />
       </main>
 
       <ScrollTopButton />
