@@ -7,24 +7,26 @@ import { Mail, Phone, MapPin, Send, CircleCheck, TriangleAlert } from "lucide-re
 
 import Reveal from "../../ui/Reveal";
 import { buildSocialItems } from "../../../constants/socialPlatforms";
+import { useTheme } from "../../../context/ThemeContext";
 
 const EMPTY_FORM = { name: "", email: "", subject: "", message: "" };
 
-// Fields sit on the dark band: zinc-500 borders reach 3.9:1 against ink, and
-// the focus ring is the dark-band accent (blue-400).
+// Fields sit on the inverted band: dark in light mode, white in dark mode.
 const FIELD_CLASS = `
     w-full rounded-xl p-4
     bg-zinc-900 border border-zinc-500
     text-white placeholder-zinc-400
+    dark:bg-zinc-50 dark:border-zinc-400 dark:text-ink dark:placeholder-zinc-500
     outline-none
     focus:border-blue-400 focus:ring-2 focus:ring-blue-400
+    dark:focus:border-blue-700 dark:focus:ring-blue-700
     transition-colors duration-200
 `;
 
 function Field({ id, label, children }) {
     return (
         <div>
-            <label htmlFor={id} className="block text-sm font-medium text-zinc-300 mb-2">
+            <label htmlFor={id} className="block text-sm font-medium text-zinc-300 dark:text-zinc-700 mb-2">
                 {label}
             </label>
             {children}
@@ -33,6 +35,7 @@ function Field({ id, label, children }) {
 }
 
 function Contact({ profile = {}, socialLinks = [] }) {
+    const { theme } = useTheme();
     const [form, setForm] = useState(EMPTY_FORM);
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState(null);
@@ -81,7 +84,7 @@ function Contact({ profile = {}, socialLinks = [] }) {
     const socials = buildSocialItems(profile, socialLinks);
 
     return (
-        <section id="contact" className="bg-ink text-white pt-16 md:pt-24 lg:pt-28 pb-10">
+        <section id="contact" className="bg-ink text-white dark:bg-white dark:text-ink pt-16 md:pt-24 lg:pt-28 pb-10">
 
             {/* Toast */}
             {feedback && (
@@ -122,12 +125,12 @@ function Contact({ profile = {}, socialLinks = [] }) {
                                     {contactInfo.map(({ icon: Icon, label, value, href }) => {
                                         const content = (
                                             <>
-                                                <span className="w-11 h-11 shrink-0 rounded-xl border border-zinc-700 flex items-center justify-center text-lg text-blue-400">
+                                                <span className="w-11 h-11 shrink-0 rounded-xl border border-zinc-700 dark:border-zinc-300 flex items-center justify-center text-lg text-blue-400 dark:text-blue-700">
                                                     <Icon aria-hidden="true" className="size-4.5" />
                                                 </span>
                                                 <span className="min-w-0">
-                                                    <span className="block text-sm text-zinc-400">{label}</span>
-                                                    <span className="block font-medium text-white break-words">{value}</span>
+                                                    <span className="block text-sm text-zinc-400 dark:text-zinc-600">{label}</span>
+                                                    <span className="block font-medium text-white dark:text-ink break-words">{value}</span>
                                                 </span>
                                             </>
                                         );
@@ -137,7 +140,7 @@ function Contact({ profile = {}, socialLinks = [] }) {
                                                 {href ? (
                                                     <a
                                                         href={href}
-                                                        className="flex items-center gap-4 rounded-xl -m-2 p-2 hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-blue-400 transition-colors"
+                                                        className="flex items-center gap-4 rounded-xl -m-2 p-2 hover:bg-zinc-900 dark:hover:bg-zinc-100 focus-visible:outline-2 focus-visible:outline-blue-400 dark:focus-visible:outline-blue-700 transition-colors"
                                                     >
                                                         {content}
                                                     </a>
@@ -152,23 +155,26 @@ function Contact({ profile = {}, socialLinks = [] }) {
 
                             {socials.length > 0 && (
                                 <div className="mt-10">
-                                    <p className="text-sm text-zinc-400 mb-3">Find me on</p>
+                                    <p className="text-sm text-zinc-400 dark:text-zinc-600 mb-3">Find me on</p>
                                     <div className="flex flex-wrap gap-3">
-                                        {socials.map(({ key, icon: Icon, label, href, darkBrandColor, darkBrandBg }) => (
+                                        {socials.map(({ key, icon: Icon, label, href, brandColor, brandBg, darkBrandColor, darkBrandBg }) => (
                                             <a
                                                 key={key}
                                                 href={href}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 aria-label={label}
-                                                style={{ "--brand-color": darkBrandColor, "--brand-bg": darkBrandBg }}
+                                                style={{
+                                                    "--brand-color": theme === "dark" ? brandColor : darkBrandColor,
+                                                    "--brand-bg": theme === "dark" ? brandBg : darkBrandBg,
+                                                }}
                                                 className="
                                                     w-11 h-11 rounded-xl
-                                                    border border-zinc-700
+                                                    border border-zinc-700 dark:border-zinc-300
                                                     flex items-center justify-center
-                                                    text-lg text-zinc-300
+                                                    text-lg text-zinc-300 dark:text-zinc-700
                                                     hover:text-(--brand-color) hover:border-(--brand-color) hover:bg-(--brand-bg)
-                                                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400
+                                                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 dark:focus-visible:outline-blue-700
                                                     transition-colors duration-200
                                                 "
                                             >
@@ -251,7 +257,8 @@ function Contact({ profile = {}, socialLinks = [] }) {
                                 min-h-12 px-6 rounded-xl
                                 bg-white text-ink font-medium
                                 hover:bg-zinc-200 active:bg-zinc-300
-                                focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400
+                                dark:bg-ink dark:text-white dark:hover:bg-zinc-800 dark:active:bg-black
+                                focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 dark:focus-visible:outline-blue-700
                                 disabled:opacity-60
                                 transition-colors duration-200
                             "
@@ -273,8 +280,8 @@ function Contact({ profile = {}, socialLinks = [] }) {
                 </div>
 
                 {/* Footer */}
-                <div className="mt-12 md:mt-20 pt-6 border-t border-zinc-800">
-                    <p className="text-sm text-zinc-400">
+                <div className="mt-12 md:mt-20 pt-6 border-t border-zinc-800 dark:border-zinc-200">
+                    <p className="text-sm text-zinc-400 dark:text-zinc-600">
                         © {new Date().getFullYear()} {profile.full_name || "Ali Imran Rodja"}
                     </p>
                 </div>

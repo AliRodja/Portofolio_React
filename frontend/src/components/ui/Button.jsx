@@ -1,8 +1,8 @@
 // Link styled as a button. Solid ink for the main action, ink outline for the
 // secondary one (DESIGN.md). 48px tall, so it clears the 44px tap target.
 const VARIANTS = {
-  primary: "bg-ink text-white hover:bg-zinc-800 active:bg-black",
-  outline: "border border-ink text-ink hover:bg-zinc-100 active:bg-zinc-200",
+  primary: "bg-ink text-white hover:bg-zinc-800 active:bg-black dark:bg-white dark:text-ink dark:hover:bg-zinc-200 dark:active:bg-zinc-300",
+  outline: "border border-ink text-ink hover:bg-zinc-100 active:bg-zinc-200 dark:border-zinc-500 dark:text-white dark:hover:bg-zinc-800 dark:active:bg-zinc-700",
 };
 
 function Button({ children, href, variant = "primary", target, rel, onClick }) {

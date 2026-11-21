@@ -31,15 +31,15 @@ function NumberedList({ heading, items }) {
   return (
     <div>
       {heading && (
-        <h3 className="font-display text-xl md:text-2xl font-bold text-white">{heading}</h3>
+        <h3 className="font-display text-xl md:text-2xl font-bold text-white dark:text-ink">{heading}</h3>
       )}
-      <Reveal as="ol" variant="group" stagger={120} className="mt-6 divide-y divide-zinc-800 border-y border-zinc-800">
+      <Reveal as="ol" variant="group" stagger={120} className="mt-6 divide-y divide-zinc-800 border-y border-zinc-800 dark:divide-zinc-200 dark:border-zinc-200">
         {items.map((item, i) => (
           <li key={i} className="flex gap-5 py-5">
-            <span aria-hidden="true" className="font-display text-sm font-bold text-blue-400 pt-1">
+            <span aria-hidden="true" className="font-display text-sm font-bold text-blue-400 dark:text-blue-700 pt-1">
               {String(i + 1).padStart(2, "0")}
             </span>
-            <span className="text-zinc-300 leading-7">{item}</span>
+            <span className="text-zinc-300 dark:text-zinc-700 leading-7">{item}</span>
           </li>
         ))}
       </Reveal>
@@ -50,16 +50,16 @@ function NumberedList({ heading, items }) {
 function ServiceList() {
   return (
     <div>
-      <h3 className="font-display text-xl md:text-2xl font-bold text-white">Services</h3>
-      <Reveal as="ul" variant="group" stagger={120} className="mt-6 divide-y divide-zinc-800 border-y border-zinc-800">
+      <h3 className="font-display text-xl md:text-2xl font-bold text-white dark:text-ink">Services</h3>
+      <Reveal as="ul" variant="group" stagger={120} className="mt-6 divide-y divide-zinc-800 border-y border-zinc-800 dark:divide-zinc-200 dark:border-zinc-200">
         {SERVICES.map(({ icon: Icon, title, description }) => (
           <li key={title} className="flex gap-4 py-5">
-            <span aria-hidden="true" className="w-11 h-11 shrink-0 rounded-xl border border-zinc-700 flex items-center justify-center text-lg text-blue-400">
+            <span aria-hidden="true" className="w-11 h-11 shrink-0 rounded-xl border border-zinc-700 dark:border-zinc-300 flex items-center justify-center text-lg text-blue-400 dark:text-blue-700">
               <Icon className="size-4.5" />
             </span>
             <span>
-              <span className="block font-semibold text-white">{title}</span>
-              <span className="block mt-1 text-zinc-400 leading-7">{description}</span>
+              <span className="block font-semibold text-white dark:text-ink">{title}</span>
+              <span className="block mt-1 text-zinc-400 dark:text-zinc-600 leading-7">{description}</span>
             </span>
           </li>
         ))}
@@ -78,7 +78,7 @@ function About({ profile, error }) {
   ].filter((fact) => fact.value);
 
   return (
-    <section id="about" className="bg-ink text-white py-16 md:py-24 lg:py-28">
+    <section id="about" className="bg-ink text-white dark:bg-white dark:text-ink py-16 md:py-24 lg:py-28">
       <Container>
         <div className="grid lg:grid-cols-2 gap-10 md:gap-14 lg:gap-20">
 
@@ -90,27 +90,27 @@ function About({ profile, error }) {
               {!profile && !error && (
                 <div aria-busy="true" className="mt-8 space-y-3 animate-pulse">
                   <span className="sr-only">Loading</span>
-                  <div className="h-4 w-full rounded-lg bg-zinc-800" />
-                  <div className="h-4 w-4/5 rounded-lg bg-zinc-800" />
+                  <div className="h-4 w-full rounded-lg bg-zinc-800 dark:bg-zinc-200" />
+                  <div className="h-4 w-4/5 rounded-lg bg-zinc-800 dark:bg-zinc-200" />
                 </div>
               )}
 
               {!profile && error && (
-                <p className="mt-8 text-zinc-400">
+                <p className="mt-8 text-zinc-400 dark:text-zinc-600">
                   This section couldn&apos;t be loaded. Use &ldquo;Try again&rdquo; at the top of the page.
                 </p>
               )}
 
               {paragraphs.map((text, i) => (
-                <p key={i} className="mt-6 text-lg leading-8 text-zinc-400">{text}</p>
+                <p key={i} className="mt-6 text-lg leading-8 text-zinc-400 dark:text-zinc-600">{text}</p>
               ))}
 
               {facts.length > 0 && (
                 <dl className="mt-10 grid sm:grid-cols-2 gap-6">
                   {facts.map((fact) => (
-                    <div key={fact.label} className="border-l-2 border-blue-400 pl-4">
-                      <dt className="text-sm text-zinc-400">{fact.label}</dt>
-                      <dd className="mt-1 font-semibold text-white leading-snug">{fact.value}</dd>
+                    <div key={fact.label} className="border-l-2 border-blue-400 dark:border-blue-700 pl-4">
+                      <dt className="text-sm text-zinc-400 dark:text-zinc-600">{fact.label}</dt>
+                      <dd className="mt-1 font-semibold text-white dark:text-ink leading-snug">{fact.value}</dd>
                     </div>
                   ))}
                 </dl>

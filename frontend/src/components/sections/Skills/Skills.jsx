@@ -22,7 +22,7 @@ function groupByCategory(skills) {
 
 function SkillsShell({ children }) {
   return (
-    <section id="skills" className="bg-white py-16 md:py-24 lg:py-28">
+    <section id="skills" className="bg-white dark:bg-ink py-16 md:py-24 lg:py-28">
       <Container>
         <SectionHeading before="Tools I" highlight="work with" intro="Grouped by where I use them." />
         <div className="mt-8 md:mt-12">{children}</div>
@@ -75,17 +75,17 @@ function Skills() {
     <SkillsShell>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
         {groupByCategory(skills).map(({ category, items }, i) => (
-          <Reveal key={category} delay={(i % 3) * 100} className="border-t border-zinc-200 pt-5">
-            <h3 className="font-display text-lg font-bold text-ink">{category}</h3>
+          <Reveal key={category} delay={(i % 3) * 100} className="border-t border-zinc-200 dark:border-zinc-800 pt-5">
+            <h3 className="font-display text-lg font-bold text-ink dark:text-white">{category}</h3>
             <Reveal as="ul" variant="group" stagger={45} delay={150 + (i % 3) * 100} className="mt-4 flex flex-wrap gap-2">
               {items.map(({ name, icon: Icon }) => (
                 <li
                   key={name}
-                  className="inline-flex items-center gap-2 rounded-md border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700"
+                  className="inline-flex items-center gap-2 rounded-md border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-sm text-zinc-700 dark:text-zinc-300"
                 >
                   {/* Logos in ink, not brand colours: one palette (DESIGN.md).
                       Skills without a real logo (e.g. Midtrans) show none. */}
-                  {Icon && <Icon aria-hidden="true" className="text-base text-ink shrink-0" />}
+                  {Icon && <Icon aria-hidden="true" className="text-base text-ink dark:text-white shrink-0" />}
                   {name}
                 </li>
               ))}

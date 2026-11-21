@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
 
 // Floating pill navbar, after the reference the owner chose (2026-11-08).
 // Experience, Education and Certificates sit under one "Journey" dropdown so
@@ -40,7 +41,7 @@ function linkClass(active) {
   return `
     relative flex items-center gap-1 min-h-11 px-3 rounded-full
     text-sm whitespace-nowrap transition-colors duration-200 ${FOCUS_RING}
-    ${active ? "font-semibold text-blue-700" : "font-medium text-zinc-600 hover:text-ink"}
+    ${active ? "font-semibold text-blue-700 dark:text-blue-400" : "font-medium text-zinc-600 dark:text-zinc-300 hover:text-ink dark:hover:text-white"}
   `;
 }
 
@@ -100,7 +101,7 @@ function JourneyMenu({ item, activeHref, open, setOpen }) {
       {open && (
         <ul
           id="journey-menu"
-          className="animate-modal-in absolute left-1/2 top-full mt-3 w-52 -translate-x-1/2 rounded-2xl border border-zinc-200 bg-white p-2 shadow-[0_16px_40px_-16px_rgba(17,17,19,0.25)]"
+          className="animate-modal-in absolute left-1/2 top-full mt-3 w-52 -translate-x-1/2 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2 shadow-[0_16px_40px_-16px_rgba(17,17,19,0.25)]"
         >
           {item.children.map((child) => {
             const current = child.href === activeHref;
@@ -112,7 +113,9 @@ function JourneyMenu({ item, activeHref, open, setOpen }) {
                   aria-current={current ? "true" : undefined}
                   className={`
                     flex items-center min-h-11 px-3 rounded-xl text-sm transition-colors ${FOCUS_RING}
-                    ${current ? "font-semibold text-blue-700 bg-blue-50" : "font-medium text-zinc-700 hover:text-ink hover:bg-zinc-100"}
+                    ${current
+                      ? "font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60"
+                      : "font-medium text-zinc-700 dark:text-zinc-300 hover:text-ink dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800"}
                   `}
                 >
                   {child.label}
@@ -129,6 +132,7 @@ function JourneyMenu({ item, activeHref, open, setOpen }) {
 // showCertificates: the Certificates section only renders once there is at
 // least one certificate, so its link must not point at nothing before that.
 function Navbar({ showCertificates = true }) {
+  const { theme, toggleTheme } = useTheme();
   const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [journeyOpen, setJourneyOpen] = useState(false);
@@ -186,12 +190,12 @@ function Navbar({ showCertificates = true }) {
         ${hidden && !mobileOpen ? "-translate-y-[calc(100%+1rem)]" : "translate-y-0"}
       `}
     >
-      <div className="flex items-center justify-between gap-4 h-16 pl-3 pr-2 sm:pl-4 rounded-full bg-white border border-zinc-200 shadow-[0_8px_28px_-14px_rgba(17,17,19,0.22)]">
+      <div className="flex items-center justify-between gap-2 sm:gap-4 h-16 pl-3 pr-2 sm:pl-4 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-[0_8px_28px_-14px_rgba(17,17,19,0.22)]">
 
         {/* Logo and name */}
         <a href="#hero" className={`min-w-0 flex items-center gap-2 sm:gap-2.5 min-h-11 pr-2 rounded-full ${FOCUS_RING}`}>
           <img src="/logoAli.png" alt="" width={36} height={36} className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 object-contain" />
-          <span className="font-display text-base sm:text-lg font-bold text-ink truncate">Ali Imran Rodja</span>
+          <span className="font-display text-base sm:text-lg font-bold text-ink dark:text-white truncate">Ali Imran Rodja</span>
         </a>
 
         {/* Desktop Nav */}
@@ -216,31 +220,43 @@ function Navbar({ showCertificates = true }) {
           </ul>
         </nav>
 
-        {/* CTA (desktop) */}
-        <a
-          href="#contact"
-          className={`
-            hidden lg:inline-flex items-center justify-center shrink-0
-            min-h-11 px-5 rounded-full
-            bg-ink text-sm font-medium text-white
-            hover:bg-zinc-800 active:bg-zinc-700
-            transition-colors duration-200 ${FOCUS_RING}
-          `}
-        >
-          Contact Me
-        </a>
+        {/* Right actions: theme toggle + CTA (desktop) + mobile menu toggle */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className={`w-11 h-11 rounded-full flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-ink dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 active:bg-zinc-200 dark:active:bg-zinc-700 transition-colors ${FOCUS_RING}`}
+          >
+            {theme === "dark" ? <Sun aria-hidden="true" className="size-5" /> : <Moon aria-hidden="true" className="size-5" />}
+          </button>
 
-        {/* Mobile / tablet menu toggle */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className={`lg:hidden text-ink p-2.5 rounded-full hover:bg-zinc-100 active:bg-zinc-200 transition-colors ${FOCUS_RING}`}
-          aria-label="Menu"
-          aria-expanded={mobileOpen}
-          aria-controls="mobile-menu"
-        >
-          {mobileOpen ? <X aria-hidden="true" className="size-6" /> : <Menu aria-hidden="true" className="size-6" />}
-        </button>
+          <a
+            href="#contact"
+            className={`
+              hidden lg:inline-flex items-center justify-center shrink-0
+              min-h-11 px-5 rounded-full
+              bg-ink text-sm font-medium text-white
+              hover:bg-zinc-800 active:bg-zinc-700
+              dark:bg-white dark:text-ink dark:hover:bg-zinc-200 dark:active:bg-zinc-300
+              transition-colors duration-200 ${FOCUS_RING}
+            `}
+          >
+            Contact Me
+          </a>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className={`lg:hidden text-ink dark:text-white p-2.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 active:bg-zinc-200 dark:active:bg-zinc-700 transition-colors ${FOCUS_RING}`}
+            aria-label="Menu"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+          >
+            {mobileOpen ? <X aria-hidden="true" className="size-6" /> : <Menu aria-hidden="true" className="size-6" />}
+          </button>
+        </div>
 
       </div>
 
@@ -251,9 +267,9 @@ function Navbar({ showCertificates = true }) {
         id="mobile-menu"
         inert={!mobileOpen}
         className={`
-          lg:hidden overflow-hidden rounded-3xl bg-white
+          lg:hidden overflow-hidden rounded-3xl bg-white dark:bg-zinc-900
           transition-[max-height,opacity,margin] duration-300 ease-in-out
-          ${mobileOpen ? "mt-2 max-h-[calc(100vh-6.5rem)] opacity-100 border border-zinc-200 shadow-[0_16px_40px_-16px_rgba(17,17,19,0.25)]" : "max-h-0 opacity-0"}
+          ${mobileOpen ? "mt-2 max-h-[calc(100vh-6.5rem)] opacity-100 border border-zinc-200 dark:border-zinc-800 shadow-[0_16px_40px_-16px_rgba(17,17,19,0.25)]" : "max-h-0 opacity-0"}
         `}
       >
         <nav className="p-3 max-h-[calc(100vh-6.5rem)] overflow-y-auto" aria-label="Sections">
@@ -268,7 +284,9 @@ function Navbar({ showCertificates = true }) {
                     aria-current={current ? "true" : undefined}
                     className={`
                       block px-4 py-3 rounded-2xl transition-colors
-                      ${current ? "font-semibold text-blue-700 bg-blue-50" : "font-medium text-zinc-700 hover:text-ink hover:bg-zinc-100"}
+                      ${current
+                        ? "font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60"
+                        : "font-medium text-zinc-700 dark:text-zinc-300 hover:text-ink dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800"}
                     `}
                   >
                     {link.label}
@@ -281,7 +299,7 @@ function Navbar({ showCertificates = true }) {
           <a
             href="#contact"
             onClick={() => setMobileOpen(false)}
-            className="mt-3 flex items-center justify-center min-h-12 rounded-full bg-ink text-white text-sm font-medium hover:bg-zinc-800 transition-colors"
+            className="mt-3 flex items-center justify-center min-h-12 rounded-full bg-ink text-white dark:bg-white dark:text-ink dark:hover:bg-zinc-200 text-sm font-medium hover:bg-zinc-800 transition-colors"
           >
             Contact Me
           </a>

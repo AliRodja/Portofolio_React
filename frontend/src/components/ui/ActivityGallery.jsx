@@ -34,7 +34,7 @@ function ActivityGallery({ images, label }) {
 
     return (
         <div className="mt-4">
-            <p className="text-xs font-medium text-zinc-600 mb-2">
+            <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-2">
                 Activity photos ({validImages.length})
             </p>
 
@@ -45,7 +45,7 @@ function ActivityGallery({ images, label }) {
                             type="button"
                             onClick={() => setActiveIndex(idx)}
                             aria-label={`View activity photo ${idx + 1} of ${validImages.length} for ${label}`}
-                            className={`group relative block w-full overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 hover:border-blue-700 active:scale-[0.99] transition ${FOCUS_RING}`}
+                            className={`group relative block w-full overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 hover:border-blue-700 dark:hover:border-blue-400 active:scale-[0.99] transition ${FOCUS_RING}`}
                         >
                             <img
                                 src={url}

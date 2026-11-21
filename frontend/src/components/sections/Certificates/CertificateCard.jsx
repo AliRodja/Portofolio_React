@@ -37,12 +37,12 @@ function CertificateCard({ certificate }) {
     return (
         <Reveal
             as="li"
-            className="flex flex-col rounded-xl bg-white border border-zinc-200 hover:border-zinc-400 transition-colors duration-200 p-5 sm:p-6"
+            className="flex flex-col rounded-xl bg-white border border-zinc-200 hover:border-zinc-400 dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-600 transition-colors duration-200 p-5 sm:p-6"
         >
             {/* Top metadata: issuer tag + issue date */}
             <div className="flex items-center justify-between gap-3">
                 {certificate.issuer ? (
-                    <span className="inline-block rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-800 truncate">
+                    <span className="inline-block rounded-md bg-blue-50 dark:bg-blue-950/70 px-2.5 py-1 text-xs font-medium text-blue-800 dark:text-blue-300 truncate">
                         {certificate.issuer}
                     </span>
                 ) : (
@@ -52,7 +52,7 @@ function CertificateCard({ certificate }) {
                 {certificate.issue_date && (
                     <time
                         dateTime={certificate.issue_date}
-                        className="shrink-0 text-xs font-medium text-zinc-600"
+                        className="shrink-0 text-xs font-medium text-zinc-600 dark:text-zinc-400"
                     >
                         {formatIssueDate(certificate.issue_date)}
                     </time>
@@ -65,7 +65,7 @@ function CertificateCard({ certificate }) {
                     type="button"
                     onClick={() => setShowLightbox(true)}
                     aria-label={`View full image of ${certificate.title}`}
-                    className={`group mt-4 block w-full overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 ${FOCUS_RING}`}
+                    className={`group mt-4 block w-full overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 ${FOCUS_RING}`}
                 >
                     <img
                         src={certificate.image_url}
@@ -80,7 +80,7 @@ function CertificateCard({ certificate }) {
             )}
 
             {/* Title */}
-            <h3 className="mt-4 font-display text-lg font-bold leading-snug text-ink">
+            <h3 className="mt-4 font-display text-lg font-bold leading-snug text-ink dark:text-white">
                 {certificate.title}
             </h3>
 
@@ -97,10 +97,11 @@ function CertificateCard({ certificate }) {
                                 min-h-11 px-3.5 rounded-lg
                                 border border-zinc-300 text-sm font-medium text-ink
                                 hover:border-ink hover:bg-zinc-100 active:bg-zinc-200
+                                dark:border-zinc-700 dark:text-white dark:hover:border-white dark:hover:bg-zinc-800
                                 transition-colors duration-200 ${FOCUS_RING}
                             `}
                         >
-                            <FileText className="size-4 text-red-700" aria-hidden="true" />
+                            <FileText className="size-4 text-red-700 dark:text-red-400" aria-hidden="true" />
                             <span>View PDF</span>
                         </a>
                     )}
@@ -114,6 +115,7 @@ function CertificateCard({ certificate }) {
                                 min-h-11 px-3.5 rounded-lg
                                 border border-zinc-300 text-sm font-medium text-ink
                                 hover:border-ink hover:bg-zinc-100 active:bg-zinc-200
+                                dark:border-zinc-700 dark:text-white dark:hover:border-white dark:hover:bg-zinc-800
                                 transition-colors duration-200 ${FOCUS_RING}
                             `}
                         >
@@ -131,6 +133,7 @@ function CertificateCard({ certificate }) {
                                 min-h-11 px-3.5 rounded-lg
                                 bg-ink text-sm font-medium text-white
                                 hover:bg-zinc-800 active:bg-black
+                                dark:bg-white dark:text-ink dark:hover:bg-zinc-200
                                 transition-colors duration-200 ${FOCUS_RING}
                             `}
                         >

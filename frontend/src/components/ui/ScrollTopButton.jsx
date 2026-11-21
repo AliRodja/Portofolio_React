@@ -26,11 +26,11 @@ function ScrollTopButton() {
       className={`
         fixed bottom-6 right-6 z-40
         w-12 h-12 rounded-xl
-        bg-ink text-white text-xl
+        bg-ink text-white dark:bg-white dark:text-ink text-xl
         ring-1 ring-zinc-500
         flex items-center justify-center
-        hover:bg-zinc-800 active:bg-black
-        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
+        hover:bg-zinc-800 active:bg-black dark:hover:bg-zinc-200 dark:active:bg-zinc-300
+        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:focus-visible:outline-blue-400
         transition-[opacity,background-color] duration-200
         ${visible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
       `}

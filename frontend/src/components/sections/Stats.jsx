@@ -70,10 +70,10 @@ function StatsShell({ children }) {
     <section
       id="stats"
       aria-label="Overview"
-      className="bg-[linear-gradient(to_bottom,#ffffff_50%,var(--color-ink)_50%)]"
+      className="bg-[linear-gradient(to_bottom,#ffffff_50%,var(--color-ink)_50%)] dark:bg-[linear-gradient(to_bottom,var(--color-ink)_50%,#ffffff_50%)]"
     >
       <Container>
-        <Reveal className="mx-auto max-w-3xl rounded-2xl bg-white border border-zinc-200 shadow-[0_12px_32px_-12px_rgba(17,17,19,0.25)]">
+        <Reveal className="mx-auto max-w-3xl rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-[0_12px_32px_-12px_rgba(17,17,19,0.25)]">
           {children}
         </Reveal>
       </Container>
@@ -128,19 +128,19 @@ function Stats() {
 
   return (
     <StatsShell>
-      <dl className="grid grid-cols-2 sm:flex sm:divide-x divide-zinc-200">
+      <dl className="grid grid-cols-2 sm:flex sm:divide-x divide-zinc-200 dark:divide-zinc-800">
         {data.map((item) => (
           <div
             key={item.key}
-            className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 px-4 py-4 sm:py-6 border-b sm:border-b-0 odd:border-r sm:odd:border-r-0 [&:nth-last-child(-n+2)]:border-b-0 border-zinc-200"
+            className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 px-4 py-4 sm:py-6 border-b sm:border-b-0 odd:border-r sm:odd:border-r-0 [&:nth-last-child(-n+2)]:border-b-0 border-zinc-200 dark:border-zinc-800"
           >
             {/* dt must come first in the DOM; `order` shows the number first.
                 On phones a two-line label stays centred and the numbers stay
                 on one line, because cells line up from the top. */}
-            <dt className="order-2 text-center sm:text-left text-xs sm:text-sm text-zinc-600">
+            <dt className="order-2 text-center sm:text-left text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
               {labelFor(item, Number(stats[item.key]))}
             </dt>
-            <dd className="order-1 font-display text-2xl sm:text-4xl font-bold text-ink tabular-nums">
+            <dd className="order-1 font-display text-2xl sm:text-4xl font-bold text-ink dark:text-white tabular-nums">
               <CountUp value={Number(stats[item.key])} />
             </dd>
           </div>

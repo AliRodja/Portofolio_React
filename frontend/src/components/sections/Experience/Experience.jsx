@@ -43,7 +43,7 @@ function groupByOrganization(experiences) {
 
 function SectionShell({ children }) {
     return (
-        <section id="experience" className="bg-white py-16 md:py-24 lg:py-28">
+        <section id="experience" className="bg-white dark:bg-ink py-16 md:py-24 lg:py-28">
             <Container>
                 <div className="grid lg:grid-cols-[1fr_2fr] gap-8 md:gap-12 lg:gap-16">
                     <SectionHeading
@@ -64,7 +64,7 @@ function TimelineRail() {
             as="span"
             variant="draw-y"
             aria-hidden="true"
-            className="hidden md:block absolute left-8 top-2 bottom-2 w-px bg-zinc-300"
+            className="hidden md:block absolute left-8 top-2 bottom-2 w-px bg-zinc-300 dark:bg-zinc-700"
         />
     );
 }

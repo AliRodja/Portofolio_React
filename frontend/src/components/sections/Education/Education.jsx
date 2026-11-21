@@ -8,7 +8,7 @@ import EducationCard from "./EducationCard";
 // One shell for every state, so the navbar's #education always has a target.
 function EducationShell({ children }) {
     return (
-        <section id="education" className="bg-zinc-50 border-y border-zinc-200 py-16 md:py-24 lg:py-28">
+        <section id="education" className="bg-zinc-50 border-y border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800 py-16 md:py-24 lg:py-28">
             <Container>
                 <div className="grid lg:grid-cols-[1fr_2fr] gap-8 md:gap-12 lg:gap-16">
                     <SectionHeading

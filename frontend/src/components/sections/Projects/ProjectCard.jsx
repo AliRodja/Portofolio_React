@@ -34,11 +34,12 @@ function ProjectCard({ project }) {
         rounded-xl overflow-hidden
         bg-white border border-zinc-200
         hover:border-zinc-400
+        dark:bg-zinc-950 dark:border-zinc-800 dark:hover:border-zinc-600
         transition-colors duration-200
       "
     >
       {/* Image */}
-      <div className="relative h-48 shrink-0 bg-zinc-100 border-b border-zinc-200">
+      <div className="relative h-48 shrink-0 bg-zinc-100 border-b border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
         {project.image_url && !imageError ? (
           <button
             type="button"
@@ -58,34 +59,34 @@ function ProjectCard({ project }) {
             />
           </button>
         ) : (
-          <p className="w-full h-full flex items-center justify-center text-sm text-zinc-600">
+          <p className="w-full h-full flex items-center justify-center text-sm text-zinc-600 dark:text-zinc-400">
             No preview image
           </p>
         )}
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 p-6">
+      <div className="flex flex-col flex-1 p-5 sm:p-6">
         {(project.category || project.status) && (
           <div className="flex flex-wrap gap-2 mb-3">
             {project.category && (
-              <span className="rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-800">
+              <span className="rounded-md bg-blue-50 dark:bg-blue-950/70 px-2 py-1 text-xs font-medium text-blue-800 dark:text-blue-300">
                 {project.category}
               </span>
             )}
             {project.status && (
-              <span className="rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700">
+              <span className="rounded-md bg-zinc-100 dark:bg-zinc-800 px-2 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">
                 {STATUS_LABEL[project.status] || project.status}
               </span>
             )}
           </div>
         )}
 
-        <h3 className="font-display text-xl font-bold leading-snug text-ink">
+        <h3 className="font-display text-xl font-bold leading-snug text-ink dark:text-white">
           {project.title}
         </h3>
 
-        <p className="mt-3 text-zinc-600 leading-relaxed line-clamp-3">
+        <p className="mt-3 text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3">
           {project.description}
         </p>
 
@@ -93,7 +94,7 @@ function ProjectCard({ project }) {
           <button
             type="button"
             onClick={() => setShowModal(true)}
-            className="self-start inline-flex items-center min-h-11 text-sm font-semibold text-blue-700 hover:text-blue-900 hover:underline focus-visible:outline-2 focus-visible:outline-blue-700 rounded"
+            className="self-start inline-flex items-center min-h-11 text-sm font-semibold text-blue-700 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 hover:underline focus-visible:outline-2 focus-visible:outline-blue-700 rounded"
           >
             Read more
           </button>
@@ -102,7 +103,7 @@ function ProjectCard({ project }) {
         {project.tech_stack && project.tech_stack.length > 0 && (
           <ul className="flex flex-wrap gap-2 mt-5 mb-6" aria-label="Tech stack">
             {project.tech_stack.map((tech) => (
-              <li key={tech} className="rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700">
+              <li key={tech} className="rounded-md bg-zinc-100 dark:bg-zinc-800 px-2 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">
                 {tech}
               </li>
             ))}
@@ -113,7 +114,7 @@ function ProjectCard({ project }) {
             row was added), not when the project happened; the real year is
             already in the description. */}
         {(project.repo_link || project.demo_link) && (
-          <div className="flex items-center gap-3 mt-auto pt-5 border-t border-zinc-200">
+          <div className="flex items-center gap-3 mt-auto pt-5 border-t border-zinc-200 dark:border-zinc-800">
             {project.repo_link && (
               <a
                 href={project.repo_link}
@@ -124,7 +125,8 @@ function ProjectCard({ project }) {
                   min-h-11 min-w-11 px-4 rounded-lg
                   border border-zinc-300 text-sm font-medium text-ink
                   hover:border-ink hover:bg-zinc-100 active:bg-zinc-200
-                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
+                  dark:border-zinc-700 dark:text-white dark:hover:border-white dark:hover:bg-zinc-800 dark:active:bg-zinc-700
+                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:focus-visible:outline-blue-400
                   transition-colors duration-200
                 "
               >
@@ -143,7 +145,8 @@ function ProjectCard({ project }) {
                   min-h-11 min-w-11 px-4 rounded-lg
                   bg-ink text-sm font-medium text-white
                   hover:bg-zinc-800 active:bg-black
-                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
+                  dark:bg-white dark:text-ink dark:hover:bg-zinc-200 dark:active:bg-zinc-300
+                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:focus-visible:outline-blue-400
                   transition-colors duration-200
                 "
               >

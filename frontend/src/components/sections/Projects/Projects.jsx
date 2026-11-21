@@ -174,7 +174,8 @@ function ArrowButton({ direction, disabled, onClick }) {
         border border-zinc-300 bg-white
         text-ink text-lg
         hover:bg-zinc-100 hover:border-ink active:bg-zinc-200
-        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700
+        dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:hover:bg-zinc-800 dark:hover:border-white dark:active:bg-zinc-700
+        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:focus-visible:outline-blue-400
         disabled:opacity-40
         transition-colors duration-200
       "
@@ -186,7 +187,7 @@ function ArrowButton({ direction, disabled, onClick }) {
 
 function SectionShell({ children }) {
   return (
-    <section id="projects" className="bg-zinc-50 border-y border-zinc-200 py-16 md:py-24 lg:py-28 overflow-hidden">
+    <section id="projects" className="bg-zinc-50 border-y border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800 py-16 md:py-24 lg:py-28 overflow-hidden">
       <Container>
         <SectionHeading
           className="mb-8 md:mb-12"
@@ -258,12 +259,12 @@ function Projects() {
     <SectionShell>
       {/* Counter + arrows */}
       <div className="flex items-center justify-between gap-4 mb-4">
-        <p className="text-sm text-zinc-600" aria-live="polite">
+        <p className="text-sm text-zinc-600 dark:text-zinc-400" aria-live="polite">
           Showing{" "}
-          <span className="font-semibold text-ink">
+          <span className="font-semibold text-ink dark:text-white">
             {first === last ? first : `${first}–${last}`}
           </span>{" "}
-          of <span className="font-semibold text-ink">{projects.length}</span> projects
+          of <span className="font-semibold text-ink dark:text-white">{projects.length}</span> projects
         </p>
 
         {scrollable && (
@@ -304,11 +305,11 @@ function Projects() {
         {/* Edge fades hint that there's more to either side */}
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-y-0 -left-6 sm:-left-10 lg:-left-20 xl:-left-24 2xl:-left-32 w-6 sm:w-10 lg:w-20 xl:w-24 2xl:w-32 bg-gradient-to-r from-zinc-50 to-transparent transition-opacity duration-300 ${canPrev ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-y-0 -left-6 sm:-left-10 lg:-left-20 xl:-left-24 2xl:-left-32 w-6 sm:w-10 lg:w-20 xl:w-24 2xl:w-32 bg-gradient-to-r from-zinc-50 dark:from-zinc-900 to-transparent transition-opacity duration-300 ${canPrev ? "opacity-100" : "opacity-0"}`}
         />
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-y-0 -right-6 sm:-right-10 lg:-right-20 xl:-right-24 2xl:-right-32 w-6 sm:w-10 lg:w-20 xl:w-24 2xl:w-32 bg-gradient-to-l from-zinc-50 to-transparent transition-opacity duration-300 ${canNext ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-y-0 -right-6 sm:-right-10 lg:-right-20 xl:-right-24 2xl:-right-32 w-6 sm:w-10 lg:w-20 xl:w-24 2xl:w-32 bg-gradient-to-l from-zinc-50 dark:from-zinc-900 to-transparent transition-opacity duration-300 ${canNext ? "opacity-100" : "opacity-0"}`}
         />
       </div>
 

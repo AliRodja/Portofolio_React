@@ -10,7 +10,7 @@ const FOCUS_RING = "focus-visible:outline-2 focus-visible:outline-offset-2 focus
 
 function CertificatesShell({ children }) {
     return (
-        <section id="certificates" className="bg-white py-16 md:py-24 lg:py-28">
+        <section id="certificates" className="bg-white dark:bg-ink py-16 md:py-24 lg:py-28">
             <Container>
                 <SectionHeading
                     className="mb-8 md:mb-10"
@@ -79,8 +79,8 @@ function Certificates({ certificates, loading, error }) {
                         className={`
                             min-h-11 px-4 rounded-xl text-sm font-medium transition-colors duration-200 ${FOCUS_RING}
                             ${selectedIssuer === "All"
-                                ? "bg-ink text-white"
-                                : "border border-zinc-300 bg-white text-zinc-700 hover:border-ink hover:text-ink"
+                                ? "bg-ink text-white dark:bg-white dark:text-ink"
+                                : "border border-zinc-300 bg-white text-zinc-700 hover:border-ink hover:text-ink dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-white dark:hover:text-white"
                             }
                         `}
                     >
@@ -101,8 +101,8 @@ function Certificates({ certificates, loading, error }) {
                                 className={`
                                     min-h-11 px-4 rounded-xl text-sm font-medium transition-colors duration-200 ${FOCUS_RING}
                                     ${active
-                                        ? "bg-ink text-white"
-                                        : "border border-zinc-300 bg-white text-zinc-700 hover:border-ink hover:text-ink"
+                                        ? "bg-ink text-white dark:bg-white dark:text-ink"
+                                        : "border border-zinc-300 bg-white text-zinc-700 hover:border-ink hover:text-ink dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-white dark:hover:text-white"
                                     }
                                 `}
                             >
@@ -131,6 +131,7 @@ function Certificates({ certificates, loading, error }) {
                             border border-zinc-300 bg-white
                             text-sm font-medium text-ink
                             hover:border-ink hover:bg-zinc-100 active:bg-zinc-200
+                            dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:hover:border-white dark:hover:bg-zinc-800
                             transition-colors duration-200 ${FOCUS_RING}
                         `}
                     >
